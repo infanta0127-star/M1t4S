@@ -299,6 +299,7 @@
     };
 
     const M3S_TIMELINE = [
+      { id: 0, timeSec: 0.0, timeStr: "00:00.0", name: "戰鬥開始", phase: "準備" },
       { id: 1, timeSec: 11.2, timeStr: "00:11.2", name: "野蠻碎擊", phase: "" },
       { id: 2, timeSec: 20.5, timeStr: "00:20.5", name: "拳面猛擊*4", phase: "" },
       { id: 3, timeSec: 37.6, timeStr: "00:37.6", name: "金臂鈎", phase: "" },
@@ -324,6 +325,7 @@
     ];
 
     const M4S_TIMELINE = [
+      { id: 0, timeSec: 0.0, timeStr: "00:00.0", phase: "準備", name: "戰鬥開始" },
       { id: 1, timeSec: 15.2, timeStr: "00:15.2", phase: "魔女狩獵", name: "宙斯之怒" },
       { id: 2, timeSec: 49.4, timeStr: "00:49.4", phase: "", name: "魔女狩獵" },
       { id: 3, timeSec: 99.1, timeStr: "01:39.1", phase: "", name: "宙斯之怒" },
@@ -364,7 +366,7 @@
         const currentTab = ref('M3S');
         const timeline = ref(M3S_TIMELINE);
         const isPlaying = ref(false);
-        const elapsed = ref(0);
+        const elapsed = ref(-10);
         const soundEnabled = ref(true);
         
         const lariatState = ref(null);
@@ -376,7 +378,7 @@
         const containerRef = ref(null);
         
         let startTime = null;
-        let pausedTime = 0;
+        let pausedTime = -10;
         let reqId = null;
         let audioCtx = null;
         
@@ -521,10 +523,12 @@
         });
 
         const formatTime = (secs) => {
-          const m = Math.floor(secs / 60);
-          const s = Math.floor(secs % 60);
-          const ms = Math.floor((secs % 1) * 10);
-          return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${ms}`;
+          const sign = secs < 0 ? '-' : '';
+          const absSecs = Math.abs(secs);
+          const m = Math.floor(absSecs / 60);
+          const s = Math.floor(absSecs % 60);
+          const ms = Math.floor((absSecs % 1) * 10);
+          return `${sign}${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${ms}`;
         };
 
         const handlePlayPause = () => {
@@ -544,8 +548,8 @@
 
         const handleReset = () => {
           isPlaying.value = false;
-          pausedTime = 0;
-          elapsed.value = 0;
+          pausedTime = -10;
+          elapsed.value = -10;
           startTime = null;
           alerted5s = false;
           alerted0s = false;
@@ -574,7 +578,7 @@
 
         const handleAdjustTime = (delta) => {
           let newElapsed = elapsed.value + delta;
-          if (newElapsed < 0) newElapsed = 0;
+          if (newElapsed < -10) newElapsed = -10;
           
           elapsed.value = newElapsed;
           
@@ -588,7 +592,7 @@
         };
 
         const handleJumpToTime = (targetTimeSec) => {
-          let newElapsed = Math.max(0, targetTimeSec - 3);
+          let newElapsed = Math.max(-10, targetTimeSec - 3);
           elapsed.value = newElapsed;
           pausedTime = newElapsed;
           
