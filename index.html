@@ -23,10 +23,32 @@
   <div id="app" v-cloak class="flex flex-col h-screen">
     <!-- Header -->
     <header class="px-6 py-3 border-b border-neutral-800 bg-neutral-900/50 flex justify-between items-center z-10 backdrop-blur-md">
-      <h1 class="text-xl font-bold tracking-tight text-amber-500 flex items-center gap-2">
-        <lucide-icon name="clock" class="w-5 h-5"></lucide-icon>
-        <span class="font-sans">M3S 時間軸提示</span>
-      </h1>
+      <div class="flex items-center gap-6">
+        <h1 class="text-xl font-bold tracking-tight text-amber-500 flex items-center gap-2">
+          <lucide-icon name="clock" class="w-5 h-5"></lucide-icon>
+          <span class="font-sans">{{ currentTab }} 時間軸提示</span>
+        </h1>
+        
+        <!-- Tabs -->
+        <div class="flex bg-neutral-800/80 p-1 rounded-lg border border-neutral-700/50 relative">
+          <button 
+            @click="switchTab('M3S')" 
+            :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10', currentTab === 'M3S' ? 'text-white shadow-sm' : 'text-neutral-400 hover:text-neutral-200']"
+          >
+            M3S
+          </button>
+          <button 
+            @click="switchTab('M4S')" 
+            :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10', currentTab === 'M4S' ? 'text-white shadow-sm' : 'text-neutral-400 hover:text-neutral-200']"
+          >
+            M4S
+          </button>
+          <div 
+            class="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-neutral-700/80 rounded-md transition-all duration-300 pointer-events-none"
+            :style="{ transform: currentTab === 'M3S' ? 'translateX(4px)' : 'translateX(calc(100% + 4px))' }"
+          ></div>
+        </div>
+      </div>
       <button 
         @click="soundEnabled = !soundEnabled"
         class="p-2 rounded-full hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors"
@@ -102,8 +124,9 @@
           </h3>
           
           <div v-if="nextEvent" class="flex flex-col gap-2">
-            <div class="text-3xl lg:text-4xl font-bold text-white tracking-tight break-keep font-sans pb-2">
+            <div class="text-3xl lg:text-4xl font-bold text-white tracking-tight break-keep font-sans pb-2 flex items-center gap-3">
               {{ nextEvent.name }}
+              <span v-if="nextEvent.phase" class="text-sm px-2.5 py-1 rounded-md bg-neutral-800/80 text-amber-500/80 font-normal border border-amber-500/20">{{ nextEvent.phase }}</span>
             </div>
             <div class="flex items-end justify-between mt-1 pt-3 border-t border-neutral-700/50">
               <div class="tabular-nums font-mono text-neutral-400">
@@ -231,6 +254,7 @@
                </div>
 
                <div :class="['flex-1 font-bold text-sm md:text-base truncate transition-colors px-1', nextEvent?.id === ev.id ? 'text-amber-50' : elapsed > ev.timeSec + 2 ? 'text-neutral-600 group-hover:text-neutral-300' : 'text-neutral-300']">
+                 <span v-if="ev.phase" class="mr-2 px-2 py-0.5 rounded bg-neutral-800 text-neutral-400 text-xs">{{ ev.phase }}</span>
                  {{ ev.name }}
                </div>
              </div>
@@ -268,32 +292,69 @@
     };
 
     const M3S_TIMELINE = [
-      { id: 1, timeSec: 11.2, timeStr: "00:11.2", name: "野蠻碎擊" },
-      { id: 2, timeSec: 20.5, timeStr: "00:20.5", name: "拳面猛擊*4" },
-      { id: 3, timeSec: 37.6, timeStr: "00:37.6", name: "金臂鈎" },
-      { id: 4, timeSec: 51.8, timeStr: "00:51.8", name: "強震衝+野蠻碎擊" },
-      { id: 5, timeSec: 87.5, timeStr: "01:27.5", name: "踩塔爆炸" },
-      { id: 6, timeSec: 143.6, timeStr: "02:23.6", name: "金臂鈎" },
-      { id: 7, timeSec: 157.8, timeStr: "02:37.8", name: "強震衝+野蠻碎擊" },
-      { id: 8, timeSec: 177.4, timeStr: "02:57.4", name: "拳面猛擊*6" },
-      { id: 9, timeSec: 226.7, timeStr: "03:46.7", name: "金臂鈎+野蠻碎擊" },
-      { id: 10, timeSec: 265.9, timeStr: "04:25.9", name: "長短炸彈爆炸" },
-      { id: 11, timeSec: 282.1, timeStr: "04:42.1", name: "強震衝" },
-      { id: 12, timeSec: 305.0, timeStr: "05:05.0", name: "踩引信-1" },
-      { id: 13, timeSec: 325.0, timeStr: "05:25.0", name: "踩引信-2" },
-      { id: 14, timeSec: 354.4, timeStr: "05:54.4", name: "拳面猛擊*6" },
-      { id: 15, timeSec: 391.9, timeStr: "06:31.9", name: "超豪華野蠻大亂擊-1" },
-      { id: 16, timeSec: 395.4, timeStr: "06:35.4", name: "超豪華野蠻大亂擊-2+野蠻爆震" },
-      { id: 17, timeSec: 474.8, timeStr: "07:54.8", name: "強震衝+野蠻碎擊" },
-      { id: 18, timeSec: 497.8, timeStr: "08:17.8", name: "拳面猛擊*8" },
-      { id: 19, timeSec: 537.7, timeStr: "08:57.7", name: "炸彈爆炸" },
-      { id: 20, timeSec: 548.2, timeStr: "09:08.2", name: "金臂鈎+野蠻碎擊" },
-      { id: 21, timeSec: 615.2, timeStr: "10:15.2", name: "拳面猛擊*8" },
-      { id: 22, timeSec: 658.2, timeStr: "10:58.2", name: "究極超豪華野蠻大亂擊" }
+      { id: 1, timeSec: 11.2, timeStr: "00:11.2", name: "野蠻碎擊", phase: "" },
+      { id: 2, timeSec: 20.5, timeStr: "00:20.5", name: "拳面猛擊*4", phase: "" },
+      { id: 3, timeSec: 37.6, timeStr: "00:37.6", name: "金臂鈎", phase: "" },
+      { id: 4, timeSec: 51.8, timeStr: "00:51.8", name: "強震衝+野蠻碎擊", phase: "" },
+      { id: 5, timeSec: 87.5, timeStr: "01:27.5", name: "踩塔爆炸", phase: "" },
+      { id: 6, timeSec: 143.6, timeStr: "02:23.6", name: "金臂鈎", phase: "" },
+      { id: 7, timeSec: 157.8, timeStr: "02:37.8", name: "強震衝+野蠻碎擊", phase: "" },
+      { id: 8, timeSec: 177.4, timeStr: "02:57.4", name: "拳面猛擊*6", phase: "" },
+      { id: 9, timeSec: 226.7, timeStr: "03:46.7", name: "金臂鈎+野蠻碎擊", phase: "" },
+      { id: 10, timeSec: 265.9, timeStr: "04:25.9", name: "長短炸彈爆炸", phase: "" },
+      { id: 11, timeSec: 282.1, timeStr: "04:42.1", name: "強震衝", phase: "" },
+      { id: 12, timeSec: 305.0, timeStr: "05:05.0", name: "踩引信-1", phase: "" },
+      { id: 13, timeSec: 325.0, timeStr: "05:25.0", name: "踩引信-2", phase: "" },
+      { id: 14, timeSec: 354.4, timeStr: "05:54.4", name: "拳面猛擊*6", phase: "" },
+      { id: 15, timeSec: 391.9, timeStr: "06:31.9", name: "超豪華野蠻大亂擊-1", phase: "超豪華大亂擊" },
+      { id: 16, timeSec: 395.4, timeStr: "06:35.4", name: "超豪華野蠻大亂擊-2+野蠻爆震", phase: "" },
+      { id: 17, timeSec: 474.8, timeStr: "07:54.8", name: "強震衝+野蠻碎擊", phase: "" },
+      { id: 18, timeSec: 497.8, timeStr: "08:17.8", name: "拳面猛擊*8", phase: "" },
+      { id: 19, timeSec: 537.7, timeStr: "08:57.7", name: "炸彈爆炸", phase: "" },
+      { id: 20, timeSec: 548.2, timeStr: "09:08.2", name: "金臂鈎+野蠻碎擊", phase: "" },
+      { id: 21, timeSec: 615.2, timeStr: "10:15.2", name: "拳面猛擊*8", phase: "" },
+      { id: 22, timeSec: 658.2, timeStr: "10:58.2", name: "究極超豪華野蠻大亂擊", phase: "究極超豪華大亂擊" }
+    ];
+
+    const M4S_TIMELINE = [
+      { id: 1, timeSec: 15.2, timeStr: "00:15.2", phase: "魔女狩獵", name: "宙斯之怒" },
+      { id: 2, timeSec: 49.4, timeStr: "00:49.4", phase: "", name: "魔女狩獵" },
+      { id: 3, timeSec: 99.1, timeStr: "01:39.1", phase: "", name: "宙斯之怒" },
+      { id: 4, timeSec: 135.6, timeStr: "02:15.6", phase: "雷轉質展開", name: "四/八雷星-1" },
+      { id: 5, timeSec: 191.1, timeStr: "03:11.1", phase: "", name: "四/八雷星-2" },
+      { id: 6, timeSec: 209.3, timeStr: "03:29.3", phase: "", name: "狡詭落雷" },
+      { id: 7, timeSec: 251.6, timeStr: "04:11.6", phase: "離子簇", name: "前後砲-1" },
+      { id: 8, timeSec: 269.9, timeStr: "04:29.9", phase: "", name: "前後砲-2" },
+      { id: 9, timeSec: 290.3, timeStr: "04:50.3", phase: "", name: "狡詭搖盪" },
+      { id: 10, timeSec: 335.6, timeStr: "05:35.6", phase: "雷轉質移植", name: "擋槍-1" },
+      { id: 11, timeSec: 361.9, timeStr: "06:01.9", phase: "", name: "擋槍-2" },
+      { id: 12, timeSec: 378.3, timeStr: "06:18.3", phase: "", name: "靈魂震盪" },
+      { id: 13, timeSec: 386.9, timeStr: "06:26.9", phase: "", name: "後半開始" },
+      { id: 14, timeSec: 412.3, timeStr: "06:52.3", phase: "開場", name: "交叉亂尾擊" },
+      { id: 15, timeSec: 456.5, timeStr: "07:36.5", phase: "接線分散+水火劍", name: "芥末炸彈" },
+      { id: 16, timeSec: 483.0, timeStr: "08:03.0", phase: "", name: "尖尾刺" },
+      { id: 17, timeSec: 504.3, timeStr: "08:24.3", phase: "", name: "青雷" },
+      { id: 18, timeSec: 510.8, timeStr: "08:30.8", phase: "日落", name: "日落" },
+      { id: 19, timeSec: 540.3, timeStr: "09:00.3", phase: "午夜", name: "午夜" },
+      { id: 20, timeSec: 551.1, timeStr: "09:11.1", phase: "", name: "光束引導" },
+      { id: 21, timeSec: 567.4, timeStr: "09:27.4", phase: "", name: "狡詭雷電" },
+      { id: 22, timeSec: 593.9, timeStr: "09:53.9", phase: "", name: "分MT/ST組踩塔" },
+      { id: 23, timeSec: 641.2, timeStr: "10:41.2", phase: "", name: "尖尾刺" },
+      { id: 24, timeSec: 657.2, timeStr: "10:57.2", phase: "", name: "芥末炸彈" },
+      { id: 25, timeSec: 666.9, timeStr: "11:06.9", phase: "", name: "屬性轉換" },
+      { id: 26, timeSec: 682.7, timeStr: "11:22.7", phase: "", name: "青雷" },
+      { id: 27, timeSec: 695.5, timeStr: "11:35.5", phase: "日出", name: "日出" },
+      { id: 28, timeSec: 708.2, timeStr: "11:48.2", phase: "", name: "長短BUFF踩塔" },
+      { id: 29, timeSec: 732.4, timeStr: "12:12.4", phase: "", name: "尖尾刺" },
+      { id: 30, timeSec: 748.9, timeStr: "12:28.9", phase: "劍舞", name: "劍舞-1" },
+      { id: 31, timeSec: 766.0, timeStr: "12:46.0", phase: "", name: "劍舞-2" },
+      { id: 32, timeSec: 783.2, timeStr: "13:03.2", phase: "", name: "劍舞-3" },
+      { id: 33, timeSec: 810.0, timeStr: "13:30.0", phase: "狂暴", name: "狂暴" }
     ];
 
     const app = createApp({
       setup() {
+        const currentTab = ref('M3S');
         const timeline = ref(M3S_TIMELINE);
         const isPlaying = ref(false);
         const elapsed = ref(0);
@@ -335,7 +396,7 @@
           return r < 0 ? '0.0' : r.toFixed(1);
         });
 
-        const playBeep = () => {
+        const playBeep = (freq = 880, duration = 0.15) => {
           if (!soundEnabled.value) return;
           try {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -351,12 +412,12 @@
             gain.connect(audioCtx.destination);
             
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime); 
             gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
             
             osc.start(audioCtx.currentTime);
-            osc.stop(audioCtx.currentTime + 0.15);
+            osc.stop(audioCtx.currentTime + duration);
           } catch (e) {
             console.error("Audio playback failed", e);
           }
@@ -439,12 +500,14 @@
 
           if (next && playing) {
             const timeToNext = next.timeSec - e;
-            if (!alerted5s && timeToNext <= 5.0 && timeToNext > 4.5) {
-              playBeep();
+            if (!alerted5s && timeToNext <= 5.0 && timeToNext > 0) {
+              // 5秒提醒：較高音的提示
+              playBeep(1200, 0.2);
               alerted5s = true;
             }
             if (!alerted0s && timeToNext <= 0.0) {
-              playBeep();
+              // 0秒機制發動：預設音
+              playBeep(880, 0.15);
               alerted0s = true;
             }
           }
@@ -489,6 +552,13 @@
           }
         };
 
+        const switchTab = (tab) => {
+          if (currentTab.value === tab) return;
+          currentTab.value = tab;
+          timeline.value = tab === 'M3S' ? M3S_TIMELINE : M4S_TIMELINE;
+          handleReset();
+        };
+
         const handleAdjustTime = (delta) => {
           let newElapsed = elapsed.value + delta;
           if (newElapsed < 0) newElapsed = 0;
@@ -517,6 +587,7 @@
         };
 
         return {
+          currentTab, switchTab,
           timeline, isPlaying, elapsed, soundEnabled,
           lariatState, lariatSplit, quakeState, quakeSplit, chainSplit,
           containerRef, nextEvent, progressPercent, remainingTimeSec, remainingTimeStr,
