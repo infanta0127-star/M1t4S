@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>導火線機制 - 外圈安全高速版</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: "Microsoft JhengHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            margin-bottom: 5px;
+        }
+        p {
+            color: #aaa;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        #controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+        }
+        button {
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-cw { background-color: #27ae60; }
+        .btn-cw:hover { background-color: #219653; }
+        .btn-split { background-color: #2980b9; }
+        .btn-split:hover { background-color: #3498db; }
+        .btn-reset { background-color: #7f8c8d; }
+        .btn-reset:hover { background-color: #95a5a6; }
+        button:disabled {
+            background-color: #555 !important;
+            cursor: not-allowed;
+        }
+        canvas {
+            background-color: #222222;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        }
+        #legend {
+            display: flex;
+            gap: 25px;
+            margin-top: 20px;
+            font-size: 14px;
+            background: #2a2a2a;
+            padding: 10px 20px;
+            border-radius: 6px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .rope-line {
+            width: 30px;
+            height: 6px;
+            background-color: #d3a27f;
+            border-radius: 3px;
+            position: relative;
+        }
+        .rope-short { width: 15px; }
+        .spark-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #e67e22;
+            border-radius: 50%;
+            position: absolute;
+            right: -3px;
+            top: 0;
+        }
+        .color-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>導火線機制 (外圈安全繞行高速版)</h1>
+    <p>玩家走外側安全軌道繞行，避免觸碰繩頭引信；跑步移動速度大幅提升</p>
+    
+    <div id="controls">
+        <button id="cwBtn" class="btn-cw" onclick="startSimulation('CW')">隨機生成：全員順時針</button>
+        <button id="splitBtn" class="btn-split" onclick="startSimulation('SPLIT')">隨機生成：左右分流</button>
+        <button id="resetBtn" class="btn-reset" onclick="resetSimulation()" disabled>重置準備</button>
+    </div>
+
+    <canvas id="gameCanvas" width="600" height="600"></canvas>
+
+    <div id="legend">
+        <div class="legend-item">
+            <div class="rope-line rope-short"><div class="spark-dot"></div></div>
+            <span>短繩子地板 (26秒)</span>
+        </div>
+        <div class="legend-item">
+            <div class="rope-line"><div class="spark-dot"></div></div>
+            <span>長繩子地板 (44秒)</span>
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background-color: #e74c3c; border: 2px solid #fff;"></div>
+            <span>當前短線玩家 (26秒)</span>
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background-color: #3498db; border: 2px solid #fff;"></div>
+            <span>當前長線玩家 (44秒)</span>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const cwBtn = document.getElementById('cwBtn');
+        const splitBtn = document.getElementById('splitBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        const centerX = 300;
+        const centerY = 300;
+        const radius = 220;
+
+        let isRevealed = false;
+        let isAnimating = false;
+
+        const baseAngle = -Math.PI / 2; 
+        const offsetAngle = -Math.PI / 8; 
+
+        const sliceLabels = ['A', '2', 'B', '3', 'C', '4', 'D', '1'];
+
+        let sliceConfigs = Array.from({ length: 8 }, (_, i) => ({
+            type: 'long',
+            name: '',
+            angleStart: baseAngle + offsetAngle + i * (Math.PI / 4)
+        }));
+
+        const playerTemplates = [
+            { name: 'MT', group: 'A', index: 0, splitDir: 'CW' },
+            { name: 'ST', group: 'A', index: 1, splitDir: 'CW' },
+            { name: 'H1', group: 'A', index: 2, splitDir: 'CCW' },
+            { name: 'H2', group: 'A', index: 3, splitDir: 'CCW' },
+            { name: 'D1', group: 'B', index: 0, splitDir: 'CW' },
+            { name: 'D2', group: 'B', index: 1, splitDir: 'CW' },
+            { name: 'D3', group: 'B', index: 2, splitDir: 'CCW' },
+            { name: 'D4', group: 'B', index: 3, splitDir: 'CCW' }
+        ];
+
+        let players = [];
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function generateRandomMatch(mode) {
+            let pool = ['long', 'long', 'long', 'long', 'short', 'short', 'short', 'short'];
+            shuffle(pool);
+
+            let shortSlices = [];
+            let longSlices = [];
+
+            for (let i = 0; i < 8; i++) {
+                sliceConfigs[i].type = pool[i];
+                sliceConfigs[i].name = pool[i] === 'short' ? '短繩 26s' : '長繩 44s';
+                
+                if (pool[i] === 'short') {
+                    shortSlices.push(i);
+                } else {
+                    longSlices.push(i);
+                }
+            }
+
+            const isGroupAShort = Math.random() < 0.5;
+
+            players = playerTemplates.map(t => {
+                let role = (t.group === 'A') ? (isGroupAShort ? 'short' : 'long') : (isGroupAShort ? 'long' : 'short');
+                let targetSlice = (role === 'short') ? shortSlices[t.index] : longSlices[t.index];
+                
+                // 安全跑位軌跡半徑調整：短線 145 (避開100繩頭)，長線 205 (緊貼外牆避開190繩頭)
+                let p = {
+                    name: t.name,
+                    type: role,
+                    targetSlice: targetSlice,
+                    color: role === 'short' ? '#e74c3c' : '#3498db',
+                    r: role === 'short' ? 145 : 205, 
+                    startAngle: baseAngle,
+                    currentAngle: baseAngle
+                };
+
+                if (mode === 'CW') {
+                    p.direction = 'CW';
+                    p.targetAngle = baseAngle + p.targetSlice * (Math.PI / 4);
+                } else {
+                    p.direction = t.splitDir;
+                    if (p.direction === 'CW') {
+                        p.targetAngle = baseAngle + p.targetSlice * (Math.PI / 4);
+                    } else {
+                        let ccwSlices = (8 - p.targetSlice) % 8;
+                        p.targetAngle = baseAngle - ccwSlices * (Math.PI / 4);
+                    }
+                }
+                return p;
+            });
+        }
+
+        function drawWheel() {
+            for (let i = 0; i < 8; i++) {
+                const config = sliceConfigs[i];
+                const angleS = config.angleStart;
+                const angleE = angleS + Math.PI / 4;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, angleS, angleE);
+                ctx.closePath();
+                
+                ctx.fillStyle = i % 2 === 0 ? '#2c2c2c' : '#252525';
+                ctx.fill();
+                ctx.strokeStyle = '#3a3a3a';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                const textAngle = angleS + Math.PI / 8;
+
+                if (isRevealed) {
+                    const startR = 25;
+                    const endR = config.type === 'long' ? 190 : 100;
+
+                    const sx = centerX + startR * Math.cos(textAngle);
+                    const sy = centerY + startR * Math.sin(textAngle);
+                    const ex = centerX + endR * Math.cos(textAngle);
+                    const ey = centerY + endR * Math.sin(textAngle);
+
+                    ctx.beginPath();
+                    ctx.moveTo(sx, sy);
+                    ctx.lineTo(ex, ey);
+                    ctx.lineWidth = 7;
+                    ctx.strokeStyle = '#d3a27f';
+                    ctx.lineCap = 'round';
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(sx, sy);
+                    ctx.lineTo(ex, ey);
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = '#aa7a59';
+                    ctx.setLineDash([4, 4]);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    ctx.beginPath();
+                    ctx.arc(ex, ey, 5, 0, 2 * Math.PI);
+                    ctx.fillStyle = '#e67e22';
+                    ctx.fill();
+
+                    const textX = centerX + (radius - 50) * Math.cos(textAngle);
+                    const textY = centerY + (radius - 50) * Math.sin(textAngle);
+                    ctx.fillStyle = config.type === 'short' ? '#ff9999' : '#99ccff';
+                    ctx.font = 'bold 11px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(config.name, textX, textY);
+                }
+
+                const numX = centerX + (radius + 20) * Math.cos(textAngle);
+                const numY = centerY + (radius + 20) * Math.sin(textAngle);
+                ctx.fillStyle = '#aaaaaa';
+                ctx.font = 'bold 14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(sliceLabels[i], numX, numY);
+            }
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 25, 0, 2*Math.PI);
+            ctx.fillStyle = '#151515';
+            ctx.fill();
+            ctx.strokeStyle = '#333';
+            ctx.stroke();
+        }
+
+        function drawTrajectories() {
+            players.forEach(p => {
+                if (p.currentAngle !== p.startAngle) {
+                    ctx.beginPath();
+                    const isCCW = (p.direction === 'CCW');
+                    ctx.arc(centerX, centerY, p.r, p.startAngle, p.currentAngle, isCCW);
+                    ctx.strokeStyle = p.color;
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([3, 4]);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+            });
+        }
+
+        function drawPlayers() {
+            players.forEach(p => {
+                const x = centerX + p.r * Math.cos(p.currentAngle);
+                const y = centerY + p.r * Math.sin(p.currentAngle);
+
+                ctx.beginPath();
+                ctx.arc(x, y, 15, 0, 2 * Math.PI);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(p.name, x, y);
+            });
+        }
+
+        function updateSimulation() {
+            let stillMoving = false;
+            const speed = 0.032; // 移動速度大幅加倍
+
+            players.forEach(p => {
+                if (p.direction === 'CW') {
+                    if (p.currentAngle < p.targetAngle) {
+                        p.currentAngle += speed;
+                        if (p.currentAngle > p.targetAngle) p.currentAngle = p.targetAngle;
+                        stillMoving = true;
+                    }
+                } else {
+                    if (p.currentAngle > p.targetAngle) {
+                        p.currentAngle -= speed;
+                        if (p.currentAngle < p.targetAngle) p.currentAngle = p.targetAngle;
+                        stillMoving = true;
+                    }
+                }
+            });
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawWheel();
+            drawTrajectories();
+            drawPlayers();
+
+            if (stillMoving) {
+                requestAnimationFrame(updateSimulation);
+            } else {
+                isAnimating = false;
+                resetBtn.disabled = false;
+            }
+        }
+
+        function startSimulation(mode) {
+            if (isAnimating) return;
+
+            cwBtn.disabled = true;
+            splitBtn.disabled = true;
+            resetBtn.disabled = true;
+            
+            isRevealed = true;
+            isAnimating = true;
+
+            generateRandomMatch(mode);
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawWheel();
+            drawPlayers();
+
+            setTimeout(() => {
+                requestAnimationFrame(updateSimulation);
+            }, 400);
+        }
+
+        function resetSimulation() {
+            isRevealed = false;
+            isAnimating = false;
+            
+            players.forEach(p => {
+                p.currentAngle = baseAngle;
+            });
+            
+            cwBtn.disabled = false;
+            splitBtn.disabled = false;
+            resetBtn.disabled = true;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawWheel();
+            drawPlayers();
+        }
+
+        generateRandomMatch('CW');
+        isRevealed = false; 
+        drawWheel();
+        drawPlayers();
+    </script>
+</body>
+</html>

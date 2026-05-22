@@ -26,27 +26,29 @@
       <div class="flex items-center gap-6">
         <h1 class="text-xl font-bold tracking-tight text-amber-500 flex items-center gap-2">
           <lucide-icon name="clock" class="w-5 h-5"></lucide-icon>
-          <span class="font-sans">{{ currentTab }} 時間軸提示</span>
+          <span class="font-sans">{{ currentTab === 'fuse' ? '跑火線模擬' : currentTab + ' 時間軸提示' }}</span>
         </h1>
         
         <!-- Tabs -->
         <div class="flex bg-neutral-800/80 p-1 rounded-lg border border-neutral-700/50 relative">
           <button 
+            @click="switchTab('fuse')" 
+            :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10', currentTab === 'fuse' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200']"
+          >
+            跑火線模擬
+          </button>
+          <button 
             @click="switchTab('M3S')" 
-            :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10', currentTab === 'M3S' ? 'text-white shadow-sm' : 'text-neutral-400 hover:text-neutral-200']"
+            :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10', currentTab === 'M3S' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200']"
           >
             M3S
           </button>
           <button 
             @click="switchTab('M4S')" 
-            :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10', currentTab === 'M4S' ? 'text-white shadow-sm' : 'text-neutral-400 hover:text-neutral-200']"
+            :class="['px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10', currentTab === 'M4S' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200']"
           >
             M4S
           </button>
-          <div 
-            class="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-neutral-700/80 rounded-md transition-all duration-300 pointer-events-none"
-            :style="{ transform: currentTab === 'M3S' ? 'translateX(4px)' : 'translateX(calc(100% + 4px))' }"
-          ></div>
         </div>
       </div>
       <button 
@@ -60,10 +62,11 @@
     </header>
 
     <!-- Main Container -->
-    <main class="flex-1 w-full max-w-7xl mx-auto p-4 md:p-6 h-[calc(100vh-60px)] overflow-y-auto custom-scrollbar flex flex-col lg:flex-row gap-6 items-start">
+    <main class="flex-1 w-full h-[calc(100vh-60px)] overflow-hidden relative">
       
-      <!-- Left Side -->
-      <section class="w-full lg:w-[45%] flex flex-col gap-5 shrink-0">
+      <div v-show="currentTab !== 'fuse'" class="w-full max-w-7xl mx-auto p-4 md:p-6 h-full flex flex-col lg:flex-row gap-6 items-start overflow-y-auto custom-scrollbar">
+        <!-- Left Side -->
+        <section class="w-full lg:w-[45%] flex flex-col gap-5 shrink-0">
         <div class="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-5 md:p-6 flex flex-col items-center">
           <h2 class="text-neutral-500 font-medium tracking-widest text-xs mb-2 uppercase font-sans">
             Elapsed Time
@@ -260,7 +263,11 @@
              </div>
            </div>
         </div>
-      </section>
+        </section>
+      </div>
+
+      <!-- Fuse Simulator Iframe -->
+      <iframe v-if="currentTab === 'fuse'" src="fuse.html" class="w-full h-full border-none"></iframe>
     </main>
   </div>
 
@@ -555,8 +562,14 @@
         const switchTab = (tab) => {
           if (currentTab.value === tab) return;
           currentTab.value = tab;
-          timeline.value = tab === 'M3S' ? M3S_TIMELINE : M4S_TIMELINE;
-          handleReset();
+          
+          if (tab === 'M3S' || tab === 'M4S') {
+            timeline.value = tab === 'M3S' ? M3S_TIMELINE : M4S_TIMELINE;
+            handleReset();
+          } else {
+            isPlaying.value = false;
+            if (reqId) cancelAnimationFrame(reqId);
+          }
         };
 
         const handleAdjustTime = (delta) => {
