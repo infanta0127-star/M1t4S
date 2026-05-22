@@ -11,9 +11,6 @@
   <!-- Vue 3 -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
   <style>
     body { background-color: #0a0a0a; color: #f5f5f5; font-family: sans-serif; margin: 0; }
     .custom-scrollbar::-webkit-scrollbar { width: 6px; }
@@ -27,7 +24,7 @@
     <!-- Header -->
     <header class="px-6 py-3 border-b border-neutral-800 bg-neutral-900/50 flex justify-between items-center z-10 backdrop-blur-md">
       <h1 class="text-xl font-bold tracking-tight text-amber-500 flex items-center gap-2">
-        <i data-lucide="clock" class="w-5 h-5"></i>
+        <lucide-icon name="clock" class="w-5 h-5"></lucide-icon>
         <span class="font-sans">M3S 時間軸提示</span>
       </h1>
       <button 
@@ -35,8 +32,8 @@
         class="p-2 rounded-full hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors"
         :title="soundEnabled ? '停用音效提示' : '啟用音效提示'"
       >
-        <i v-if="soundEnabled" data-lucide="volume-2" class="w-5 h-5"></i>
-        <i v-else data-lucide="volume-x" class="w-5 h-5"></i>
+        <lucide-icon v-if="soundEnabled" name="volume-2" class="w-5 h-5"></lucide-icon>
+        <lucide-icon v-else name="volume-x" class="w-5 h-5"></lucide-icon>
       </button>
     </header>
 
@@ -55,7 +52,7 @@
 
           <div class="flex gap-2 w-full justify-center mb-5">
              <button @click="handleAdjustTime(-1)" class="flex items-center gap-1 px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs transition-all font-medium active:scale-95">
-               <i data-lucide="skip-back" class="w-4 h-4"></i> 1s
+               <lucide-icon name="skip-back" class="w-4 h-4"></lucide-icon> 1s
              </button>
              <button @click="handleAdjustTime(-0.1)" class="px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs transition-all font-medium active:scale-95">
                -0.1s
@@ -64,7 +61,7 @@
                +0.1s
              </button>
              <button @click="handleAdjustTime(1)" class="flex items-center gap-1 px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs transition-all font-medium active:scale-95">
-               1s <i data-lucide="skip-forward" class="w-4 h-4"></i>
+               1s <lucide-icon name="skip-forward" class="w-4 h-4"></lucide-icon>
              </button>
           </div>
 
@@ -76,8 +73,8 @@
                 isPlaying ? 'bg-neutral-800 text-amber-500 hover:bg-neutral-700 font-sans' : 'bg-amber-600 text-white hover:bg-amber-500 shadow-lg shadow-amber-900/20 font-sans'
               ]"
             >
-              <i v-if="isPlaying" data-lucide="pause" class="w-6 h-6 fill-current"></i>
-              <i v-else data-lucide="play" class="w-6 h-6 fill-current"></i>
+              <lucide-icon v-if="isPlaying" name="pause" class="w-6 h-6 fill-current"></lucide-icon>
+              <lucide-icon v-else name="play" class="w-6 h-6 fill-current"></lucide-icon>
               {{ isPlaying ? '暫停計時' : '開始計時' }}
             </button>
             <button 
@@ -85,7 +82,7 @@
               class="px-5 py-4 rounded-2xl bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white transition-all flex items-center justify-center active:scale-[0.98]"
               title="重設時間"
             >
-              <i data-lucide="rotate-ccw" class="w-6 h-6"></i>
+              <lucide-icon name="rotate-ccw" class="w-6 h-6"></lucide-icon>
             </button>
           </div>
         </div>
@@ -97,11 +94,11 @@
         <!-- Next Event Target -->
         <div class="w-full bg-gradient-to-br from-neutral-800/90 to-neutral-900/90 border border-neutral-700/50 rounded-3xl p-6 relative overflow-hidden shadow-xl shrink-0">
           <div class="absolute top-0 left-0 w-full h-1.5 bg-neutral-800">
-             <div v-if="nextEvent" class="h-full bg-amber-500 transition-all ease-linear" :style="{ width: Math.max(0, Math.min(100, (1 - (nextEvent.timeSec - elapsed)/10) * 100)) + '%' }"></div>
+             <div v-if="nextEvent" class="h-full bg-amber-500 transition-all ease-linear" :style="{ width: progressPercent + '%' }"></div>
           </div>
           
           <h3 class="text-neutral-400 font-medium mb-3 flex items-center gap-2 text-sm uppercase tracking-wider font-sans">
-            <i data-lucide="arrow-right" class="w-4 h-4 text-amber-500"></i>即將到來
+            <lucide-icon name="arrow-right" class="w-4 h-4 text-amber-500"></lucide-icon>即將到來
           </h3>
           
           <div v-if="nextEvent" class="flex flex-col gap-2">
@@ -113,8 +110,8 @@
                 <span class="text-xs uppercase mr-2 tracking-wider">Time</span>
                 <span class="text-amber-500 font-bold px-2 py-1 bg-amber-500/10 rounded-lg">{{ nextEvent.timeStr }}</span>
               </div>
-              <div :class="['text-4xl tabular-nums font-mono font-black', (nextEvent.timeSec - elapsed) <= 5.0 ? 'text-red-500 animate-pulse drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'text-neutral-300']">
-                -{{ (nextEvent.timeSec - Math.floor(elapsed*10)/10).toFixed(1) }}<span class="text-2xl text-neutral-500">s</span>
+              <div :class="['text-4xl tabular-nums font-mono font-black', remainingTimeSec <= 5.0 ? 'text-red-500 animate-pulse drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'text-neutral-300']">
+                -{{ remainingTimeStr }}<span class="text-2xl text-neutral-500">s</span>
               </div>
             </div>
 
@@ -131,23 +128,23 @@
                   <div class="flex gap-2">
                     <button @click="lariatState = 'fire'" :class="['flex-1 py-3 rounded-xl border flex flex-col items-center justify-center transition-all', lariatState === 'fire' ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800 hover:border-neutral-600']">
                       <span :class="['text-xs flex items-center gap-1 mb-1', lariatState === 'fire' ? 'text-red-300' : 'text-neutral-400']">
-                        <i v-if="lariatState === 'fire'" data-lucide="flame" class="w-3 h-3"></i> 有火
+                        <lucide-icon v-if="lariatState === 'fire'" name="flame" class="w-3 h-3"></lucide-icon> 有火
                       </span>
                       <span :class="['font-black text-xl tracking-widest', lariatState === 'fire' ? 'text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse' : 'text-neutral-500']">圈內</span>
                     </button>
                     <button @click="lariatState = 'no-fire'" :class="['flex-1 py-3 rounded-xl border flex flex-col items-center justify-center transition-all', lariatState === 'no-fire' ? 'bg-blue-500/20 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800 hover:border-neutral-600']">
                       <span :class="['text-xs flex items-center gap-1 mb-1', lariatState === 'no-fire' ? 'text-blue-300' : 'text-neutral-400']">
-                        <i v-if="lariatState === 'no-fire'" data-lucide="circle-off" class="w-3 h-3"></i> 無火
+                        <lucide-icon v-if="lariatState === 'no-fire'" name="circle-off" class="w-3 h-3"></lucide-icon> 無火
                       </span>
                       <span :class="['font-black text-xl tracking-widest', lariatState === 'no-fire' ? 'text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-pulse' : 'text-neutral-500']">圈外</span>
                     </button>
                   </div>
                   <div class="flex gap-2">
                     <button @click="lariatSplit = '4'" :class="['flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all', lariatSplit === '4' ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600']">
-                      <i data-lucide="users" class="w-4 h-4"></i> <span class="font-bold text-sm">四分</span>
+                      <lucide-icon name="users" class="w-4 h-4"></lucide-icon> <span class="font-bold text-sm">四分</span>
                     </button>
                     <button @click="lariatSplit = '8'" :class="['flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all', lariatSplit === '8' ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600']">
-                      <i data-lucide="users" class="w-4 h-4"></i> <span class="font-bold text-sm">八分</span>
+                      <lucide-icon name="users" class="w-4 h-4"></lucide-icon> <span class="font-bold text-sm">八分</span>
                     </button>
                   </div>
                 </div>
@@ -163,23 +160,23 @@
                   <div class="flex gap-2">
                     <button @click="quakeState = 'fire'" :class="['flex-1 py-3 rounded-xl border flex flex-col items-center justify-center transition-all', quakeState === 'fire' ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800 hover:border-neutral-600']">
                       <span :class="['text-xs flex items-center gap-1 mb-1', quakeState === 'fire' ? 'text-red-300' : 'text-neutral-400']">
-                        <i v-if="quakeState === 'fire'" data-lucide="flame" class="w-3 h-3"></i> 有火
+                        <lucide-icon v-if="quakeState === 'fire'" name="flame" class="w-3 h-3"></lucide-icon> 有火
                       </span>
                       <span :class="['font-black text-xl tracking-wider', quakeState === 'fire' ? 'text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse' : 'text-neutral-500']">防擊退</span>
                     </button>
                     <button @click="quakeState = 'no-fire'" :class="['flex-1 py-3 rounded-xl border flex flex-col items-center justify-center transition-all', quakeState === 'no-fire' ? 'bg-blue-500/20 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800 hover:border-neutral-600']">
                       <span :class="['text-xs flex items-center gap-1 mb-1', quakeState === 'no-fire' ? 'text-blue-300' : 'text-neutral-400']">
-                        <i v-if="quakeState === 'no-fire'" data-lucide="circle-off" class="w-3 h-3"></i> 無火
+                        <lucide-icon v-if="quakeState === 'no-fire'" name="circle-off" class="w-3 h-3"></lucide-icon> 無火
                       </span>
                       <span :class="['font-black text-xl tracking-wider', quakeState === 'no-fire' ? 'text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-pulse' : 'text-neutral-500']">距離衰減</span>
                     </button>
                   </div>
                   <div class="flex gap-2">
                     <button @click="quakeSplit = '4'" :class="['flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all', quakeSplit === '4' ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600']">
-                      <i data-lucide="users" class="w-4 h-4"></i> <span class="font-bold text-sm">四分</span>
+                      <lucide-icon name="users" class="w-4 h-4"></lucide-icon> <span class="font-bold text-sm">四分</span>
                     </button>
                     <button @click="quakeSplit = '8'" :class="['flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all', quakeSplit === '8' ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600']">
-                      <i data-lucide="users" class="w-4 h-4"></i> <span class="font-bold text-sm">八分</span>
+                      <lucide-icon name="users" class="w-4 h-4"></lucide-icon> <span class="font-bold text-sm">八分</span>
                     </button>
                   </div>
                 </div>
@@ -193,10 +190,10 @@
                 </div>
                 <div class="flex gap-2">
                   <button @click="chainSplit = '4'" :class="['flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all', chainSplit === '4' ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600']">
-                    <i data-lucide="users" class="w-4 h-4"></i> <span class="font-bold text-sm">四分</span>
+                    <lucide-icon name="users" class="w-4 h-4"></lucide-icon> <span class="font-bold text-sm">四分</span>
                   </button>
                   <button @click="chainSplit = '8'" :class="['flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all', chainSplit === '8' ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600']">
-                    <i data-lucide="users" class="w-4 h-4"></i> <span class="font-bold text-sm">八分</span>
+                    <lucide-icon name="users" class="w-4 h-4"></lucide-icon> <span class="font-bold text-sm">八分</span>
                   </button>
                 </div>
               </div>
@@ -246,6 +243,30 @@
   <script>
     const { createApp, ref, computed, watch, onMounted, onUnmounted, nextTick } = Vue;
 
+    const LucideIcon = {
+      props: ['name'],
+      computed: {
+        svgContent() {
+          const dict = {
+            'clock': '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+            'volume-2': '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>',
+            'volume-x': '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" x2="17" y1="9" y2="15"/><line x1="17" x2="23" y1="9" y2="15"/>',
+            'skip-back': '<polygon points="19 20 9 12 19 4 19 20"/><line x1="5" x2="5" y1="19" y2="5"/>',
+            'skip-forward': '<polygon points="5 4 15 12 5 20 5 4"/><line x1="19" x2="19" y1="5" y2="19"/>',
+            'arrow-right': '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+            'play': '<polygon points="6 3 20 12 6 21 6 3"/>',
+            'pause': '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
+            'rotate-ccw': '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+            'flame': '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+            'circle-off': '<path d="m2 2 20 20"/><path d="M8.35 2.69A10 10 0 0 1 21.3 15.65"/><path d="M19.08 19.08A10 10 0 1 1 4.92 4.92"/>',
+            'users': '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'
+          };
+          return dict[this.name] || '';
+        }
+      },
+      template: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" v-html="svgContent"></svg>`
+    };
+
     const M3S_TIMELINE = [
       { id: 1, timeSec: 11.2, timeStr: "00:11.2", name: "野蠻碎擊" },
       { id: 2, timeSec: 20.5, timeStr: "00:20.5", name: "拳面猛擊*4" },
@@ -271,7 +292,7 @@
       { id: 22, timeSec: 658.2, timeStr: "10:58.2", name: "究極超豪華野蠻大亂擊" }
     ];
 
-    createApp({
+    const app = createApp({
       setup() {
         const timeline = ref(M3S_TIMELINE);
         const isPlaying = ref(false);
@@ -298,12 +319,21 @@
           return timeline.value.filter(ev => ev.timeSec >= elapsed.value)[0] || null;
         });
 
-        // Icon updates whenever component renders things
-        watch(() => [isPlaying.value, soundEnabled.value, nextEvent.value, lariatState.value, lariatSplit.value, quakeState.value, quakeSplit.value, chainSplit.value], () => {
-          nextTick(() => {
-            lucide.createIcons();
-          });
-        }, { deep: true });
+        const progressPercent = computed(() => {
+          if (!nextEvent.value) return 0;
+          return Math.max(0, Math.min(100, (1 - (nextEvent.value.timeSec - elapsed.value) / 10) * 100));
+        });
+
+        const remainingTimeSec = computed(() => {
+          if (!nextEvent.value) return 0;
+          return nextEvent.value.timeSec - elapsed.value;
+        });
+
+        const remainingTimeStr = computed(() => {
+          if (!nextEvent.value) return '0.0';
+          const r = nextEvent.value.timeSec - Math.floor(elapsed.value * 10) / 10;
+          return r < 0 ? '0.0' : r.toFixed(1);
+        });
 
         const playBeep = () => {
           if (!soundEnabled.value) return;
@@ -362,7 +392,6 @@
         };
 
         onMounted(() => {
-          lucide.createIcons();
           if (containerRef.value) {
             containerRef.value.addEventListener('wheel', handleScroll, { passive: true });
             containerRef.value.addEventListener('touchmove', handleScroll, { passive: true });
@@ -490,11 +519,14 @@
         return {
           timeline, isPlaying, elapsed, soundEnabled,
           lariatState, lariatSplit, quakeState, quakeSplit, chainSplit,
-          containerRef, nextEvent,
+          containerRef, nextEvent, progressPercent, remainingTimeSec, remainingTimeStr,
           formatTime, handlePlayPause, handleReset, handleAdjustTime, handleJumpToTime
         };
       }
-    }).mount('#app');
+    });
+    
+    app.component('lucide-icon', LucideIcon);
+    app.mount('#app');
   </script>
 </body>
 </html>
