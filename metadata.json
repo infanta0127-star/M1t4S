@@ -1,0 +1,6 @@
+{
+  "name": "遊戲時間軸提示",
+  "description": "提供各種遊戲高難度副本的時間軸提示與報時，目前收錄 M3S。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
