@@ -1,13 +1,500 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>M3S 時間軸提示</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Vue 3 -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body { background-color: #0a0a0a; color: #f5f5f5; font-family: sans-serif; margin: 0; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #404040; border-radius: 10px; }
+    [v-cloak] { display: none; }
+  </style>
+</head>
+<body class="min-h-screen bg-neutral-950 text-neutral-100 font-sans flex flex-col selection:bg-amber-500/30 overflow-hidden">
+  <div id="app" v-cloak class="flex flex-col h-screen">
+    <!-- Header -->
+    <header class="px-6 py-3 border-b border-neutral-800 bg-neutral-900/50 flex justify-between items-center z-10 backdrop-blur-md">
+      <h1 class="text-xl font-bold tracking-tight text-amber-500 flex items-center gap-2">
+        <i data-lucide="clock" class="w-5 h-5"></i>
+        <span class="font-sans">M3S 時間軸提示</span>
+      </h1>
+      <button 
+        @click="soundEnabled = !soundEnabled"
+        class="p-2 rounded-full hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors"
+        :title="soundEnabled ? '停用音效提示' : '啟用音效提示'"
+      >
+        <i v-if="soundEnabled" data-lucide="volume-2" class="w-5 h-5"></i>
+        <i v-else data-lucide="volume-x" class="w-5 h-5"></i>
+      </button>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 w-full max-w-7xl mx-auto p-4 md:p-6 h-[calc(100vh-60px)] overflow-y-auto custom-scrollbar flex flex-col lg:flex-row gap-6 items-start">
+      
+      <!-- Left Side -->
+      <section class="w-full lg:w-[45%] flex flex-col gap-5 shrink-0">
+        <div class="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-5 md:p-6 flex flex-col items-center">
+          <h2 class="text-neutral-500 font-medium tracking-widest text-xs mb-2 uppercase font-sans">
+            Elapsed Time
+          </h2>
+          <div class="text-6xl lg:text-7xl font-bold font-mono tracking-tighter text-white tabular-nums drop-shadow-sm mb-5">
+            {{ formatTime(elapsed) }}
+          </div>
+
+          <div class="flex gap-2 w-full justify-center mb-5">
+             <button @click="handleAdjustTime(-1)" class="flex items-center gap-1 px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs transition-all font-medium active:scale-95">
+               <i data-lucide="skip-back" class="w-4 h-4"></i> 1s
+             </button>
+             <button @click="handleAdjustTime(-0.1)" class="px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs transition-all font-medium active:scale-95">
+               -0.1s
+             </button>
+             <button @click="handleAdjustTime(0.1)" class="px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs transition-all font-medium active:scale-95">
+               +0.1s
+             </button>
+             <button @click="handleAdjustTime(1)" class="flex items-center gap-1 px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs transition-all font-medium active:scale-95">
+               1s <i data-lucide="skip-forward" class="w-4 h-4"></i>
+             </button>
+          </div>
+
+          <div class="flex gap-3 w-full">
+            <button 
+              @click="handlePlayPause"
+              :class="[
+                'flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-lg transition-all active:scale-[0.98]',
+                isPlaying ? 'bg-neutral-800 text-amber-500 hover:bg-neutral-700 font-sans' : 'bg-amber-600 text-white hover:bg-amber-500 shadow-lg shadow-amber-900/20 font-sans'
+              ]"
+            >
+              <i v-if="isPlaying" data-lucide="pause" class="w-6 h-6 fill-current"></i>
+              <i v-else data-lucide="play" class="w-6 h-6 fill-current"></i>
+              {{ isPlaying ? '暫停計時' : '開始計時' }}
+            </button>
+            <button 
+              @click="handleReset"
+              class="px-5 py-4 rounded-2xl bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white transition-all flex items-center justify-center active:scale-[0.98]"
+              title="重設時間"
+            >
+              <i data-lucide="rotate-ccw" class="w-6 h-6"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Side -->
+      <section class="w-full lg:w-[55%] flex flex-col gap-5">
+        
+        <!-- Next Event Target -->
+        <div class="w-full bg-gradient-to-br from-neutral-800/90 to-neutral-900/90 border border-neutral-700/50 rounded-3xl p-6 relative overflow-hidden shadow-xl shrink-0">
+          <div class="absolute top-0 left-0 w-full h-1.5 bg-neutral-800">
+             <div v-if="nextEvent" class="h-full bg-amber-500 transition-all ease-linear" :style="{ width: Math.max(0, Math.min(100, (1 - (nextEvent.timeSec - elapsed)/10) * 100)) + '%' }"></div>
+          </div>
+          
+          <h3 class="text-neutral-400 font-medium mb-3 flex items-center gap-2 text-sm uppercase tracking-wider font-sans">
+            <i data-lucide="arrow-right" class="w-4 h-4 text-amber-500"></i>即將到來
+          </h3>
+          
+          <div v-if="nextEvent" class="flex flex-col gap-2">
+            <div class="text-3xl lg:text-4xl font-bold text-white tracking-tight break-keep font-sans pb-2">
+              {{ nextEvent.name }}
+            </div>
+            <div class="flex items-end justify-between mt-1 pt-3 border-t border-neutral-700/50">
+              <div class="tabular-nums font-mono text-neutral-400">
+                <span class="text-xs uppercase mr-2 tracking-wider">Time</span>
+                <span class="text-amber-500 font-bold px-2 py-1 bg-amber-500/10 rounded-lg">{{ nextEvent.timeStr }}</span>
+              </div>
+              <div :class="['text-4xl tabular-nums font-mono font-black', (nextEvent.timeSec - elapsed) <= 5.0 ? 'text-red-500 animate-pulse drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'text-neutral-300']">
+                -{{ (nextEvent.timeSec - Math.floor(elapsed*10)/10).toFixed(1) }}<span class="text-2xl text-neutral-500">s</span>
+              </div>
+            </div>
+
+            <!-- Mechanic State Toggles -->
+            <div v-if="nextEvent.name.includes('金臂鈎') || nextEvent.name.includes('強震衝') || nextEvent.name.includes('大亂擊')" class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mt-4">
+              
+              <!-- Lariat -->
+              <div v-if="nextEvent.name.includes('金臂鈎')" class="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-400 font-bold text-sm tracking-widest leading-none">金臂鈎</span>
+                  <button v-if="lariatState || lariatSplit" @click="lariatState = null; lariatSplit = null" class="text-xs font-medium text-neutral-500 hover:text-neutral-300 transition-colors bg-neutral-800/80 px-2 py-1 rounded-md leading-none">清除</button>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <div class="flex gap-2">
+                    <button @click="lariatState = 'fire'" :class="['flex-1 py-3 rounded-xl border flex flex-col items-center justify-center transition-all', lariatState === 'fire' ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800 hover:border-neutral-600']">
+                      <span :class="['text-xs flex items-center gap-1 mb-1', lariatState === 'fire' ? 'text-red-300' : 'text-neutral-400']">
+                        <i v-if="lariatState === 'fire'" data-lucide="flame" class="w-3 h-3"></i> 有火
+                      </span>
+                      <span :class="['font-black text-xl tracking-widest', lariatState === 'fire' ? 'text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse' : 'text-neutral-500']">圈內</span>
+                    </button>
+                    <button @click="lariatState = 'no-fire'" :class="['flex-1 py-3 rounded-xl border flex flex-col items-center justify-center transition-all', lariatState === 'no-fire' ? 'bg-blue-500/20 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800 hover:border-neutral-600']">
+                      <span :class="['text-xs flex items-center gap-1 mb-1', lariatState === 'no-fire' ? 'text-blue-300' : 'text-neutral-400']">
+                        <i v-if="lariatState === 'no-fire'" data-lucide="circle-off" class="w-3 h-3"></i> 無火
+                      </span>
+                      <span :class="['font-black text-xl tracking-widest', lariatState === 'no-fire' ? 'text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-pulse' : 'text-neutral-500']">圈外</span>
+                    </button>
+                  </div>
+                  <div class="flex gap-2">
+                    <button @click="lariatSplit = '4'" :class="['flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all', lariatSplit === '4' ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600']">
+                      <i data-lucide="users" class="w-4 h-4"></i> <span class="font-bold text-sm">四分</span>
+                    </button>
+                    <button @click="lariatSplit = '8'" :class="['flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all', lariatSplit === '8' ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600']">
+                      <i data-lucide="users" class="w-4 h-4"></i> <span class="font-bold text-sm">八分</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quake -->
+              <div v-if="nextEvent.name.includes('強震衝')" class="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-400 font-bold text-sm tracking-widest leading-none">強震衝</span>
+                  <button v-if="quakeState || quakeSplit" @click="quakeState = null; quakeSplit = null" class="text-xs font-medium text-neutral-500 hover:text-neutral-300 transition-colors bg-neutral-800/80 px-2 py-1 rounded-md leading-none">清除</button>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <div class="flex gap-2">
+                    <button @click="quakeState = 'fire'" :class="['flex-1 py-3 rounded-xl border flex flex-col items-center justify-center transition-all', quakeState === 'fire' ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800 hover:border-neutral-600']">
+                      <span :class="['text-xs flex items-center gap-1 mb-1', quakeState === 'fire' ? 'text-red-300' : 'text-neutral-400']">
+                        <i v-if="quakeState === 'fire'" data-lucide="flame" class="w-3 h-3"></i> 有火
+                      </span>
+                      <span :class="['font-black text-xl tracking-wider', quakeState === 'fire' ? 'text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse' : 'text-neutral-500']">防擊退</span>
+                    </button>
+                    <button @click="quakeState = 'no-fire'" :class="['flex-1 py-3 rounded-xl border flex flex-col items-center justify-center transition-all', quakeState === 'no-fire' ? 'bg-blue-500/20 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800 hover:border-neutral-600']">
+                      <span :class="['text-xs flex items-center gap-1 mb-1', quakeState === 'no-fire' ? 'text-blue-300' : 'text-neutral-400']">
+                        <i v-if="quakeState === 'no-fire'" data-lucide="circle-off" class="w-3 h-3"></i> 無火
+                      </span>
+                      <span :class="['font-black text-xl tracking-wider', quakeState === 'no-fire' ? 'text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-pulse' : 'text-neutral-500']">距離衰減</span>
+                    </button>
+                  </div>
+                  <div class="flex gap-2">
+                    <button @click="quakeSplit = '4'" :class="['flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all', quakeSplit === '4' ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600']">
+                      <i data-lucide="users" class="w-4 h-4"></i> <span class="font-bold text-sm">四分</span>
+                    </button>
+                    <button @click="quakeSplit = '8'" :class="['flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all', quakeSplit === '8' ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600']">
+                      <i data-lucide="users" class="w-4 h-4"></i> <span class="font-bold text-sm">八分</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chain -->
+              <div v-if="nextEvent.name.includes('大亂擊')" class="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-neutral-400 font-bold text-sm tracking-widest leading-none">野蠻大亂擊</span>
+                  <button v-if="chainSplit" @click="chainSplit = null" class="text-xs font-medium text-neutral-500 hover:text-neutral-300 transition-colors bg-neutral-800/80 px-2 py-1 rounded-md leading-none">清除</button>
+                </div>
+                <div class="flex gap-2">
+                  <button @click="chainSplit = '4'" :class="['flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all', chainSplit === '4' ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600']">
+                    <i data-lucide="users" class="w-4 h-4"></i> <span class="font-bold text-sm">四分</span>
+                  </button>
+                  <button @click="chainSplit = '8'" :class="['flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all', chainSplit === '8' ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)]' : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600']">
+                    <i data-lucide="users" class="w-4 h-4"></i> <span class="font-bold text-sm">八分</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          <div v-else class="text-neutral-500 italic py-6 text-center font-sans tracking-wide">
+            副本機制已全部結束
+          </div>
+        </div>
+
+        <!-- Timeline List -->
+        <div 
+          ref="containerRef"
+          class="w-full h-[280px] overflow-y-auto custom-scrollbar relative scroll-smooth bg-neutral-900/40 border border-neutral-800 rounded-3xl p-3 shrink-0"
+        >
+           <div class="flex flex-col gap-2 pb-16">
+             <div 
+               v-for="ev in timeline" 
+               :key="ev.id"
+               :id="'event-' + ev.id"
+               @click="handleJumpToTime(ev.timeSec)"
+               :class="[
+                 'flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 font-sans cursor-pointer group hover:scale-[1.02] active:scale-[0.98]',
+                 nextEvent?.id === ev.id ? 'bg-amber-500/15 border border-amber-500/30 shadow-md shadow-amber-900/20 backdrop-blur-sm' : 'hover:bg-neutral-800/80 border border-transparent',
+                 elapsed > ev.timeSec + 2 ? 'opacity-30 mix-blend-luminosity grayscale hover:opacity-80' : 'opacity-100'
+               ]"
+             >
+               <div :class="['w-12 md:w-14 text-right tabular-nums font-mono font-medium text-sm', nextEvent?.id === ev.id ? 'text-amber-400' : 'text-neutral-500 group-hover:text-neutral-400 transition-colors']">
+                 {{ ev.timeStr }}
+               </div>
+               
+               <div class="relative flex items-center justify-center shrink-0 w-3 h-3">
+                 <div :class="['absolute w-2 h-2 rounded-full transition-all duration-500 outline outline-3 outline-neutral-900', elapsed > ev.timeSec + 2 ? 'bg-neutral-600 outline-transparent' : nextEvent?.id === ev.id ? 'bg-amber-500 scale-150 animate-pulse shadow-[0_0_10px_rgba(245,158,11,0.6)]' : 'bg-neutral-500']"></div>
+               </div>
+
+               <div :class="['flex-1 font-bold text-sm md:text-base truncate transition-colors px-1', nextEvent?.id === ev.id ? 'text-amber-50' : elapsed > ev.timeSec + 2 ? 'text-neutral-600 group-hover:text-neutral-300' : 'text-neutral-300']">
+                 {{ ev.name }}
+               </div>
+             </div>
+           </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const { createApp, ref, computed, watch, onMounted, onUnmounted, nextTick } = Vue;
+
+    const M3S_TIMELINE = [
+      { id: 1, timeSec: 11.2, timeStr: "00:11.2", name: "野蠻碎擊" },
+      { id: 2, timeSec: 20.5, timeStr: "00:20.5", name: "拳面猛擊*4" },
+      { id: 3, timeSec: 37.6, timeStr: "00:37.6", name: "金臂鈎" },
+      { id: 4, timeSec: 51.8, timeStr: "00:51.8", name: "強震衝+野蠻碎擊" },
+      { id: 5, timeSec: 87.5, timeStr: "01:27.5", name: "踩塔爆炸" },
+      { id: 6, timeSec: 143.6, timeStr: "02:23.6", name: "金臂鈎" },
+      { id: 7, timeSec: 157.8, timeStr: "02:37.8", name: "強震衝+野蠻碎擊" },
+      { id: 8, timeSec: 177.4, timeStr: "02:57.4", name: "拳面猛擊*6" },
+      { id: 9, timeSec: 226.7, timeStr: "03:46.7", name: "金臂鈎+野蠻碎擊" },
+      { id: 10, timeSec: 265.9, timeStr: "04:25.9", name: "長短炸彈爆炸" },
+      { id: 11, timeSec: 282.1, timeStr: "04:42.1", name: "強震衝" },
+      { id: 12, timeSec: 305.0, timeStr: "05:05.0", name: "踩引信-1" },
+      { id: 13, timeSec: 325.0, timeStr: "05:25.0", name: "踩引信-2" },
+      { id: 14, timeSec: 354.4, timeStr: "05:54.4", name: "拳面猛擊*6" },
+      { id: 15, timeSec: 391.9, timeStr: "06:31.9", name: "超豪華野蠻大亂擊-1" },
+      { id: 16, timeSec: 395.4, timeStr: "06:35.4", name: "超豪華野蠻大亂擊-2+野蠻爆震" },
+      { id: 17, timeSec: 474.8, timeStr: "07:54.8", name: "強震衝+野蠻碎擊" },
+      { id: 18, timeSec: 497.8, timeStr: "08:17.8", name: "拳面猛擊*8" },
+      { id: 19, timeSec: 537.7, timeStr: "08:57.7", name: "炸彈爆炸" },
+      { id: 20, timeSec: 548.2, timeStr: "09:08.2", name: "金臂鈎+野蠻碎擊" },
+      { id: 21, timeSec: 615.2, timeStr: "10:15.2", name: "拳面猛擊*8" },
+      { id: 22, timeSec: 658.2, timeStr: "10:58.2", name: "究極超豪華野蠻大亂擊" }
+    ];
+
+    createApp({
+      setup() {
+        const timeline = ref(M3S_TIMELINE);
+        const isPlaying = ref(false);
+        const elapsed = ref(0);
+        const soundEnabled = ref(true);
+        
+        const lariatState = ref(null);
+        const lariatSplit = ref(null);
+        const quakeState = ref(null);
+        const quakeSplit = ref(null);
+        const chainSplit = ref(null);
+
+        const containerRef = ref(null);
+        
+        let startTime = null;
+        let pausedTime = 0;
+        let reqId = null;
+        let audioCtx = null;
+        
+        let isUserScrolling = false;
+        let scrollTimeout = null;
+
+        const nextEvent = computed(() => {
+          return timeline.value.filter(ev => ev.timeSec >= elapsed.value)[0] || null;
+        });
+
+        // Icon updates whenever component renders things
+        watch(() => [isPlaying.value, soundEnabled.value, nextEvent.value, lariatState.value, lariatSplit.value, quakeState.value, quakeSplit.value, chainSplit.value], () => {
+          nextTick(() => {
+            lucide.createIcons();
+          });
+        }, { deep: true });
+
+        const playBeep = () => {
+          if (!soundEnabled.value) return;
+          try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!audioCtx && AudioContext) {
+              audioCtx = new AudioContext();
+            }
+            if (!audioCtx) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + 0.15);
+          } catch (e) {
+            console.error("Audio playback failed", e);
+          }
+        };
+
+        const updateTimer = () => {
+          if (startTime !== null) {
+            const now = performance.now();
+            elapsed.value = pausedTime + (now - startTime) / 1000;
+            reqId = requestAnimationFrame(updateTimer);
+          }
+        };
+
+        watch(isPlaying, (playing) => {
+          if (playing) {
+            startTime = performance.now();
+            reqId = requestAnimationFrame(updateTimer);
+          } else {
+            if (reqId) cancelAnimationFrame(reqId);
+            if (startTime !== null) {
+              pausedTime += (performance.now() - startTime) / 1000;
+              startTime = null;
+            }
+          }
+        });
+
+        const handleScroll = () => {
+          isUserScrolling = true;
+          if (scrollTimeout) clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => {
+            isUserScrolling = false;
+          }, 5000);
+        };
+
+        onMounted(() => {
+          lucide.createIcons();
+          if (containerRef.value) {
+            containerRef.value.addEventListener('wheel', handleScroll, { passive: true });
+            containerRef.value.addEventListener('touchmove', handleScroll, { passive: true });
+          }
+        });
+
+        onUnmounted(() => {
+          if (reqId) cancelAnimationFrame(reqId);
+          if (containerRef.value) {
+            containerRef.value.removeEventListener('wheel', handleScroll);
+            containerRef.value.removeEventListener('touchmove', handleScroll);
+          }
+        });
+
+        watch(() => nextEvent.value?.id, (newId) => {
+          if (newId && isPlaying.value && !isUserScrolling) {
+            nextTick(() => {
+              const el = document.getElementById(`event-${newId}`);
+              if (el && containerRef.value) {
+                const rect = el.getBoundingClientRect();
+                const containerRect = containerRef.value.getBoundingClientRect();
+                if (rect.top < containerRect.top || rect.bottom > containerRect.bottom) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+              }
+            });
+          }
+        });
+
+        let alerted5s = false;
+        let alerted0s = false;
+        let lastEventId = null;
+
+        watch([elapsed, isPlaying, nextEvent], ([e, playing, next]) => {
+          if (lastEventId !== next?.id) {
+            lastEventId = next?.id || null;
+            alerted5s = false;
+            alerted0s = false;
+            lariatState.value = null;
+            lariatSplit.value = null;
+            quakeState.value = null;
+            quakeSplit.value = null;
+            chainSplit.value = null;
+          }
+
+          if (next && playing) {
+            const timeToNext = next.timeSec - e;
+            if (!alerted5s && timeToNext <= 5.0 && timeToNext > 4.5) {
+              playBeep();
+              alerted5s = true;
+            }
+            if (!alerted0s && timeToNext <= 0.0) {
+              playBeep();
+              alerted0s = true;
+            }
+          }
+        });
+
+        const formatTime = (secs) => {
+          const m = Math.floor(secs / 60);
+          const s = Math.floor(secs % 60);
+          const ms = Math.floor((secs % 1) * 10);
+          return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${ms}`;
+        };
+
+        const handlePlayPause = () => {
+          if (!isPlaying.value) {
+            isPlaying.value = true;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!audioCtx && AudioContext) {
+              audioCtx = new AudioContext();
+            }
+            if (audioCtx?.state === 'suspended') {
+              audioCtx.resume();
+            }
+          } else {
+            isPlaying.value = false;
+          }
+        };
+
+        const handleReset = () => {
+          isPlaying.value = false;
+          pausedTime = 0;
+          elapsed.value = 0;
+          startTime = null;
+          alerted5s = false;
+          alerted0s = false;
+          lariatState.value = null;
+          lariatSplit.value = null;
+          quakeState.value = null;
+          quakeSplit.value = null;
+          chainSplit.value = null;
+          if (containerRef.value) {
+            containerRef.value.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        };
+
+        const handleAdjustTime = (delta) => {
+          let newElapsed = elapsed.value + delta;
+          if (newElapsed < 0) newElapsed = 0;
+          
+          elapsed.value = newElapsed;
+          
+          if (isPlaying.value) {
+            if (startTime !== null) {
+              startTime -= delta * 1000;
+            }
+          } else {
+            pausedTime = newElapsed;
+          }
+        };
+
+        const handleJumpToTime = (targetTimeSec) => {
+          let newElapsed = Math.max(0, targetTimeSec - 3);
+          elapsed.value = newElapsed;
+          pausedTime = newElapsed;
+          
+          if (isPlaying.value) {
+            startTime = performance.now();
+          }
+          alerted5s = false;
+          alerted0s = false;
+        };
+
+        return {
+          timeline, isPlaying, elapsed, soundEnabled,
+          lariatState, lariatSplit, quakeState, quakeSplit, chainSplit,
+          containerRef, nextEvent,
+          formatTime, handlePlayPause, handleReset, handleAdjustTime, handleJumpToTime
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
