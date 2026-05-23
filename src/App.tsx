@@ -142,7 +142,7 @@ function getMechanicInfo(currentTab: string, eventName: string): MechanicMapConf
 }
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<'M3S' | 'M4S' | 'fuse'>('M3S');
+  const [currentTab, setCurrentTab] = useState<'M3S' | 'M4S' | 'fuse'>('M4S');
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [elapsed, setElapsed] = useState<number>(-10);
 
@@ -744,53 +744,9 @@ export default function App() {
         {currentTab !== 'fuse' ? (
           <div className="w-full max-w-7xl mx-auto p-4 md:p-6 h-full flex flex-col lg:flex-row gap-6 items-start overflow-y-auto custom-scrollbar">
             
-            {/* Left Side: Clock, Controls, Waymark Preview */}
-            <section className="w-full lg:w-[45%] flex flex-col gap-5 shrink-0">
-              <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-5 md:p-6 flex flex-col items-center">
-                <h2 className="text-neutral-500 font-medium tracking-widest text-xs mb-2 uppercase font-sans">
-                  Elapsed Time
-                </h2>
-                <div className="text-6xl lg:text-7xl font-bold font-mono tracking-tighter text-white tabular-nums drop-shadow-sm mb-5">
-                  {formatTime(elapsed)}
-                </div>
-
-                <div className="flex gap-2 w-full justify-center mb-5">
-                  <button onClick={() => handleAdjustTime(-1)} className="flex items-center gap-1 px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs transition-all font-medium active:scale-95">
-                    <SkipBackIcon className="w-4 h-4" /> 1s
-                  </button>
-                  <button onClick={() => handleAdjustTime(-0.1)} className="px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs transition-all font-medium active:scale-95">
-                    -0.1s
-                  </button>
-                  <button onClick={() => handleAdjustTime(0.1)} className="px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs transition-all font-medium active:scale-95">
-                    +0.1s
-                  </button>
-                  <button onClick={() => handleAdjustTime(1)} className="flex items-center gap-1 px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs transition-all font-medium active:scale-95">
-                    1s <SkipForwardIcon className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="flex gap-3 w-full">
-                  <button 
-                    onClick={handlePlayPause}
-                    className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-lg transition-all active:scale-[0.98] ${
-                      isPlaying 
-                        ? 'bg-neutral-800 text-amber-500 hover:bg-neutral-700 font-sans' 
-                        : 'bg-amber-600 text-white hover:bg-amber-500 shadow-lg shadow-amber-900/20 font-sans'
-                    }`}
-                  >
-                    {isPlaying ? <PauseIcon className="w-6 h-6 fill-current" /> : <PlayIcon className="w-6 h-6 fill-current" />}
-                    {isPlaying ? '暫停計時' : '開始計時'}
-                  </button>
-                  <button 
-                    onClick={handleReset}
-                    className="px-5 py-4 rounded-2xl bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white transition-all flex items-center justify-center active:scale-[0.98]"
-                    title="重設時間"
-                  >
-                    <RotateCcwIcon className="w-6 h-6" />
-                  </button>
-                </div>
-              </div>
-
+            {/* Left Side: Live Tactical Maps (即時戰術圖), occupant width is 65% for double size! */}
+            <section className="w-full lg:w-[65%] flex flex-col gap-5 shrink-0 animate-fadeIn">
+              
               {/* Live Tactical Map that auto-switches per phase */}
               {(currentTab === 'M3S' || currentTab === 'M4S') && (
                 <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-5 flex flex-col items-center transition-all duration-500 shadow-xl w-full">
@@ -1013,19 +969,67 @@ export default function App() {
 
             {/* Right Side: Next Mechanic, Controls, Timeline Selector */}
             <section className="flex-1 w-full flex flex-col gap-5 overflow-hidden">
-              <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-5 flex flex-col gap-4 min-h-[220px]">
-                <h3 className="text-neutral-500 font-bold text-xs uppercase tracking-widest">
+              
+              {/* Compact Elapsed Time Controls */}
+              <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-4 flex flex-col items-center shadow-lg w-full shrink-0">
+                <h2 className="text-neutral-500 font-bold tracking-widest text-[9px] uppercase font-sans mb-1">
+                  Elapsed Time
+                </h2>
+                <div className="text-4xl lg:text-4xl font-extrabold font-mono tracking-tight text-white tabular-nums mb-3">
+                  {formatTime(elapsed)}
+                </div>
+
+                <div className="flex gap-1.5 w-full justify-center mb-3">
+                  <button onClick={() => handleAdjustTime(-1)} className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition-all font-medium active:scale-95" title="倒退 1 秒">
+                    <SkipBackIcon className="w-3.5 h-3.5" /> 1s
+                  </button>
+                  <button onClick={() => handleAdjustTime(-0.1)} className="px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition-all font-medium active:scale-95">
+                    -0.1s
+                  </button>
+                  <button onClick={() => handleAdjustTime(0.1)} className="px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition-all font-medium active:scale-95">
+                    +0.1s
+                  </button>
+                  <button onClick={() => handleAdjustTime(1)} className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition-all font-medium active:scale-95" title="快進 1 秒">
+                    1s <SkipForwardIcon className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div className="flex gap-2 w-full">
+                  <button 
+                    onClick={handlePlayPause}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-bold transition-all text-xs active:scale-[0.98] ${
+                      isPlaying 
+                        ? 'bg-neutral-800 text-amber-500 hover:bg-neutral-700 font-sans' 
+                        : 'bg-amber-600 text-white hover:bg-amber-500 shadow-md shadow-amber-900/15 font-sans'
+                    }`}
+                  >
+                    {isPlaying ? <PauseIcon className="w-4 h-4 fill-current" /> : <PlayIcon className="w-4 h-4 fill-current" />}
+                    {isPlaying ? '暫停計時' : '開始計時'}
+                  </button>
+                  <button 
+                    onClick={handleReset}
+                    className="px-3.5 py-2.5 rounded-xl bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white transition-all flex items-center justify-center active:scale-[0.98]"
+                    title="重設時間"
+                  >
+                    <RotateCcwIcon className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Smaller/Compact Next Mechanic Card */}
+              <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-4 flex flex-col gap-3.5 shadow-lg w-full shrink-0">
+                <h3 className="text-neutral-500 font-bold text-[10px] uppercase tracking-widest">
                   Next Mechanic
                 </h3>
 
                 {nextEvent ? (
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-amber-500 font-mono text-xl font-bold">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-amber-500 font-mono text-lg font-bold">
                           {remainingTimeStr}s
                         </span>
-                        <div className="flex-1 bg-neutral-800 h-2 rounded-full overflow-hidden">
+                        <div className="flex-1 bg-neutral-800 h-1.5 rounded-full overflow-hidden">
                           <div 
                             className="bg-amber-500 h-full transition-all duration-100 ease-linear"
                             style={{ width: `${progressPercent}%` }}
@@ -1033,20 +1037,20 @@ export default function App() {
                         </div>
                       </div>
 
-                      <div className="text-2xl md:text-3xl font-black text-white leading-tight font-sans mb-4">
+                      <div className="text-lg md:text-xl font-black text-white leading-tight font-sans mb-3">
                         {nextEvent.name}
                       </div>
 
                       {/* Dynamic Mechanic Deciders */}
                       {/* Lariat Decider */}
                       {nextEvent.name.includes('金臂') && (
-                        <div className="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-4 flex flex-col gap-3">
+                        <div className="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-3 flex flex-col gap-2.5">
                           <div className="flex items-center justify-between">
-                            <span className="text-neutral-400 font-bold text-sm tracking-widest leading-none">金臂鈎 (看邊緣是安全有火、還是危險無火)</span>
+                            <span className="text-neutral-400 font-bold text-xs tracking-wide leading-none">金臂鈎 (看邊緣是安全有火，還是危險無火)</span>
                             {(lariatState || lariatSplit) && (
                               <button 
                                 onClick={() => { setLariatState(null); setLariatSplit(null); }}
-                                className="text-xs font-medium text-neutral-500 hover:text-neutral-300 transition-colors bg-neutral-800/80 px-2 py-1 rounded-md leading-none"
+                                className="text-[10px] font-medium text-neutral-500 hover:text-neutral-300 transition-colors bg-neutral-800/80 px-1.5 py-0.5 rounded leading-none"
                               >
                                 清除
                               </button>
@@ -1056,31 +1060,31 @@ export default function App() {
                             <div className="flex gap-2">
                               <button 
                                 onClick={() => setLariatState('fire')} 
-                                className={`flex-1 py-3 rounded-xl border flex flex-col items-center justify-center transition-all ${
+                                className={`flex-1 py-2 rounded-xl border flex flex-col items-center justify-center transition-all ${
                                   lariatState === 'fire' 
-                                    ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]' 
+                                    ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.2)]' 
                                     : 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800 hover:border-neutral-600'
                                 }`}
                               >
-                                <span className={`text-xs flex items-center gap-1 mb-1 ${lariatState === 'fire' ? 'text-red-300' : 'text-neutral-400'}`}>
-                                  {lariatState === 'fire' && <FlameIcon className="w-3 h-3" />} 有火
+                                <span className={`text-[10px] flex items-center gap-1 mb-0.5 ${lariatState === 'fire' ? 'text-red-300' : 'text-neutral-400'}`}>
+                                  {lariatState === 'fire' && <FlameIcon className="w-2.5 h-2.5" />} 有火
                                 </span>
-                                <span className={`font-black text-xl tracking-wider ${lariatState === 'fire' ? 'text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse' : 'text-neutral-500'}`}>
+                                <span className={`font-extrabold text-sm tracking-wide ${lariatState === 'fire' ? 'text-red-400 drop-shadow-[0_0_6px_rgba(239,68,68,0.8)] animate-pulse' : 'text-neutral-500'}`}>
                                   內圈安全
                                 </span>
                               </button>
                               <button 
                                 onClick={() => setLariatState('no-fire')} 
-                                className={`flex-1 py-3 rounded-xl border flex flex-col items-center justify-center transition-all ${
+                                className={`flex-1 py-2 rounded-xl border flex flex-col items-center justify-center transition-all ${
                                   lariatState === 'no-fire' 
-                                    ? 'bg-blue-500/20 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.2)]' 
+                                    ? 'bg-blue-500/20 border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.2)]' 
                                     : 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800 hover:border-neutral-600'
                                 }`}
                               >
-                                <span className={`text-xs flex items-center gap-1 mb-1 ${lariatState === 'no-fire' ? 'text-blue-300' : 'text-neutral-400'}`}>
-                                  {lariatState === 'no-fire' && <CircleOffIcon className="w-3 h-3" />} 無火
+                                <span className={`text-[10px] flex items-center gap-1 mb-0.5 ${lariatState === 'no-fire' ? 'text-blue-300' : 'text-neutral-400'}`}>
+                                  {lariatState === 'no-fire' && <CircleOffIcon className="w-2.5 h-2.5" />} 無火
                                 </span>
-                                <span className={`font-black text-xl tracking-wider ${lariatState === 'no-fire' ? 'text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-pulse' : 'text-neutral-500'}`}>
+                                <span className={`font-extrabold text-sm tracking-wide ${lariatState === 'no-fire' ? 'text-blue-400 drop-shadow-[0_0_6px_rgba(59,130,246,0.8)] animate-pulse' : 'text-neutral-500'}`}>
                                   外圈安全
                                 </span>
                               </button>
@@ -1088,23 +1092,23 @@ export default function App() {
                             <div className="flex gap-2">
                               <button 
                                 onClick={() => setLariatSplit('4')} 
-                                className={`flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all ${
+                                className={`flex-1 py-1.5 rounded-lg border flex items-center justify-center gap-1 transition-all ${
                                   lariatSplit === '4' 
-                                    ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' 
+                                    ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.15)]' 
                                     : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600'
                                 }`}
                               >
-                                <UsersIcon className="w-4 h-4" /> <span className="font-bold text-sm">四分</span>
+                                <UsersIcon className="w-3.5 h-3.5" /> <span className="font-bold text-xs">四分</span>
                               </button>
                               <button 
                                 onClick={() => setLariatSplit('8')} 
-                                className={`flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all ${
+                                className={`flex-1 py-1.5 rounded-lg border flex items-center justify-center gap-1 transition-all ${
                                   lariatSplit === '8' 
-                                    ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)]' 
+                                    ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_10px_rgba(168,85,247,0.15)]' 
                                     : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600'
                                 }`}
                               >
-                                <UsersIcon className="w-4 h-4" /> <span className="font-bold text-sm">八分</span>
+                                <UsersIcon className="w-3.5 h-3.5" /> <span className="font-bold text-xs">八分</span>
                               </button>
                             </div>
                           </div>
@@ -1113,13 +1117,13 @@ export default function App() {
 
                       {/* Quake Decider */}
                       {nextEvent.name.includes('強震衝') && (
-                        <div className="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-4 flex flex-col gap-3">
+                        <div className="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-3 flex flex-col gap-2.5">
                           <div className="flex items-center justify-between">
-                            <span className="text-neutral-400 font-bold text-sm tracking-widest leading-none">強震衝</span>
+                            <span className="text-neutral-400 font-bold text-xs tracking-wide leading-none">強震衝</span>
                             {(quakeState || quakeSplit) && (
                               <button 
                                 onClick={() => { setQuakeState(null); setQuakeSplit(null); }}
-                                className="text-xs font-medium text-neutral-500 hover:text-neutral-300 transition-colors bg-neutral-800/80 px-2 py-1 rounded-md leading-none"
+                                className="text-[10px] font-medium text-neutral-500 hover:text-neutral-300 transition-colors bg-neutral-800/80 px-1.5 py-0.5 rounded leading-none"
                               >
                                 清除
                               </button>
@@ -1129,31 +1133,31 @@ export default function App() {
                             <div className="flex gap-2">
                               <button 
                                 onClick={() => setQuakeState('fire')} 
-                                className={`flex-1 py-3 rounded-xl border flex flex-col items-center justify-center transition-all ${
+                                className={`flex-1 py-2 rounded-xl border flex flex-col items-center justify-center transition-all ${
                                   quakeState === 'fire' 
-                                    ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]' 
+                                    ? 'bg-red-500/20 border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.2)]' 
                                     : 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800 hover:border-neutral-600'
                                 }`}
                               >
-                                <span className={`text-xs flex items-center gap-1 mb-1 ${quakeState === 'fire' ? 'text-red-300' : 'text-neutral-400'}`}>
-                                  {quakeState === 'fire' && <FlameIcon className="w-3 h-3" />} 有火
+                                <span className={`text-[10px] flex items-center gap-1 mb-0.5 ${quakeState === 'fire' ? 'text-red-300' : 'text-neutral-400'}`}>
+                                  {quakeState === 'fire' && <FlameIcon className="w-2.5 h-2.5" />} 有火
                                 </span>
-                                <span className={`font-black text-xl tracking-wider ${quakeState === 'fire' ? 'text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse' : 'text-neutral-500'}`}>
+                                <span className={`font-extrabold text-sm tracking-wide ${quakeState === 'fire' ? 'text-red-400 drop-shadow-[0_0_6px_rgba(239,68,68,0.8)] animate-pulse' : 'text-neutral-500'}`}>
                                   防擊退
                                 </span>
                               </button>
                               <button 
                                 onClick={() => setQuakeState('no-fire')} 
-                                className={`flex-1 py-3 rounded-xl border flex flex-col items-center justify-center transition-all ${
+                                className={`flex-1 py-2 rounded-xl border flex flex-col items-center justify-center transition-all ${
                                   quakeState === 'no-fire' 
-                                    ? 'bg-blue-500/20 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.2)]' 
+                                    ? 'bg-blue-500/20 border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.2)]' 
                                     : 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800 hover:border-neutral-600'
                                 }`}
                               >
-                                <span className={`text-xs flex items-center gap-1 mb-1 ${quakeState === 'no-fire' ? 'text-blue-300' : 'text-neutral-400'}`}>
-                                  {quakeState === 'no-fire' && <CircleOffIcon className="w-3 h-3" />} 無火
+                                <span className={`text-[10px] flex items-center gap-1 mb-0.5 ${quakeState === 'no-fire' ? 'text-blue-300' : 'text-neutral-400'}`}>
+                                  {quakeState === 'no-fire' && <CircleOffIcon className="w-2.5 h-2.5" />} 無火
                                 </span>
-                                <span className={`font-black text-xl tracking-wider ${quakeState === 'no-fire' ? 'text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-pulse' : 'text-neutral-500'}`}>
+                                <span className={`font-extrabold text-sm tracking-wide ${quakeState === 'no-fire' ? 'text-blue-400 drop-shadow-[0_0_6px_rgba(59,130,246,0.8)] animate-pulse' : 'text-neutral-500'}`}>
                                   距離衰減
                                 </span>
                               </button>
@@ -1161,23 +1165,23 @@ export default function App() {
                             <div className="flex gap-2">
                               <button 
                                 onClick={() => setQuakeSplit('4')} 
-                                className={`flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all ${
+                                className={`flex-1 py-1.5 rounded-lg border flex items-center justify-center gap-1 transition-all ${
                                   quakeSplit === '4' 
-                                    ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' 
+                                    ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.15)]' 
                                     : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600'
                                 }`}
                               >
-                                <UsersIcon className="w-4 h-4" /> <span className="font-bold text-sm">四分</span>
+                                <UsersIcon className="w-3.5 h-3.5" /> <span className="font-bold text-xs">四分</span>
                               </button>
                               <button 
                                 onClick={() => setQuakeSplit('8')} 
-                                className={`flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all ${
+                                className={`flex-1 py-1.5 rounded-lg border flex items-center justify-center gap-1 transition-all ${
                                   quakeSplit === '8' 
-                                    ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)]' 
+                                    ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_10px_rgba(168,85,247,0.15)]' 
                                     : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600'
                                 }`}
                               >
-                                <UsersIcon className="w-4 h-4" /> <span className="font-bold text-sm">八分</span>
+                                <UsersIcon className="w-3.5 h-3.5" /> <span className="font-bold text-xs">八分</span>
                               </button>
                             </div>
                           </div>
@@ -1186,13 +1190,13 @@ export default function App() {
 
                       {/* Chain Decider */}
                       {nextEvent.name.includes('大亂擊') && (
-                        <div className="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-4 flex flex-col gap-3">
+                        <div className="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-3 flex flex-col gap-2.5">
                           <div className="flex items-center justify-between">
-                            <span className="text-neutral-400 font-bold text-sm tracking-widest leading-none">野蠻大亂擊</span>
+                            <span className="text-neutral-400 font-bold text-xs tracking-wide leading-none">野蠻大亂擊</span>
                             {chainSplit && (
                               <button 
                                 onClick={() => setChainSplit(null)} 
-                                className="text-xs font-medium text-neutral-500 hover:text-neutral-300 transition-colors bg-neutral-800/80 px-2 py-1 rounded-md leading-none"
+                                className="text-[10px] font-medium text-neutral-500 hover:text-neutral-300 transition-colors bg-neutral-800/80 px-1.5 py-0.5 rounded leading-none"
                               >
                                 清除
                               </button>
@@ -1201,23 +1205,23 @@ export default function App() {
                           <div className="flex gap-2">
                             <button 
                               onClick={() => setChainSplit('4')} 
-                              className={`flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all ${
+                              className={`flex-1 py-1.5 rounded-lg border flex items-center justify-center gap-1 transition-all ${
                                 chainSplit === '4' 
-                                  ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' 
+                                  ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.15)]' 
                                   : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600'
                               }`}
                             >
-                              <UsersIcon className="w-4 h-4" /> <span className="font-bold text-sm">四分</span>
+                              <UsersIcon className="w-3.5 h-3.5" /> <span className="font-bold text-xs">四分</span>
                             </button>
                             <button 
                               onClick={() => setChainSplit('8')} 
-                              className={`flex-1 py-2 rounded-xl border flex items-center justify-center gap-1 transition-all ${
+                              className={`flex-1 py-1.5 rounded-lg border flex items-center justify-center gap-1 transition-all ${
                                 chainSplit === '8' 
-                                  ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.2)]' 
+                                  ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_10px_rgba(168,85,247,0.15)]' 
                                   : 'bg-neutral-800/50 border-neutral-700/50 text-neutral-300 hover:bg-neutral-800 hover:border-neutral-600'
                               }`}
                             >
-                              <UsersIcon className="w-4 h-4" /> <span className="font-bold text-sm">八分</span>
+                              <UsersIcon className="w-3.5 h-3.5" /> <span className="font-bold text-xs">八分</span>
                             </button>
                           </div>
                         </div>
@@ -1452,9 +1456,9 @@ export default function App() {
               {/* Timeline List Scrollable Container */}
               <div 
                 ref={containerRef}
-                className="w-full h-[280px] overflow-y-auto custom-scrollbar relative scroll-smooth bg-neutral-900/40 border border-neutral-800 rounded-3xl p-3 shrink-0"
+                className="w-full h-[185px] overflow-y-auto custom-scrollbar relative scroll-smooth bg-neutral-900/40 border border-neutral-800 rounded-3xl p-2.5 shrink-0"
               >
-                <div className="flex flex-col gap-2 pb-16">
+                <div className="flex flex-col gap-1 pb-10">
                   {timeline.map((ev) => {
                     const isBeingEdited = selectedEventForEdit?.id === ev.id;
                     const isActive = nextEvent?.id === ev.id;
@@ -1473,11 +1477,11 @@ export default function App() {
                             handleJumpToTime(ev.timeSec, ev.name, ev.id);
                           }
                         }}
-                        className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 font-sans cursor-pointer group hover:scale-[1.01] active:scale-[0.99] border relative ${
+                        className={`flex items-center gap-2 py-1.5 px-3 rounded-lg transition-all duration-300 font-sans cursor-pointer group hover:scale-[1.01] active:scale-[0.99] border relative ${
                           isBeingEdited
-                            ? 'bg-amber-500/20 border-amber-500 shadow-lg shadow-amber-950/25 ring-1 ring-amber-500/30'
+                            ? 'bg-amber-500/20 border-amber-500 shadow-md shadow-amber-950/25 ring-1 ring-amber-500/30'
                             : isActive 
-                              ? 'bg-amber-500/10 border-amber-500/30 shadow-md shadow-amber-900/10 backdrop-blur-sm' 
+                              ? 'bg-amber-500/10 border-amber-500/30 shadow-sm shadow-amber-900/10 backdrop-blur-sm' 
                               : 'bg-transparent border-transparent hover:bg-neutral-800/60'
                         } ${
                           elapsed > ev.timeSec + 2 && !isEditingTimeline 
@@ -1486,27 +1490,27 @@ export default function App() {
                         }`}
                       >
                         {/* Time label */}
-                        <div className={`w-12 md:w-14 text-right tabular-nums font-mono font-medium text-sm flex items-center justify-end gap-1 ${
+                        <div className={`w-11 md:w-12 text-right tabular-nums font-mono font-medium text-xs flex items-center justify-end gap-1 ${
                           isActive ? 'text-amber-400' : 'text-neutral-500 group-hover:text-neutral-400 transition-colors'
                         }`}>
                           {ev.timeStr}
                         </div>
                         
                         {/* Bullet point indicator */}
-                        <div className="relative flex items-center justify-center shrink-0 w-3 h-3">
-                          <div className={`absolute w-2 h-2 rounded-full transition-all duration-500 outline outline-3 outline-neutral-900 ${
+                        <div className="relative flex items-center justify-center shrink-0 w-2.5 h-2.5">
+                          <div className={`absolute w-1.5 h-1.5 rounded-full transition-all duration-500 outline outline-2 outline-neutral-900 ${
                             isBeingEdited
-                              ? 'bg-amber-500 ring-2 ring-amber-500 ring-offset-2 ring-offset-neutral-900 scale-125'
+                              ? 'bg-amber-500 ring-2 ring-amber-500 ring-offset-2 ring-offset-neutral-900 scale-110'
                               : elapsed > ev.timeSec + 2 && !isEditingTimeline 
                                 ? 'bg-neutral-600 outline-none' 
                                 : isActive 
-                                  ? 'bg-amber-500 scale-150 animate-pulse shadow-[0_0_10px_rgba(245,158,11,0.6)]' 
+                                  ? 'bg-amber-500 scale-125 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.6)]' 
                                   : 'bg-neutral-500'
                           }`} />
                         </div>
 
                         {/* Name and stage mark */}
-                        <div className={`flex-1 font-bold text-sm md:text-base truncate transition-colors px-1 flex items-center gap-2 ${
+                        <div className={`flex-1 font-bold text-xs md:text-xs.5 truncate transition-colors px-0.5 flex items-center gap-1.5 ${
                           isActive 
                             ? 'text-amber-500' 
                             : elapsed > ev.timeSec + 2 && !isEditingTimeline 
@@ -1514,14 +1518,14 @@ export default function App() {
                               : 'text-neutral-300'
                         }`}>
                           {ev.phase && (
-                            <span className="px-2 py-0.5 rounded bg-neutral-800 text-neutral-400 text-xs scale-90 origin-left shrink-0 border border-neutral-800">{ev.phase}</span>
+                            <span className="px-1.5 py-0.2 rounded bg-neutral-800 text-neutral-400 text-[10px] scale-85 origin-left shrink-0 border border-neutral-800">{ev.phase}</span>
                           )}
                           <span className="truncate">{ev.name}</span>
                         </div>
 
                         {/* Edit flag helper label */}
                         {isEditingTimeline && (
-                          <div className={`text-[10px] font-bold px-2 py-0.5 rounded border shadow-sm shrink-0 transition-opacity whitespace-nowrap opacity-65 group-hover:opacity-100 uppercase ${
+                          <div className={`text-[9px] font-bold px-1.5 py-0.2 rounded border shadow-sm shrink-0 transition-opacity whitespace-nowrap opacity-65 group-hover:opacity-100 uppercase ${
                             isBeingEdited 
                               ? 'bg-amber-600 text-white border-amber-500' 
                               : 'bg-neutral-800 text-neutral-400 border-neutral-700/60'
@@ -1804,7 +1808,7 @@ function ArenaMapViewer({
       mainMapDisplay = (
         <div className="w-full h-full relative flex items-center justify-center bg-neutral-950 p-2.5 animate-fadeIn">
           {!imgMissing ? (
-            <div className="w-full aspect-square relative overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 shadow-inner group/item max-w-[450px]">
+            <div className="w-full aspect-square relative overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 shadow-inner group/item max-w-[560px]">
               <img 
                 src="./m4s2_map.png" 
                 alt="圓環鋼鐵+環圓月環 戰術圖" 
@@ -1819,7 +1823,7 @@ function ArenaMapViewer({
               </div>
             </div>
           ) : (
-            <div className="w-full aspect-square flex flex-col items-center justify-center bg-neutral-900/40 border border-neutral-800 rounded-xl max-w-[450px] w-full">
+            <div className="w-full aspect-square flex flex-col items-center justify-center bg-neutral-900/40 border border-neutral-800 rounded-xl max-w-[560px] w-full">
               <span className="text-xs text-neutral-500 font-mono">缺少 /m4s2_map.png (圓環+環圓)</span>
             </div>
           )}
@@ -2101,18 +2105,25 @@ function ArenaMapViewer({
 
   const borderBgClasses = 'border-neutral-800 bg-neutral-950 shadow-2xl hover:border-neutral-700';
 
-  let containerSizingClass = "w-full max-w-[280px] aspect-square";
+  let containerSizingClass = "w-full max-w-[560px] aspect-square";
   if (currentTab === 'M4S') {
     const isWitchHunt = info.key === 'witch_hunt' || activeEventName.includes("魔女狩獵");
-    if (isWitchHunt) {
-      containerSizingClass = "w-full max-w-[480px] h-auto pb-1";
+    const isFourEight1 = info.key === 'four_eight_1' || activeEventName.includes("四八雷星1");
+    const isFourEight2 = info.key === 'four_eight_2' || activeEventName.includes("四八雷星2");
+    const isRingIron = info.key === 'ring_iron' || activeEventName.includes("圓環") || activeEventName.includes("環圓");
+    if (isWitchHunt || isFourEight1 || isFourEight2) {
+      containerSizingClass = "w-full max-w-[800px] h-auto pb-1 animate-fadeIn";
+    } else if (isRingIron) {
+      containerSizingClass = "w-full max-w-[560px] aspect-square animate-fadeIn";
     } else {
-      containerSizingClass = "w-full max-w-[280px] aspect-square";
+      containerSizingClass = "w-full max-w-[560px] aspect-square animate-fadeIn";
     }
   } else if ((isTowers || isFuse) && useProjectMapImage) {
-    containerSizingClass = "w-full max-w-[480px] aspect-[2/1]";
+    containerSizingClass = "w-full max-w-[800px] aspect-[2/1] animate-fadeIn";
   } else if (isKnockback && useProjectMapImage) {
-    containerSizingClass = "w-full max-w-[480px] aspect-square";
+    containerSizingClass = "w-full max-w-[800px] aspect-square animate-fadeIn";
+  } else {
+    containerSizingClass = "w-full max-w-[560px] aspect-square animate-fadeIn";
   }
 
   return (
