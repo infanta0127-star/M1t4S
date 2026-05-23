@@ -113,6 +113,9 @@ const M3S_MECHANICS_CONFIG: MechanicMapConfig[] = [
 const M4S_MECHANICS_CONFIG: MechanicMapConfig[] = [
   { key: "prep", filename: "m4s_prep.png", displayName: "開場準備", pattern: ["戰鬥開始", "準備"] },
   { key: "witch_hunt", filename: "m4s_witch_hunt.png", displayName: "魔女狩獵", pattern: ["魔女狩獵", "宙斯之怒"] },
+  { key: "ring_iron", filename: "m4s2_map.png", displayName: "圓環鋼鐵+環圓月環", pattern: ["圓環", "環圓", "月環", "鋼鐵"] },
+  { key: "four_eight_1", filename: "m4s3_map.png", displayName: "四八雷星1", pattern: ["四八雷星1"] },
+  { key: "four_eight_2", filename: "m4s4_map.png", altFilename: "m4s5_map.png", displayName: "四八雷星2", pattern: ["四八雷星2"] },
   { key: "four_eight", filename: "m4s_four_eight.png", displayName: "四八雷星系列", pattern: ["四八雷星", "狡詭落雷"] },
   { key: "gun_shield", filename: "m4s_gun_shield.png", displayName: "保護線與擋槍支柱", pattern: ["擋槍", "移植"] },
   { key: "sunset", filename: "m4s_sunset.png", displayName: "日落九宮外圈", pattern: ["日落"] },
@@ -1708,6 +1711,10 @@ function ArenaMapViewer({
 
   if (currentTab === 'M4S') {
     const isWitchHunt = info.key === 'witch_hunt' || activeEventName.includes("魔女狩獵");
+    const isFourEight1 = info.key === 'four_eight_1' || activeEventName.includes("四八雷星1");
+    const isFourEight2 = info.key === 'four_eight_2' || activeEventName.includes("四八雷星2");
+    const isRingIron = info.key === 'ring_iron' || activeEventName.includes("圓環") || activeEventName.includes("環圓");
+
     if (isWitchHunt) {
       mainMapDisplay = (
         <div className="w-full flex flex-col gap-3.5 bg-neutral-900/10 p-2.5">
@@ -1731,6 +1738,91 @@ function ArenaMapViewer({
               </div>
             </div>
           ))}
+        </div>
+      );
+    } else if (isFourEight2) {
+      mainMapDisplay = (
+        <div className="w-full flex flex-col gap-3.5 bg-neutral-900/10 p-2.5 animate-fadeIn">
+          {[
+            { file: "m4s4_map.png", title: "四八雷星2 - 1/2階段半階" },
+            { file: "m4s5_map.png", title: "四八雷星2 - 3/4階段半階" }
+          ].map((item, idx) => {
+            const imgMissing = missingProjectImages[item.file];
+            return (
+              <div key={idx} className="relative w-full aspect-[2/1] rounded-xl overflow-hidden border border-neutral-800 bg-neutral-950 shadow-inner group/item">
+                {!imgMissing ? (
+                  <img 
+                    src={`./${item.file}`} 
+                    alt={item.title} 
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover/item:scale-[1.02]"
+                    onError={() => onMarkProjectImageMissing(item.file)}
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-900/40">
+                    <span className="text-xs text-neutral-500 font-mono">缺少 /{item.file} ({item.title})</span>
+                  </div>
+                )}
+                <div className="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-lg bg-neutral-950/85 border border-neutral-800/85 text-amber-400 text-[10px] font-black tracking-wider backdrop-blur-sm shadow-md flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                  <span>{item.title}</span>
+                  <span className="text-neutral-500 font-mono text-[9px] pl-1 font-normal">2:1</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
+    } else if (isFourEight1) {
+      const imgMissing = missingProjectImages["m4s3_map.png"];
+      mainMapDisplay = (
+        <div className="w-full h-full relative flex items-center justify-center bg-neutral-950 p-2.5 animate-fadeIn">
+          {!imgMissing ? (
+            <div className="w-full aspect-[2/1] relative overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 shadow-inner group/item">
+              <img 
+                src="./m4s3_map.png" 
+                alt="四八雷星1 戰術圖" 
+                onError={() => onMarkProjectImageMissing("m4s3_map.png")}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover/item:scale-[1.02]"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-lg bg-neutral-950/85 border border-neutral-800 text-amber-400 text-[10px] font-black tracking-wider backdrop-blur-sm shadow-md flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span>四八雷星1</span>
+                <span className="text-neutral-500 font-mono text-[9px] pl-1 font-normal">2:1</span>
+              </div>
+            </div>
+          ) : (
+            <div className="w-full aspect-[2/1] flex flex-col items-center justify-center bg-neutral-900/40 border border-neutral-800 rounded-xl w-full">
+              <span className="text-xs text-neutral-500 font-mono">缺少 /m4s3_map.png (四八雷星1)</span>
+            </div>
+          )}
+        </div>
+      );
+    } else if (isRingIron) {
+      const imgMissing = missingProjectImages["m4s2_map.png"];
+      mainMapDisplay = (
+        <div className="w-full h-full relative flex items-center justify-center bg-neutral-950 p-2.5 animate-fadeIn">
+          {!imgMissing ? (
+            <div className="w-full aspect-square relative overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 shadow-inner group/item max-w-[450px]">
+              <img 
+                src="./m4s2_map.png" 
+                alt="圓環鋼鐵+環圓月環 戰術圖" 
+                onError={() => onMarkProjectImageMissing("m4s2_map.png")}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover/item:scale-[1.02]"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-lg bg-neutral-950/85 border border-neutral-800 text-amber-400 text-[10px] font-black tracking-wider backdrop-blur-sm shadow-md flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
+                <span>圓環鋼鐵+環圓月環</span>
+                <span className="text-neutral-500 font-mono text-[9px] pl-1 font-normal">1:1</span>
+              </div>
+            </div>
+          ) : (
+            <div className="w-full aspect-square flex flex-col items-center justify-center bg-neutral-900/40 border border-neutral-800 rounded-xl max-w-[450px] w-full">
+              <span className="text-xs text-neutral-500 font-mono">缺少 /m4s2_map.png (圓環+環圓)</span>
+            </div>
+          )}
         </div>
       );
     } else {
