@@ -812,7 +812,7 @@ export default function App() {
 
               {/* Lariat Panel */}
               {currentTab === 'M3S' && nextEvent && nextEvent.name.includes("金臂") && (() => {
-                const mapSrc = !missingProjectImages["m3s_lariat_hook.png"] ? "/m3s_lariat_hook.png" : null;
+                const mapSrc = !missingProjectImages["m3s_lariat_hook.png"] ? "./m3s_lariat_hook.png" : null;
                 return (
                   <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-4 md:p-5 flex flex-col items-center transition-all duration-500 shadow-xl w-full">
                     <div className="flex items-center justify-between w-full mb-3 pb-2 border-b border-neutral-800">
@@ -1701,7 +1701,7 @@ function ArenaMapViewer({
   const projectImageOnThisPhaseFilename = isM3SFallbackActive ? "m3s_map.png" : originalFilename;
   const projectImageMissing = missingProjectImages[projectImageOnThisPhaseFilename];
   const hasProjectImage = !projectImageMissing;
-  const projectImageSrc = `/${projectImageOnThisPhaseFilename}`;
+  const projectImageSrc = `./${projectImageOnThisPhaseFilename}`;
 
   // Determine standard map render nodes with crystal-clear conditionals
   let mainMapDisplay = null;
@@ -1718,7 +1718,7 @@ function ArenaMapViewer({
           ].map((item, idx) => (
             <div key={idx} className="relative w-full aspect-[2/1] rounded-xl overflow-hidden border border-neutral-800 bg-neutral-950 shadow-inner group/item">
               <img 
-                src={`/${item.file}`} 
+                src={`./${item.file}`} 
                 alt={item.title} 
                 className="w-full h-full object-cover transition-transform duration-300 group-hover/item:scale-[1.02]"
                 onError={() => onMarkProjectImageMissing(item.file)}
@@ -1737,7 +1737,7 @@ function ArenaMapViewer({
       mainMapDisplay = (
         <div className="w-full h-full relative flex items-center justify-center bg-neutral-950">
           <img 
-            src="/m4s_map.png" 
+            src="./m4s_map.png" 
             alt="M4S Arena Outline" 
             onError={() => onMarkProjectImageMissing("m4s_map.png")}
             className="w-full h-full object-cover animate-fadeIn"
@@ -1761,8 +1761,8 @@ function ArenaMapViewer({
         <div className="w-full h-1/2 relative overflow-hidden bg-neutral-900/10">
           {!img1Missing ? (
             <img 
-              src={`/${info.filename}`} 
-              alt="Earthquake 1 (Attenuate)" 
+              src={`./${info.filename}`} 
+              alt="Earthquake 1 (Attenuate)"  
               onError={() => onMarkProjectImageMissing(info.filename)}
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
@@ -1779,8 +1779,8 @@ function ArenaMapViewer({
         <div className="w-full h-1/2 relative overflow-hidden bg-neutral-900/10">
           {!img2Missing && info.altFilename ? (
             <img 
-              src={`/${info.altFilename}`} 
-              alt="Earthquake 2 (Knockback)" 
+              src={`./${info.altFilename}`} 
+              alt="Earthquake 2 (Knockback)"  
               onError={() => onMarkProjectImageMissing(info.altFilename!)}
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
