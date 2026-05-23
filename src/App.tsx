@@ -29,7 +29,7 @@ const M3S_TIMELINE: TimelineEvent[] = [
   { id: 3, timeSec: 37.6, timeStr: "00:37.6", name: "金臂鈎，看內外圈", phase: "" },
   { id: 4, timeSec: 51.8, timeStr: "00:51.8", name: "強震衝+野蠻碎擊，看衰減或防擊退", phase: "" },
   { id: 5, timeSec: 87.5, timeStr: "01:27.5", name: "踩塔爆炸", phase: "" },
-  { id: 6, timeSec: 143.6, timeStr: "02:23.6", name: "準備爆發+金臂鈎，看內外圈", phase: "" },
+  { id: 6, timeSec: 143.6, timeStr: "02:23.6", name: "王喝藥+金臂鈎，看內外圈", phase: "" },
   { id: 7, timeSec: 157.8, timeStr: "02:37.8", name: "強震衝+野蠻碎擊，看衰減或防擊退", phase: "" },
   { id: 8, timeSec: 177.4, timeStr: "02:57.4", name: "拳面猛擊6", phase: "" },
   { id: 9, timeSec: 214.0, timeStr: "03:34.0", name: "組隊戰", phase: "" },
