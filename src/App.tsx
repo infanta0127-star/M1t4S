@@ -403,15 +403,15 @@ export default function App() {
 
       // Map speech rate 1-5 to SynthesisUtterance rates with a wider, clearly noticeable range
       const rateMap: Record<number, number> = {
-        1: 0.5,
-        2: 0.8,
-        3: 1.1,
-        4: 1.4,
-        5: 1.8
+        1: 0.75,
+        2: 0.9,
+        3: 1.05,
+        4: 1.2,
+        5: 1.45
       };
-      const chosenRate = rateMap[activeRate] || 1.4;
+      const chosenRate = rateMap[activeRate] || 1.2;
 
-      utterance.pitch = 1.35;
+      utterance.pitch = 1.0; // Restoring to 1.0 neutral pitch prevents Siri and iPad voices from sounding heavily metallic, chipmunk-like, or robotic
       utterance.rate = chosenRate;
       utterance.volume = volume;
 
