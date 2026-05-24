@@ -11,7 +11,8 @@ import {
   RotateCcw as RotateCcwIcon, 
   Flame as FlameIcon, 
   CircleOff as CircleOffIcon, 
-  Users as UsersIcon 
+  Users as UsersIcon,
+  Star as StarIcon
 } from 'lucide-react';
 
 interface TimelineEvent {
@@ -153,7 +154,20 @@ function getMechanicInfo(currentTab: string, eventName: string): MechanicMapConf
 }
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<'M3S' | 'M4S' | 'fuse'>('M4S');
+  const [currentTab, setCurrentTab] = useState<'M3S' | 'M4S' | 'fuse'>(() => {
+    const saved = localStorage.getItem('default_homepage');
+    if (saved === 'M3S' || saved === 'M4S' || saved === 'fuse') {
+      return saved;
+    }
+    return 'M4S';
+  });
+  const [defaultHomepage, setDefaultHomepage] = useState<'M3S' | 'M4S' | 'fuse'>(() => {
+    const saved = localStorage.getItem('default_homepage');
+    if (saved === 'M3S' || saved === 'M4S' || saved === 'fuse') {
+      return saved;
+    }
+    return 'M4S';
+  });
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [elapsed, setElapsed] = useState<number>(-10);
 
@@ -162,7 +176,15 @@ export default function App() {
   });
   const [volume, setVolume] = useState<number>(() => {
     const val = localStorage.getItem('alert_volume');
-    return val !== null ? parseFloat(val) : 0.7;
+    return val !== null ? parseFloat(val) : 0.5;
+  });
+  const [speechRate, setSpeechRate] = useState<number>(() => {
+    const val = localStorage.getItem('speech_rate');
+    return val !== null ? parseInt(val, 10) : 4;
+  });
+  const [speechGender, setSpeechGender] = useState<'female' | 'male'>(() => {
+    const val = localStorage.getItem('speech_gender');
+    return val === 'male' ? 'male' : 'female';
   });
 
   useEffect(() => {
@@ -172,6 +194,14 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('alert_volume', volume.toString());
   }, [volume]);
+
+  useEffect(() => {
+    localStorage.setItem('speech_rate', speechRate.toString());
+  }, [speechRate]);
+
+  useEffect(() => {
+    localStorage.setItem('speech_gender', speechGender);
+  }, [speechGender]);
 
   const [lariatState, setLariatState] = useState<'fire' | 'no-fire' | null>(null);
   const [lariatSplit, setLariatSplit] = useState<'4' | '8' | null>(null);
@@ -277,7 +307,9 @@ export default function App() {
   const alerted0sRef = useRef<boolean>(false);
   const lastEventIdRef = useRef<number | null>(null);
 
-  const playBeep = (freq = 880, duration = 0.15) => {
+  const lastVolumeDemoTimeRef = useRef<number>(0);
+
+  const playBeep = (freq = 880, duration = 0.15, overrideVolume?: number) => {
     if (!soundEnabled) return;
     try {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
@@ -296,7 +328,8 @@ export default function App() {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime); 
       
-      const maxGain = 0.15 * volume;
+      const activeVolume = overrideVolume !== undefined ? overrideVolume : volume;
+      const maxGain = 0.15 * activeVolume;
       gain.gain.setValueAtTime(maxGain, audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
       
@@ -307,7 +340,15 @@ export default function App() {
     }
   };
 
-  const speakText = (text: string) => {
+  const triggerVolumeDemo = (v: number) => {
+    const now = performance.now();
+    if (now - lastVolumeDemoTimeRef.current > 200) {
+      playBeep(880, 0.15, v);
+      lastVolumeDemoTimeRef.current = now;
+    }
+  };
+
+  const speakText = (text: string, overrideRate?: number, overrideGender?: 'female' | 'male') => {
     if (!soundEnabled) return;
     try {
       if (!window.speechSynthesis) return;
@@ -334,10 +375,18 @@ export default function App() {
                n.includes('hanhan');
       };
 
+      const activeGender = overrideGender !== undefined ? overrideGender : speechGender;
+      const activeRate = overrideRate !== undefined ? overrideRate : speechRate;
+
       const preferredVoices = voices.filter(v => {
         const lang = v.lang.toLowerCase();
         const matchesLang = lang.includes('zh') || lang.includes('cmn');
-        return matchesLang && isFemaleVoice(v.name);
+        if (!matchesLang) return false;
+        if (activeGender === 'female') {
+          return isFemaleVoice(v.name);
+        } else {
+          return !isFemaleVoice(v.name);
+        }
       });
 
       if (preferredVoices.length > 0) {
@@ -352,11 +401,26 @@ export default function App() {
         utterance.voice = voice;
       }
 
+      // Map speech rate 1-5 to SynthesisUtterance rates with a wider, clearly noticeable range
+      const rateMap: Record<number, number> = {
+        1: 0.5,
+        2: 0.8,
+        3: 1.1,
+        4: 1.4,
+        5: 1.8
+      };
+      const chosenRate = rateMap[activeRate] || 1.4;
+
       utterance.pitch = 1.35;
-      utterance.rate = 1.26;
+      utterance.rate = chosenRate;
       utterance.volume = volume;
 
-      window.speechSynthesis.speak(utterance);
+      // Wrap in a tiny delay to ensure .cancel() finishes and the TTS engine processes rate changes reliably
+      setTimeout(() => {
+        if (window.speechSynthesis) {
+          window.speechSynthesis.speak(utterance);
+        }
+      }, 50);
     } catch (e) {
       console.error("TTS SpeechSynthesis failed", e);
     }
@@ -689,63 +753,146 @@ export default function App() {
             </span>
           </h1>
           
-          {/* Tabs */}
-          <div className="flex bg-neutral-800/80 p-1 rounded-lg border border-neutral-700/50 relative">
-            <button 
-              onClick={() => switchTab('fuse')} 
-              className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10 ${
-                currentTab === 'fuse' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
+          {/* Tabs Group */}
+          <div className="flex items-center gap-2">
+            <div className="flex bg-neutral-800/80 p-1 rounded-lg border border-neutral-700/50 relative">
+              <button 
+                onClick={() => switchTab('fuse')} 
+                className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10 ${
+                  currentTab === 'fuse' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
+                }`}
+              >
+                跑火線模擬
+              </button>
+              <button 
+                onClick={() => switchTab('M3S')} 
+                className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10 ${
+                  currentTab === 'M3S' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
+                }`}
+              >
+                M3S
+              </button>
+              <button 
+                onClick={() => switchTab('M4S')} 
+                className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10 ${
+                  currentTab === 'M4S' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
+                }`}
+              >
+                M4S
+              </button>
+            </div>
+
+            {/* Set Homepage Button */}
+            <button
+              onClick={() => {
+                localStorage.setItem('default_homepage', currentTab);
+                setDefaultHomepage(currentTab);
+              }}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border flex items-center gap-1.5 transition-all outline-none ${
+                defaultHomepage === currentTab
+                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 hover:bg-amber-500/15'
+                  : 'bg-neutral-800/30 border-neutral-700/50 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/60'
               }`}
+              title="點擊將當前頁面設為預設首頁"
             >
-              跑火線模擬
-            </button>
-            <button 
-              onClick={() => switchTab('M3S')} 
-              className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10 ${
-                currentTab === 'M3S' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
-              }`}
-            >
-              M3S
-            </button>
-            <button 
-              onClick={() => switchTab('M4S')} 
-              className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10 ${
-                currentTab === 'M4S' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
-              }`}
-            >
-              M4S
+              <StarIcon className={`w-3.5 h-3.5 ${defaultHomepage === currentTab ? 'fill-amber-500 text-amber-500' : 'text-neutral-400'}`} />
+              <span>{defaultHomepage === currentTab ? '預設首頁' : '設為首頁'}</span>
             </button>
           </div>
         </div>
 
-        {/* Volume Control */}
-        <div className="flex items-center gap-3 bg-neutral-900/60 pl-3 pr-4 py-1.5 rounded-full border border-neutral-800 backdrop-blur-sm shadow-sm ring-1 ring-neutral-800/25">
-          <button 
-            onClick={() => setSoundEnabled(!soundEnabled)}
-            className="p-1 rounded-full text-neutral-400 hover:text-white transition-all duration-200 active:scale-95"
-            title={soundEnabled ? '點擊靜音' : '點擊解除靜音'}
-          >
-            {soundEnabled ? (
-              <Volume2Icon className="w-5 h-5 text-amber-500" />
-            ) : (
-              <VolumeXIcon className="w-5 h-5 text-neutral-500" />
-            )}
-          </button>
-          <div className="flex items-center gap-1.5 w-20 md:w-28 transition-all duration-300">
-            <input 
-              type="range" 
-              min="0" 
-              max="1" 
-              step="0.05" 
-              value={volume}
-              onChange={(e) => setVolume(parseFloat(e.target.value))}
-              disabled={!soundEnabled}
-              className="w-full accent-amber-500 bg-neutral-700 h-1.5 rounded-lg appearance-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed outline-none focus:ring-1 focus:ring-amber-500/50"
-              title="調整音量"
-            />
-            <span className="text-[10px] font-mono text-neutral-400 w-6 text-right tabular-nums">
-              {soundEnabled ? Math.round(volume * 100) : 0}%
-            </span>
+        {/* Volume & TTS Controls */}
+        <div className="flex items-center gap-4 bg-neutral-900/60 px-4 py-1.5 rounded-full border border-neutral-800 backdrop-blur-sm shadow-sm ring-1 ring-neutral-800/25">
+          {/* Volume Control */}
+          <div className="flex items-center gap-2 border-r border-neutral-800/80 pr-3.5">
+            <button 
+              onClick={() => setSoundEnabled(!soundEnabled)}
+              className="p-1 rounded-full text-neutral-400 hover:text-white transition-all duration-200 active:scale-95"
+              title={soundEnabled ? '點擊靜音' : '點擊解除靜音'}
+            >
+              {soundEnabled ? (
+                <Volume2Icon className="w-4.5 h-4.5 text-amber-500" />
+              ) : (
+                <VolumeXIcon className="w-4.5 h-4.5 text-neutral-500" />
+              )}
+            </button>
+            <div className="flex items-center gap-1.5 w-16 md:w-24 transition-all duration-300">
+              <input 
+                type="range" 
+                min="0" 
+                max="1" 
+                step="0.05" 
+                value={volume}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  setVolume(val);
+                  triggerVolumeDemo(val);
+                }}
+                disabled={!soundEnabled}
+                className="w-full accent-amber-500 bg-neutral-700 h-1.5 rounded-lg appearance-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed outline-none focus:ring-1 focus:ring-amber-500/50"
+                title="調整音量"
+              />
+              <span className="text-[10px] font-mono text-neutral-400 w-6 text-right tabular-nums">
+                {soundEnabled ? Math.round(volume * 100) : 0}%
+              </span>
+            </div>
+          </div>
+
+          {/* Speech Speed Control */}
+          <div className="flex items-center gap-1.5 border-r border-neutral-800/80 pr-3.5">
+            <span className="text-[10.5px] text-neutral-400 font-bold select-none shrink-0">語速:</span>
+            <div className="flex bg-neutral-950/40 p-0.5 rounded-md border border-neutral-800/60 gap-0.5">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => {
+                    setSpeechRate(s);
+                    speakText(`語速${s}`, s, speechGender);
+                  }}
+                  className={`w-4.5 h-4.5 rounded text-[9.5px] font-black transition-all flex items-center justify-center ${
+                    speechRate === s 
+                      ? 'bg-amber-500 text-neutral-950 shadow-sm shadow-amber-500/15 scale-105' 
+                      : 'text-neutral-400 hover:bg-neutral-800/60 hover:text-neutral-200'
+                  }`}
+                  title={`語速階段 ${s}`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Voice Gender Control */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10.5px] text-neutral-400 font-bold select-none shrink-0">人聲:</span>
+            <div className="flex bg-neutral-950/40 p-0.5 rounded-md border border-neutral-800/60 gap-0.5 select-none">
+              <button
+                onClick={() => {
+                  setSpeechGender('female');
+                  speakText('選擇女聲', undefined, 'female');
+                }}
+                className={`px-1.5 py-0.5 rounded text-[9.5px] font-black transition-all ${
+                  speechGender === 'female'
+                    ? 'bg-neutral-800 text-amber-400 border border-neutral-700/50 shadow-inner'
+                    : 'text-neutral-400 hover:text-neutral-200'
+                }`}
+              >
+                女聲
+              </button>
+              <button
+                onClick={() => {
+                  setSpeechGender('male');
+                  speakText('選擇男聲', undefined, 'male');
+                }}
+                className={`px-1.5 py-0.5 rounded text-[9.5px] font-black transition-all ${
+                  speechGender === 'male'
+                    ? 'bg-neutral-800 text-amber-400 border border-neutral-700/50 shadow-inner'
+                    : 'text-neutral-400 hover:text-neutral-200'
+                }`}
+              >
+                男聲
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -1738,6 +1885,8 @@ function ArenaMapViewer({
     const isRedCircleClones = info.key === 'red_circle_clones' || activeEventName.includes("中間放紅圈") || activeEventName.includes("躲2個分身");
     const isMidnight = info.key === 'midnight' || activeEventName.includes("午夜") || activeEventName.includes("光束引導") || activeEventName.includes("狡詭雷電");
     const isGroupTowers = info.key === 'group_towers' || activeEventName.includes("分組踩塔");
+    const part2Event = M4S_TIMELINE.find(ev => ev.name === activeEventName || (activeEventName && ev.name.includes(activeEventName)) || (activeEventName && activeEventName.includes(ev.name)));
+    const isM4SPart2 = part2Event ? part2Event.timeSec >= 386.9 : false;
 
     if (isWitchHunt) {
       mainMapDisplay = (
@@ -2115,6 +2264,32 @@ function ArenaMapViewer({
           )}
         </div>
       );
+    } else if (isM4SPart2) {
+      const imgMissing = missingProjectImages["m4sp2_map.png"];
+      mainMapDisplay = (
+        <div className="w-full h-full relative flex items-center justify-center bg-neutral-950 p-2.5 animate-fadeIn">
+          {!imgMissing ? (
+            <div className="w-full aspect-[4/3] relative overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 shadow-inner group/item max-w-[560px]">
+              <img 
+                src="./m4sp2_map.png" 
+                alt="後半準備/默認地圖" 
+                onError={() => onMarkProjectImageMissing("m4sp2_map.png")}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover/item:scale-[1.02]"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-lg bg-neutral-950/85 border border-neutral-800 text-amber-400 text-[10px] font-black tracking-wider backdrop-blur-sm shadow-md flex items-center gap-1.5 font-sans">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span>{activeEventName || "後半階段"} (默認地圖)</span>
+                <span className="text-neutral-500 font-mono text-[9px] pl-1 font-normal">4:3</span>
+              </div>
+            </div>
+          ) : (
+            <div className="w-full aspect-[4/3] flex flex-col items-center justify-center bg-neutral-900/40 border border-neutral-800 rounded-xl max-w-[560px] w-full">
+              <span className="text-xs text-neutral-500 font-mono">缺少 /m4sp2_map.png (後半默認圖)</span>
+            </div>
+          )}
+        </div>
+      );
     } else {
       mainMapDisplay = (
         <div className="w-full h-full relative flex items-center justify-center bg-neutral-950">
@@ -2406,6 +2581,8 @@ function ArenaMapViewer({
     const isRedCircleClones = info.key === 'red_circle_clones' || activeEventName.includes("中間放紅圈") || activeEventName.includes("躲2個分身");
     const isMidnight = info.key === 'midnight' || activeEventName.includes("午夜") || activeEventName.includes("光束引導") || activeEventName.includes("狡詭雷電");
     const isGroupTowers = info.key === 'group_towers' || activeEventName.includes("分組踩塔");
+    const part2Event = M4S_TIMELINE.find(ev => ev.name === activeEventName || (activeEventName && ev.name.includes(activeEventName)) || (activeEventName && activeEventName.includes(ev.name)));
+    const isM4SPart2 = part2Event ? part2Event.timeSec >= 386.9 : false;
     if (isWitchHunt || isFourEight1 || isFourEight2 || isGuns || isBlazingFire || isMustard || isMidnight) {
       containerSizingClass = "w-full max-w-[800px] h-auto pb-1 animate-fadeIn";
     } else if (isCannons || isTricks || isElementConvert) {
@@ -2414,6 +2591,8 @@ function ArenaMapViewer({
       containerSizingClass = "w-full max-w-[560px] aspect-[5/4] animate-fadeIn";
     } else if (isRingIron || isGroupTowers) {
       containerSizingClass = "w-full max-w-[560px] aspect-square animate-fadeIn";
+    } else if (isM4SPart2) {
+      containerSizingClass = "w-full max-w-[560px] aspect-[4/3] animate-fadeIn";
     } else {
       containerSizingClass = "w-full max-w-[560px] aspect-square animate-fadeIn";
     }
