@@ -230,17 +230,17 @@ function getMechanicInfo(currentTab: string, eventName: string, eventTimeSec?: n
 }
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<'M2S' | 'M3S' | 'M4S' | 'fuse'>(() => {
+  const [currentTab, setCurrentTab] = useState<'M2S' | 'M3S' | 'M4S'>(() => {
     const saved = localStorage.getItem('default_homepage');
-    if (saved === 'M2S' || saved === 'M3S' || saved === 'M4S' || saved === 'fuse') {
-      return saved as 'M2S' | 'M3S' | 'M4S' | 'fuse';
+    if (saved === 'M2S' || saved === 'M3S' || saved === 'M4S') {
+      return saved as 'M2S' | 'M3S' | 'M4S';
     }
     return 'M4S';
   });
-  const [defaultHomepage, setDefaultHomepage] = useState<'M2S' | 'M3S' | 'M4S' | 'fuse'>(() => {
+  const [defaultHomepage, setDefaultHomepage] = useState<'M2S' | 'M3S' | 'M4S'>(() => {
     const saved = localStorage.getItem('default_homepage');
-    if (saved === 'M2S' || saved === 'M3S' || saved === 'M4S' || saved === 'fuse') {
-      return saved as 'M2S' | 'M3S' | 'M4S' | 'fuse';
+    if (saved === 'M2S' || saved === 'M3S' || saved === 'M4S') {
+      return saved as 'M2S' | 'M3S' | 'M4S';
     }
     return 'M4S';
   });
@@ -817,14 +817,10 @@ export default function App() {
     }
   };
 
-  const switchTab = (tab: 'M2S' | 'M3S' | 'M4S' | 'fuse') => {
+  const switchTab = (tab: 'M2S' | 'M3S' | 'M4S') => {
     if (currentTab === tab) return;
     setCurrentTab(tab);
-    if (tab === 'M2S' || tab === 'M3S' || tab === 'M4S') {
-      handleReset();
-    } else {
-      setIsPlaying(false);
-    }
+    handleReset();
   };
 
   const formatTime = (secs: number) => {
@@ -844,7 +840,7 @@ export default function App() {
           <h1 className="text-xl font-bold tracking-tight text-amber-500 flex items-center gap-2">
             <ClockIcon className="w-5 h-5" />
             <span className="font-sans">
-              {currentTab === 'fuse' ? '跑火線模擬' : `${currentTab} 時間軸提示`}
+              {currentTab} 時間軸提示
             </span>
           </h1>
           
@@ -874,14 +870,6 @@ export default function App() {
                 }`}
               >
                 M4S
-              </button>
-              <button 
-                onClick={() => switchTab('fuse')} 
-                className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10 ${
-                  currentTab === 'fuse' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
-                }`}
-              >
-                跑火線模擬
               </button>
             </div>
 
@@ -1002,8 +990,7 @@ export default function App() {
 
       {/* Main Container */}
       <main className="flex-1 w-full h-[calc(100vh-60px)] overflow-hidden relative">
-        {currentTab !== 'fuse' ? (
-          <div className="w-full max-w-7xl mx-auto p-4 md:p-6 h-full flex flex-col lg:flex-row gap-6 items-start overflow-y-auto custom-scrollbar">
+        <div className="w-full max-w-7xl mx-auto p-4 md:p-6 h-full flex flex-col lg:flex-row gap-6 items-start overflow-y-auto custom-scrollbar">
             
             {/* Left Side: Live Tactical Maps (即時戰術圖), occupant width is 65% for double size! */}
             <section className="w-full lg:w-[65%] flex flex-col gap-5 shrink-0 animate-fadeIn">
@@ -1802,9 +1789,6 @@ export default function App() {
               </div>
             </section>
           </div>
-        ) : (
-          <iframe src="/fuse.html" className="w-full h-full border-none" />
-        )}
       </main>
 
       {/* Import / Export Modal */}
@@ -1948,7 +1932,7 @@ function ArenaMapViewer({
   missingProjectImages,
   onMarkProjectImageMissing,
 }: {
-  currentTab: 'M2S' | 'M3S' | 'M4S' | 'fuse';
+  currentTab: 'M2S' | 'M3S' | 'M4S';
   activeEventName: string;
   activeEventTimeSec?: number;
   missingProjectImages: Record<string, boolean>;
