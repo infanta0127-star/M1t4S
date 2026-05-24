@@ -23,6 +23,67 @@ interface TimelineEvent {
   phase: string;
 }
 
+const M2S_TIMELINE: TimelineEvent[] = [
+  { id: 0, timeSec: 0.0, timeStr: "00:00.0", name: "倒數10秒", phase: "準備" },
+  { id: 1, timeSec: 3.0, timeStr: "00:03.0", name: "攻擊，平A", phase: "" },
+  { id: 2, timeSec: 10.2, timeStr: "00:10.2", name: "甜言蜜語，全屏AOE", phase: "" },
+  { id: 3, timeSec: 33.5, timeStr: "00:33.5", name: "雨或滴", phase: "" },
+  { id: 4, timeSec: 52.3, timeStr: "00:52.3", name: "雨或滴", phase: "" },
+  { id: 5, timeSec: 60.6, timeStr: "01:00.6", name: "雙T死刑+信息素", phase: "" },
+  { id: 6, timeSec: 79.0, timeStr: "01:19.0", name: "蜂蜂演唱會【首演】，全屏AOE", phase: "" },
+  { id: 7, timeSec: 112.6, timeStr: "01:52.6", name: "炸裂，踩塔1", phase: "" },
+  { id: 8, timeSec: 116.6, timeStr: "01:56.6", name: "炸裂，踩塔2", phase: "" },
+  { id: 9, timeSec: 120.6, timeStr: "02:00.6", name: "炸裂，踩塔3", phase: "" },
+  { id: 10, timeSec: 124.6, timeStr: "02:04.6", name: "炸裂，踩塔4", phase: "" },
+  { id: 11, timeSec: 128.6, timeStr: "02:08.6", name: "炸裂，踩塔5", phase: "" },
+  { id: 12, timeSec: 132.6, timeStr: "02:12.6", name: "炸裂，踩塔6", phase: "" },
+  { id: 13, timeSec: 158.1, timeStr: "02:38.1", name: "心病，4心分攤", phase: "" },
+  { id: 14, timeSec: 186.8, timeStr: "03:06.8", name: "蜂蜂落幕曲，全屏AOE", phase: "" },
+  { id: 15, timeSec: 202.3, timeStr: "03:22.3", name: "雙T死刑", phase: "" },
+  { id: 16, timeSec: 253.7, timeStr: "04:13.7", name: "蜂蜂演唱會【再演】，全屏AOE", phase: "" },
+  { id: 17, timeSec: 279.8, timeStr: "04:39.8", name: "心病，4心分攤2", phase: "" },
+  { id: 18, timeSec: 285.9, timeStr: "04:45.9", name: "心傷，2人分散", phase: "" },
+  { id: 19, timeSec: 286.8, timeStr: "04:46.8", name: "2人踩塔", phase: "" },
+  { id: 20, timeSec: 301.1, timeStr: "05:01.1", name: "雨或滴", phase: "" },
+  { id: 21, timeSec: 310.1, timeStr: "05:10.1", name: "蜂蜂落幕曲，全屏AOE", phase: "" },
+  { id: 22, timeSec: 342.7, timeStr: "05:42.7", name: "毒針，第1輪毒圈2人", phase: "" },
+  { id: 23, timeSec: 347.8, timeStr: "05:47.8", name: "毒針，第2輪毒圈2人", phase: "" },
+  { id: 24, timeSec: 352.8, timeStr: "05:52.8", name: "毒針，第3輪毒圈2人", phase: "" },
+  { id: 25, timeSec: 357.7, timeStr: "05:57.7", name: "毒針，第4輪毒圈2人", phase: "" },
+  { id: 26, timeSec: 367.7, timeStr: "06:07.7", name: "小蜂刺，四四分攤", phase: "" },
+  { id: 27, timeSec: 376.1, timeStr: "06:16.1", name: "雙T死刑", phase: "" },
+  { id: 28, timeSec: 393.3, timeStr: "06:33.3", name: "雨或滴", phase: "" },
+  { id: 29, timeSec: 412.8, timeStr: "06:52.8", name: "蜂蜂演唱會【三演】，全屏AOE", phase: "" },
+  { id: 30, timeSec: 438.8, timeStr: "07:18.8", name: "大爆炸，大圈", phase: "" },
+  { id: 31, timeSec: 442.2, timeStr: "07:22.2", name: "炸裂，踩塔", phase: "" },
+  { id: 32, timeSec: 458.8, timeStr: "07:38.8", name: "大爆炸，大圈", phase: "" },
+  { id: 33, timeSec: 461.9, timeStr: "07:41.9", name: "炸裂，踩塔", phase: "" },
+  { id: 34, timeSec: 476.7, timeStr: "07:56.7", name: "雨或滴", phase: "" },
+  { id: 35, timeSec: 484.7, timeStr: "08:04.7", name: "蜂蜂落幕曲，全屏AOE", phase: "" },
+  { id: 36, timeSec: 499.2, timeStr: "08:19.2", name: "雙T死刑", phase: "" },
+  { id: 37, timeSec: 514.9, timeStr: "08:34.9", name: "黑心，全屏AOE", phase: "" },
+  { id: 38, timeSec: 522.9, timeStr: "08:42.9", name: "大爆炸，相撞1", phase: "" },
+  { id: 39, timeSec: 531.4, timeStr: "08:51.4", name: "甜言蜜語，全屏AOE", phase: "" },
+  { id: 40, timeSec: 538.9, timeStr: "08:58.9", name: "大爆炸，相撞2", phase: "" },
+  { id: 41, timeSec: 548.6, timeStr: "09:08.6", name: "甜言蜜語，全屏AOE", phase: "" },
+  { id: 42, timeSec: 554.9, timeStr: "09:14.9", name: "大爆炸，相撞3", phase: "" },
+  { id: 43, timeSec: 565.8, timeStr: "09:25.8", name: "甜言蜜語，全屏AOE", phase: "" },
+  { id: 44, timeSec: 570.9, timeStr: "09:30.9", name: "大爆炸，相撞4", phase: "" },
+  { id: 45, timeSec: 582.9, timeStr: "09:42.9", name: "甜言蜜語，全屏AOE", phase: "" },
+  { id: 46, timeSec: 608.3, timeStr: "10:08.3", name: "驟然心痛，狂暴", phase: "" }
+];
+
+const M2S_MECHANICS_CONFIG: MechanicMapConfig[] = [
+  { key: "rain_or_drop", filename: "m2s_map1.png", displayName: "雨或滴", pattern: ["雨或滴"] },
+  { key: "towers", filename: "m2s_map3.png", displayName: "踩塔", pattern: ["炸裂，踩塔"] },
+  { key: "heart", filename: "m2s_map4.png", displayName: "心病", pattern: ["心病", "心傷", "信息素"] },
+  { key: "two_person_towers", filename: "m2s_map5.png", displayName: "2人踩塔", pattern: ["2人踩塔"] },
+  { key: "poison_针", filename: "m2s_map6.png", displayName: "毒針", pattern: ["毒針"] },
+  { key: "bee_sting", filename: "m2s_map7.png", displayName: "小蜂刺", pattern: ["小蜂刺"] },
+  { key: "big_bang", filename: "m2s_map8.png", displayName: "大爆炸", pattern: ["大爆炸", "相撞"] },
+  { key: "black_heart", filename: "m2s_map9.png", displayName: "黑心", pattern: ["黑心"] }
+];
+
 const M3S_TIMELINE: TimelineEvent[] = [
   { id: 0, timeSec: 0.0, timeStr: "00:00.0", name: "倒數10秒", phase: "準備" },
   { id: 1, timeSec: 11.2, timeStr: "00:11.2", name: "野蠻碎擊", phase: "" },
@@ -136,9 +197,24 @@ const M4S_MECHANICS_CONFIG: MechanicMapConfig[] = [
   { key: "sword_dance", filename: "m4sp2_map9.png", displayName: "劍舞狂暴階段", pattern: ["劍舞", "狂暴"] }
 ];
 
-function getMechanicInfo(currentTab: string, eventName: string): MechanicMapConfig {
-  const configs = currentTab === "M4S" ? M4S_MECHANICS_CONFIG : M3S_MECHANICS_CONFIG;
+function getMechanicInfo(currentTab: string, eventName: string, eventTimeSec?: number): MechanicMapConfig {
+  const configs = currentTab === "M4S" ? M4S_MECHANICS_CONFIG : (currentTab === "M3S" ? M3S_MECHANICS_CONFIG : M2S_MECHANICS_CONFIG);
   const name = eventName || "";
+  if (currentTab === "M2S" && eventTimeSec !== undefined) {
+    if (eventTimeSec >= 514.9) {
+      const bhConfig = configs.find(cfg => cfg.key === "black_heart");
+      if (bhConfig) return bhConfig;
+    } else if (eventTimeSec >= 412.8 && eventTimeSec < 476.7) {
+      const bbConfig = configs.find(cfg => cfg.key === "big_bang");
+      if (bbConfig) return bbConfig;
+    } else if (eventTimeSec >= 253.7 && eventTimeSec < 301.1) {
+      const tpConfig = configs.find(cfg => cfg.key === "two_person_towers");
+      if (tpConfig) return tpConfig;
+    } else if (eventTimeSec >= 79.0 && eventTimeSec < 186.8) {
+      const towersConfig = configs.find(cfg => cfg.key === "towers");
+      if (towersConfig) return towersConfig;
+    }
+  }
   if (currentTab === "M3S" && name.includes("強震衝")) {
     const kbConfig = configs.find(cfg => cfg.key === "knockback");
     if (kbConfig) return kbConfig;
@@ -147,24 +223,24 @@ function getMechanicInfo(currentTab: string, eventName: string): MechanicMapConf
   if (match) return match;
   return {
     key: "prep",
-    filename: currentTab === "M4S" ? "m4s_prep.png" : "m3s_map.png",
+    filename: currentTab === "M4S" ? "m4s_prep.png" : (currentTab === "M2S" ? "m2s_map.png" : "m3s_map.png"),
     displayName: "準備/基礎圖",
     pattern: []
   };
 }
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<'M3S' | 'M4S' | 'fuse'>(() => {
+  const [currentTab, setCurrentTab] = useState<'M2S' | 'M3S' | 'M4S' | 'fuse'>(() => {
     const saved = localStorage.getItem('default_homepage');
-    if (saved === 'M3S' || saved === 'M4S' || saved === 'fuse') {
-      return saved;
+    if (saved === 'M2S' || saved === 'M3S' || saved === 'M4S' || saved === 'fuse') {
+      return saved as 'M2S' | 'M3S' | 'M4S' | 'fuse';
     }
     return 'M4S';
   });
-  const [defaultHomepage, setDefaultHomepage] = useState<'M3S' | 'M4S' | 'fuse'>(() => {
+  const [defaultHomepage, setDefaultHomepage] = useState<'M2S' | 'M3S' | 'M4S' | 'fuse'>(() => {
     const saved = localStorage.getItem('default_homepage');
-    if (saved === 'M3S' || saved === 'M4S' || saved === 'fuse') {
-      return saved;
+    if (saved === 'M2S' || saved === 'M3S' || saved === 'M4S' || saved === 'fuse') {
+      return saved as 'M2S' | 'M3S' | 'M4S' | 'fuse';
     }
     return 'M4S';
   });
@@ -218,6 +294,15 @@ export default function App() {
     setMissingProjectImages(prev => ({ ...prev, [filename]: true }));
   };
 
+  const [m2sTimeline, setM2sTimeline] = useState<TimelineEvent[]>(() => {
+    try {
+      const saved = localStorage.getItem('m2s_timeline_custom_v1');
+      return saved ? JSON.parse(saved) : M2S_TIMELINE;
+    } catch {
+      return M2S_TIMELINE;
+    }
+  });
+
   const [m3sTimeline, setM3sTimeline] = useState<TimelineEvent[]>(() => {
     try {
       const saved = localStorage.getItem('m3s_timeline_custom_v1');
@@ -237,8 +322,9 @@ export default function App() {
   });
 
   const timeline = useMemo(() => {
+    if (currentTab === 'M2S') return m2sTimeline;
     return currentTab === 'M3S' ? m3sTimeline : m4sTimeline;
-  }, [currentTab, m3sTimeline, m4sTimeline]);
+  }, [currentTab, m2sTimeline, m3sTimeline, m4sTimeline]);
 
   const [isEditingTimeline, setIsEditingTimeline] = useState<boolean>(false);
   const [selectedEventForEdit, setSelectedEventForEdit] = useState<TimelineEvent | null>(null);
@@ -604,7 +690,10 @@ export default function App() {
 
     const reindexed = sorted.map((ev, index) => ({ ...ev, id: index }));
 
-    if (currentTab === 'M3S') {
+    if (currentTab === 'M2S') {
+      setM2sTimeline(reindexed);
+      localStorage.setItem('m2s_timeline_custom_v1', JSON.stringify(reindexed));
+    } else if (currentTab === 'M3S') {
       setM3sTimeline(reindexed);
       localStorage.setItem('m3s_timeline_custom_v1', JSON.stringify(reindexed));
     } else {
@@ -614,7 +703,10 @@ export default function App() {
   };
 
   const handleResetDefaultTimeline = () => {
-    if (currentTab === 'M3S') {
+    if (currentTab === 'M2S') {
+      setM2sTimeline(M2S_TIMELINE);
+      localStorage.removeItem('m2s_timeline_custom_v1');
+    } else if (currentTab === 'M3S') {
       setM3sTimeline(M3S_TIMELINE);
       localStorage.removeItem('m3s_timeline_custom_v1');
     } else {
@@ -675,7 +767,10 @@ export default function App() {
       sanitized.sort((a, b) => a.timeSec - b.timeSec);
       const finalEvents = sanitized.map((ev, idx) => ({ ...ev, id: idx }));
 
-      if (currentTab === 'M3S') {
+      if (currentTab === 'M2S') {
+        setM2sTimeline(finalEvents);
+        localStorage.setItem('m2s_timeline_custom_v1', JSON.stringify(finalEvents));
+      } else if (currentTab === 'M3S') {
         setM3sTimeline(finalEvents);
         localStorage.setItem('m3s_timeline_custom_v1', JSON.stringify(finalEvents));
       } else {
@@ -722,10 +817,10 @@ export default function App() {
     }
   };
 
-  const switchTab = (tab: 'M3S' | 'M4S' | 'fuse') => {
+  const switchTab = (tab: 'M2S' | 'M3S' | 'M4S' | 'fuse') => {
     if (currentTab === tab) return;
     setCurrentTab(tab);
-    if (tab === 'M3S' || tab === 'M4S') {
+    if (tab === 'M2S' || tab === 'M3S' || tab === 'M4S') {
       handleReset();
     } else {
       setIsPlaying(false);
@@ -757,12 +852,12 @@ export default function App() {
           <div className="flex items-center gap-2">
             <div className="flex bg-neutral-800/80 p-1 rounded-lg border border-neutral-700/50 relative">
               <button 
-                onClick={() => switchTab('fuse')} 
+                onClick={() => switchTab('M2S')} 
                 className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10 ${
-                  currentTab === 'fuse' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
+                  currentTab === 'M2S' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
                 }`}
               >
-                跑火線模擬
+                M2S
               </button>
               <button 
                 onClick={() => switchTab('M3S')} 
@@ -779,6 +874,14 @@ export default function App() {
                 }`}
               >
                 M4S
+              </button>
+              <button 
+                onClick={() => switchTab('fuse')} 
+                className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10 ${
+                  currentTab === 'fuse' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
+                }`}
+              >
+                跑火線模擬
               </button>
             </div>
 
@@ -906,7 +1009,7 @@ export default function App() {
             <section className="w-full lg:w-[65%] flex flex-col gap-5 shrink-0 animate-fadeIn">
               
               {/* Live Tactical Map that auto-switches per phase */}
-              {(currentTab === 'M3S' || currentTab === 'M4S') && (
+              {(currentTab === 'M2S' || currentTab === 'M3S' || currentTab === 'M4S') && (
                 <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-5 flex flex-col items-center transition-all duration-500 shadow-xl w-full">
                   <div className="flex items-center justify-between w-full mb-3 pb-2 border-b border-neutral-800">
                     <h3 className="text-neutral-300 font-bold text-xs uppercase tracking-widest flex items-center gap-1.5 self-start">
@@ -920,6 +1023,7 @@ export default function App() {
                     <ArenaMapViewer 
                       currentTab={currentTab}
                       activeEventName={nextEvent?.name || ""}
+                      activeEventTimeSec={nextEvent?.timeSec}
                       missingProjectImages={missingProjectImages}
                       onMarkProjectImageMissing={handleMarkProjectImageMissing}
                     />
@@ -1840,18 +1944,20 @@ export default function App() {
 function ArenaMapViewer({
   currentTab,
   activeEventName,
+  activeEventTimeSec,
   missingProjectImages,
   onMarkProjectImageMissing,
 }: {
-  currentTab: 'M3S' | 'M4S' | 'fuse';
+  currentTab: 'M2S' | 'M3S' | 'M4S' | 'fuse';
   activeEventName: string;
+  activeEventTimeSec?: number;
   missingProjectImages: Record<string, boolean>;
   onMarkProjectImageMissing: (filename: string) => void;
 }) {
   const useProjectMapImage = true;
   const [activeAltSelect, setActiveAltSelect] = useState<'primary' | 'secondary'>('primary');
 
-  const info = getMechanicInfo(currentTab, activeEventName);
+  const info = getMechanicInfo(currentTab, activeEventName, activeEventTimeSec);
 
   useEffect(() => {
     setActiveAltSelect('primary');
@@ -2632,7 +2738,15 @@ function ArenaMapViewer({
   const borderBgClasses = 'border-neutral-800 bg-neutral-950 shadow-2xl hover:border-neutral-700';
 
   let containerSizingClass = "w-full max-w-[560px] aspect-square";
-  if (currentTab === 'M4S') {
+  if (currentTab === 'M2S') {
+    if (info.filename === 'm2s_map5.png' || info.filename === 'm2s_map7.png' || info.filename === 'm2s_map9.png') {
+      containerSizingClass = "w-full max-w-[800px] aspect-[2/1] animate-fadeIn";
+    } else if (info.filename === 'm2s_map8.png') {
+      containerSizingClass = "w-full max-w-[800px] aspect-[2/0.9] animate-fadeIn";
+    } else {
+      containerSizingClass = "w-full max-w-[560px] aspect-square animate-fadeIn";
+    }
+  } else if (currentTab === 'M4S') {
     const isWitchHunt = info.key === 'witch_hunt' || activeEventName.includes("魔女狩獵");
     const isFourEight1 = info.key === 'four_eight_1' || activeEventName.includes("四八雷星1");
     const isFourEight2 = info.key === 'four_eight_2' || activeEventName.includes("四八雷星2");
