@@ -77,16 +77,16 @@ const M4S_TIMELINE: TimelineEvent[] = [
   { id: 21, timeSec: 510.8, timeStr: "08:30.8", phase: "日落", name: "日落" },
   { id: 22, timeSec: 520.6, timeStr: "08:40.6", phase: "", name: "中間放紅圈，躲2個分身半場刀" },
   { id: 23, timeSec: 530.5, timeStr: "08:50.5", phase: "", name: "狡詭特技，反手半場刀+2分身半場刀" },
-  { id: 24, timeSec: 540.3, timeStr: "09:00.3", phase: "午夜", name: "午夜" },
+  { id: 24, timeSec: 540.3, timeStr: "09:00.3", phase: "午夜", name: "午夜，同時有分擔+分散" },
   { id: 25, timeSec: 551.1, timeStr: "09:11.1", phase: "", name: "光束引導" },
   { id: 26, timeSec: 567.4, timeStr: "09:27.4", phase: "", name: "狡詭雷電" },
-  { id: 27, timeSec: 593.9, timeStr: "09:53.9", phase: "", name: "分組踩塔" },
-  { id: 28, timeSec: 641.2, timeStr: "10:41.2", phase: "", name: "尖尾刺，看王存的屬性躲冰火" },
+  { id: 27, timeSec: 593.9, timeStr: "09:53.9", phase: "", name: "火焰斬，分組踩塔" },
+  { id: 28, timeSec: 641.2, timeStr: "10:41.2", phase: "", name: "尖尾刺，看王之前存的屬性及方向" },
   { id: 29, timeSec: 657.2, timeStr: "10:57.2", phase: "", name: "芥末炸彈" },
-  { id: 30, timeSec: 666.9, timeStr: "11:06.9", phase: "", name: "屬性轉換" },
+  { id: 30, timeSec: 666.9, timeStr: "11:06.9", phase: "", name: "屬性轉換，記屬性跟順序" },
   { id: 31, timeSec: 682.7, timeStr: "11:22.7", phase: "", name: "青雷" },
   { id: 32, timeSec: 695.5, timeStr: "11:35.5", phase: "日出", name: "日出" },
-  { id: 33, timeSec: 708.2, timeStr: "11:48.2", phase: "", name: "長短BUFF踩塔" },
+  { id: 33, timeSec: 708.2, timeStr: "11:48.2", phase: "", name: "長短BUFF引導+踩塔，坦補逆時針，輸出順時針" },
   { id: 34, timeSec: 732.4, timeStr: "12:12.4", phase: "", name: "尖尾刺" },
   { id: 35, timeSec: 748.9, timeStr: "12:28.9", phase: "劍舞", name: "劍舞1" },
   { id: 36, timeSec: 766.0, timeStr: "12:46.0", phase: "", name: "劍舞2" },
@@ -132,7 +132,7 @@ const M4S_MECHANICS_CONFIG: MechanicMapConfig[] = [
   { key: "gun_shield", filename: "m4s_gun_shield.png", displayName: "保護線與擋槍支柱", pattern: ["擋槍", "移植"] },
   { key: "sunset", filename: "m4s_sunset.png", displayName: "日落九宮外圈", pattern: ["日落"] },
   { key: "midnight", filename: "m4sp2_map61.png", displayName: "午夜階段", pattern: ["午夜", "光束", "雷電"] },
-  { key: "sunrise", filename: "m4s_sunrise.png", displayName: "日出踩塔與視角", pattern: ["日出", "BUFF踩塔"] },
+  { key: "sunrise", filename: "m4sp2_map8.png", displayName: "長短BUFF引導+踩塔", pattern: ["長短BUFF", "長短消BUFF", "日出", "BUFF踩塔"] },
   { key: "sword_dance", filename: "m4s_sword_dance.png", displayName: "劍舞狂暴階段", pattern: ["劍舞", "狂暴"] }
 ];
 
@@ -1885,6 +1885,7 @@ function ArenaMapViewer({
     const isRedCircleClones = info.key === 'red_circle_clones' || activeEventName.includes("中間放紅圈") || activeEventName.includes("躲2個分身");
     const isMidnight = info.key === 'midnight' || activeEventName.includes("午夜") || activeEventName.includes("光束引導") || activeEventName.includes("狡詭雷電");
     const isGroupTowers = info.key === 'group_towers' || activeEventName.includes("分組踩塔");
+    const isSunrise = info.key === 'sunrise' || activeEventName.includes("長短BUFF") || activeEventName.includes("長短消BUFF") || activeEventName.includes("日出");
     const part2Event = M4S_TIMELINE.find(ev => ev.name === activeEventName || (activeEventName && ev.name.includes(activeEventName)) || (activeEventName && activeEventName.includes(ev.name)));
     const isM4SPart2 = part2Event ? part2Event.timeSec >= 386.9 : false;
 
@@ -2210,6 +2211,34 @@ function ArenaMapViewer({
               </div>
             );
           })}
+        </div>
+      );
+    } else if (isSunrise) {
+      const imgMissing = missingProjectImages["m4sp2_map8.png"];
+      mainMapDisplay = (
+        <div className="w-full h-full relative flex flex-col items-center justify-center bg-neutral-950 p-2.5 animate-fadeIn">
+          {!imgMissing ? (
+            <div className="flex flex-col gap-2 w-full max-w-[800px]">
+              <div className="w-full aspect-[2.2/1] relative overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 shadow-inner group/item">
+                <img 
+                  src="./m4sp2_map8.png" 
+                  alt="長短BUFF引導+踩塔" 
+                  onError={() => onMarkProjectImageMissing("m4sp2_map8.png")}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover/item:scale-[1.02]"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <div className="self-start px-2.5 py-1 rounded-lg bg-neutral-900/40 border border-neutral-800/60 text-amber-400 text-[10.5px] font-black tracking-wider shadow-sm flex items-center gap-1.5 font-sans">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span>長短BUFF引導+踩塔 ({activeEventName})</span>
+                <span className="text-neutral-500 font-mono text-[9px] pl-1 font-normal">2.2:1</span>
+              </div>
+            </div>
+          ) : (
+            <div className="w-full aspect-[2.2/1] flex flex-col items-center justify-center bg-neutral-900/40 border border-neutral-800 rounded-xl max-w-[800px] w-full">
+              <span className="text-xs text-neutral-500 font-mono">缺少 /m4sp2_map8.png (長短BUFF引導+踩塔)</span>
+            </div>
+          )}
         </div>
       );
     } else if (isGroupTowers) {
@@ -2581,9 +2610,12 @@ function ArenaMapViewer({
     const isRedCircleClones = info.key === 'red_circle_clones' || activeEventName.includes("中間放紅圈") || activeEventName.includes("躲2個分身");
     const isMidnight = info.key === 'midnight' || activeEventName.includes("午夜") || activeEventName.includes("光束引導") || activeEventName.includes("狡詭雷電");
     const isGroupTowers = info.key === 'group_towers' || activeEventName.includes("分組踩塔");
+    const isSunrise = info.key === 'sunrise' || activeEventName.includes("長短BUFF") || activeEventName.includes("長短消BUFF") || activeEventName.includes("日出");
     const part2Event = M4S_TIMELINE.find(ev => ev.name === activeEventName || (activeEventName && ev.name.includes(activeEventName)) || (activeEventName && activeEventName.includes(ev.name)));
     const isM4SPart2 = part2Event ? part2Event.timeSec >= 386.9 : false;
     if (isWitchHunt || isFourEight1 || isFourEight2 || isGuns || isBlazingFire || isMustard || isMidnight) {
+      containerSizingClass = "w-full max-w-[800px] h-auto pb-1 animate-fadeIn";
+    } else if (isSunrise) {
       containerSizingClass = "w-full max-w-[800px] h-auto pb-1 animate-fadeIn";
     } else if (isCannons || isTricks || isElementConvert) {
       containerSizingClass = "w-full max-w-[800px] aspect-[2/1] animate-fadeIn";
