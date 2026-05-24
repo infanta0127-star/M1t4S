@@ -65,18 +65,18 @@ const M4S_TIMELINE: TimelineEvent[] = [
   { id: 9, timeSec: 269.9, timeStr: "04:29.9", phase: "", name: "前後砲2" },
   { id: 10, timeSec: 290.3, timeStr: "04:50.3", phase: "", name: "狡詭搖盪" },
   { id: 11, timeSec: 335.6, timeStr: "05:35.6", phase: "雷轉質移植C為新的12點", name: "圓形炸完擋槍1" },
-  { id: 12, timeSec: 361.9, timeStr: "06:01.9", phase: "", name: "擋槍2" },
+  { id: 12, timeSec: 361.9, timeStr: "06:01.9", phase: "", name: "擋槍2，最後還會炸一下記得離開" },
   { id: 13, timeSec: 378.3, timeStr: "06:18.3", phase: "", name: "靈魂震盪C點集合，否則會被擊飛" },
   { id: 14, timeSec: 386.9, timeStr: "06:26.9", phase: "", name: "後半開始" },
   { id: 15, timeSec: 412.3, timeStr: "06:52.3", phase: "開場", name: "交叉亂尾擊" },
   { id: 16, timeSec: 427.0, timeStr: "07:07.0", phase: "後半", name: "狡詭熾焰，火山噴發+4段分攤" },
   { id: 17, timeSec: 441.8, timeStr: "07:21.8", phase: "", name: "狡詭特技，躲中央或左右直線範圍" },
-  { id: 18, timeSec: 456.5, timeStr: "07:36.5", phase: "接線分散+水火劍", name: "芥末炸彈" },
+  { id: 18, timeSec: 456.5, timeStr: "07:36.5", phase: "接線分散+水火劍", name: "芥末炸彈，第一次沒被炸的要去接走坦的炸彈" },
   { id: 19, timeSec: 483.0, timeStr: "08:03.0", phase: "", name: "屬性轉換，火鋼鐵水擊退，尖尾刺" },
   { id: 20, timeSec: 504.3, timeStr: "08:24.3", phase: "", name: "青雷" },
   { id: 21, timeSec: 510.8, timeStr: "08:30.8", phase: "日落", name: "日落" },
   { id: 22, timeSec: 520.6, timeStr: "08:40.6", phase: "", name: "中間放紅圈，躲2個分身半場刀" },
-  { id: 23, timeSec: 530.5, timeStr: "08:50.5", phase: "", name: "狡詭特技，反手半場刀+2分身半場刀" },
+  { id: 23, timeSec: 530.5, timeStr: "08:50.5", phase: "", name: "狡詭特技，看王舉手" },
   { id: 24, timeSec: 540.3, timeStr: "09:00.3", phase: "午夜", name: "午夜，同時有分擔+分散" },
   { id: 25, timeSec: 551.1, timeStr: "09:11.1", phase: "", name: "光束引導" },
   { id: 26, timeSec: 567.4, timeStr: "09:27.4", phase: "", name: "狡詭雷電" },
@@ -128,12 +128,12 @@ const M4S_MECHANICS_CONFIG: MechanicMapConfig[] = [
   { key: "mustard_bomb", filename: "m4sp2_map31.png", displayName: "接線分散與芥末炸彈", pattern: ["芥末炸彈", "接線分散", "水火劍"] },
   { key: "element_convert_knockback", filename: "m4sp2_map4.png", displayName: "屬性轉換（火鋼鐵水擊退）", pattern: ["火鋼鐵水擊退", "屬性轉換，火鋼鐵"] },
   { key: "red_circle_clones", filename: "m4sp2_map5.png", displayName: "日落半場刀", pattern: ["中間放紅圈", "躲2個分身"] },
-  { key: "group_towers", filename: "m4sp2_map7.png", displayName: "分組踩塔", pattern: ["分組踩塔"] },
+  { key: "group_towers", filename: "m4sp2_map70.png", altFilename: "m4sp2_map71.png", displayName: "火焰斬，分組踩塔", pattern: ["分組踩塔"] },
   { key: "gun_shield", filename: "m4s_gun_shield.png", displayName: "保護線與擋槍支柱", pattern: ["擋槍", "移植"] },
   { key: "sunset", filename: "m4s_sunset.png", displayName: "日落九宮外圈", pattern: ["日落"] },
   { key: "midnight", filename: "m4sp2_map61.png", displayName: "午夜階段", pattern: ["午夜", "光束", "雷電"] },
   { key: "sunrise", filename: "m4sp2_map8.png", displayName: "長短BUFF引導+踩塔", pattern: ["長短BUFF", "長短消BUFF", "日出", "BUFF踩塔"] },
-  { key: "sword_dance", filename: "m4s_sword_dance.png", displayName: "劍舞狂暴階段", pattern: ["劍舞", "狂暴"] }
+  { key: "sword_dance", filename: "m4sp2_map9.png", displayName: "劍舞狂暴階段", pattern: ["劍舞", "狂暴"] }
 ];
 
 function getMechanicInfo(currentTab: string, eventName: string): MechanicMapConfig {
@@ -1886,6 +1886,7 @@ function ArenaMapViewer({
     const isMidnight = info.key === 'midnight' || activeEventName.includes("午夜") || activeEventName.includes("光束引導") || activeEventName.includes("狡詭雷電");
     const isGroupTowers = info.key === 'group_towers' || activeEventName.includes("分組踩塔");
     const isSunrise = info.key === 'sunrise' || activeEventName.includes("長短BUFF") || activeEventName.includes("長短消BUFF") || activeEventName.includes("日出");
+    const isSwordDance = info.key === 'sword_dance' || activeEventName.includes("劍舞");
     const part2Event = M4S_TIMELINE.find(ev => ev.name === activeEventName || (activeEventName && ev.name.includes(activeEventName)) || (activeEventName && activeEventName.includes(ev.name)));
     const isM4SPart2 = part2Event ? part2Event.timeSec >= 386.9 : false;
 
@@ -2241,30 +2242,65 @@ function ArenaMapViewer({
           )}
         </div>
       );
-    } else if (isGroupTowers) {
-      const imgMissing = missingProjectImages["m4sp2_map7.png"];
+    } else if (isSwordDance) {
+      const imgMissing = missingProjectImages["m4sp2_map9.png"];
       mainMapDisplay = (
-        <div className="w-full h-full relative flex items-center justify-center bg-neutral-950 p-2.5 animate-fadeIn">
+        <div className="w-full h-full relative flex flex-col items-center justify-center bg-neutral-950 p-2.5 animate-fadeIn">
           {!imgMissing ? (
-            <div className="w-full aspect-square relative overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 shadow-inner group/item max-w-[560px]">
-              <img 
-                src="./m4sp2_map7.png" 
-                alt="分組踩塔" 
-                onError={() => onMarkProjectImageMissing("m4sp2_map7.png")}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover/item:scale-[1.02]"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-lg bg-neutral-950/85 border border-neutral-800 text-amber-400 text-[10px] font-black tracking-wider backdrop-blur-sm shadow-md flex items-center gap-1.5 font-sans">
+            <div className="flex flex-col gap-2 w-full max-w-[800px]">
+              <div className="w-full aspect-[3/1] relative overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 shadow-inner group/item">
+                <img 
+                  src="./m4sp2_map9.png" 
+                  alt="劍舞狂暴階段" 
+                  onError={() => onMarkProjectImageMissing("m4sp2_map9.png")}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover/item:scale-[1.02]"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <div className="self-start px-2.5 py-1 rounded-lg bg-neutral-900/40 border border-neutral-800/60 text-amber-400 text-[10.5px] font-black tracking-wider shadow-sm flex items-center gap-1.5 font-sans">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>分組踩塔 ({activeEventName})</span>
-                <span className="text-neutral-500 font-mono text-[9px] pl-1 font-normal">1:1</span>
+                <span>劍舞狂暴階段 ({activeEventName})</span>
+                <span className="text-neutral-500 font-mono text-[9px] pl-1 font-normal">3:1</span>
               </div>
             </div>
           ) : (
-            <div className="w-full aspect-square flex flex-col items-center justify-center bg-neutral-900/40 border border-neutral-800 rounded-xl max-w-[560px] w-full">
-              <span className="text-xs text-neutral-500 font-mono">缺少 /m4sp2_map7.png (分組踩塔)</span>
+            <div className="w-full aspect-[3/1] flex flex-col items-center justify-center bg-neutral-900/40 border border-neutral-800 rounded-xl max-w-[800px] w-full">
+              <span className="text-xs text-neutral-500 font-mono">缺少 /m4sp2_map9.png (劍舞狂暴階段)</span>
             </div>
           )}
+        </div>
+      );
+    } else if (isGroupTowers) {
+      mainMapDisplay = (
+        <div className="w-full flex flex-col gap-3.5 bg-neutral-900/10 p-2.5 animate-fadeIn">
+          {[
+            { file: "m4sp2_map70.png", title: "火焰斬 & 分組踩塔 (一)" },
+            { file: "m4sp2_map71.png", title: "火焰斬 & 分組踩塔 (二)" }
+          ].map((item, idx) => {
+            const imgMissing = missingProjectImages[item.file];
+            return (
+              <div key={idx} className="relative w-full aspect-[5/4] rounded-xl overflow-hidden border border-neutral-800 bg-neutral-950 shadow-inner group/item">
+                {!imgMissing ? (
+                  <img 
+                    src={`./${item.file}`} 
+                    alt={item.title} 
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover/item:scale-[1.02]"
+                    onError={() => onMarkProjectImageMissing(item.file)}
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-900/40 min-h-[250px]">
+                    <span className="text-xs text-neutral-500 font-mono">缺少 /{item.file} ({item.title})</span>
+                  </div>
+                )}
+                <div className="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-lg bg-neutral-950/85 border border-neutral-800 text-amber-400 text-[10px] font-black tracking-wider backdrop-blur-sm shadow-md flex items-center gap-1.5 font-sans">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                  <span>{item.title}</span>
+                  <span className="text-neutral-500 font-mono text-[9px] pl-1 font-normal">5:4</span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       );
     } else if (isRingIron) {
@@ -2611,9 +2647,10 @@ function ArenaMapViewer({
     const isMidnight = info.key === 'midnight' || activeEventName.includes("午夜") || activeEventName.includes("光束引導") || activeEventName.includes("狡詭雷電");
     const isGroupTowers = info.key === 'group_towers' || activeEventName.includes("分組踩塔");
     const isSunrise = info.key === 'sunrise' || activeEventName.includes("長短BUFF") || activeEventName.includes("長短消BUFF") || activeEventName.includes("日出");
+    const isSwordDance = info.key === 'sword_dance' || activeEventName.includes("劍舞");
     const part2Event = M4S_TIMELINE.find(ev => ev.name === activeEventName || (activeEventName && ev.name.includes(activeEventName)) || (activeEventName && activeEventName.includes(ev.name)));
     const isM4SPart2 = part2Event ? part2Event.timeSec >= 386.9 : false;
-    if (isWitchHunt || isFourEight1 || isFourEight2 || isGuns || isBlazingFire || isMustard || isMidnight) {
+    if (isWitchHunt || isFourEight1 || isFourEight2 || isGuns || isBlazingFire || isMustard || isMidnight || isSwordDance || isGroupTowers) {
       containerSizingClass = "w-full max-w-[800px] h-auto pb-1 animate-fadeIn";
     } else if (isSunrise) {
       containerSizingClass = "w-full max-w-[800px] h-auto pb-1 animate-fadeIn";
@@ -2621,7 +2658,7 @@ function ArenaMapViewer({
       containerSizingClass = "w-full max-w-[800px] aspect-[2/1] animate-fadeIn";
     } else if (isRedCircleClones) {
       containerSizingClass = "w-full max-w-[560px] aspect-[5/4] animate-fadeIn";
-    } else if (isRingIron || isGroupTowers) {
+    } else if (isRingIron) {
       containerSizingClass = "w-full max-w-[560px] aspect-square animate-fadeIn";
     } else if (isM4SPart2) {
       containerSizingClass = "w-full max-w-[560px] aspect-[4/3] animate-fadeIn";
