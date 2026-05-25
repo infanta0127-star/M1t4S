@@ -12,7 +12,8 @@ import {
   Flame as FlameIcon, 
   CircleOff as CircleOffIcon, 
   Users as UsersIcon,
-  Star as StarIcon
+  Star as StarIcon,
+  Settings as SettingsIcon
 } from 'lucide-react';
 
 interface TimelineEvent {
@@ -262,6 +263,21 @@ export default function App() {
     const val = localStorage.getItem('speech_gender');
     return val === 'male' ? 'male' : 'female';
   });
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const settingsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+        setIsSettingsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('sound_enabled', soundEnabled.toString());
@@ -832,24 +848,71 @@ export default function App() {
     return `${sign}${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${ms}`;
   };
 
+  const renderElapsedControls = () => (
+    <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-4 flex flex-col items-center shadow-lg w-full shrink-0">
+      <h2 className="text-neutral-500 font-bold tracking-widest text-[9px] uppercase font-sans mb-1">
+        Elapsed Time
+      </h2>
+      <div className="text-4xl font-extrabold font-mono tracking-tight text-white tabular-nums mb-3">
+        {formatTime(elapsed)}
+      </div>
+
+      <div className="flex gap-1.5 w-full justify-center mb-3">
+        <button onClick={() => handleAdjustTime(-1)} className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition-all font-medium active:scale-95" title="倒退 1 秒">
+          <SkipBackIcon className="w-3.5 h-3.5" /> 1s
+        </button>
+        <button onClick={() => handleAdjustTime(-0.1)} className="px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition-all font-medium active:scale-95">
+          -0.1s
+        </button>
+        <button onClick={() => handleAdjustTime(0.1)} className="px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition-all font-medium active:scale-95">
+          +0.1s
+        </button>
+        <button onClick={() => handleAdjustTime(1)} className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition-all font-medium active:scale-95" title="快進 1 秒">
+          1s <SkipForwardIcon className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      <div className="flex gap-2 w-full">
+        <button 
+          onClick={handlePlayPause}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-black transition-all text-xs active:scale-[0.98] ${
+            isPlaying 
+              ? 'bg-neutral-800/80 text-amber-500 hover:bg-neutral-700 border border-neutral-700/50 font-sans' 
+              : 'bg-amber-500 text-neutral-950 hover:bg-amber-400 font-sans shadow-md shadow-amber-500/10'
+          }`}
+        >
+          {isPlaying ? <PauseIcon className="w-4 h-4 fill-current" /> : <PlayIcon className="w-4 h-4 fill-current" />}
+          {isPlaying ? '暫停計時' : '開始計時'}
+        </button>
+        <button 
+          onClick={handleReset}
+          className="px-3.5 py-2.5 rounded-xl bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white transition-all flex items-center justify-center active:scale-[0.98] border border-neutral-800"
+          title="重設時間"
+        >
+          <RotateCcwIcon className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
-      <header className="px-6 py-3 border-b border-neutral-800 bg-neutral-900/50 flex justify-between items-center z-10 backdrop-blur-md">
-        <div className="flex items-center gap-6">
-          <h1 className="text-xl font-bold tracking-tight text-amber-500 flex items-center gap-2">
-            <ClockIcon className="w-5 h-5" />
+      <header className="px-4 md:px-6 py-3 border-b border-neutral-800 bg-neutral-900/50 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-6 z-20 backdrop-blur-md relative">
+        <div className="flex flex-wrap items-center justify-between md:justify-start gap-3 md:gap-6 w-full md:w-auto">
+          <h1 className="text-lg md:text-xl font-bold tracking-tight text-amber-500 flex items-center gap-1.5 shrink-0">
+            <ClockIcon className="w-4.5 h-4.5 md:w-5 md:h-5 text-amber-500" />
             <span className="font-sans">
-              {currentTab} 時間軸提示
+              <span className="text-neutral-100">{currentTab}</span> <span className="hidden xs:inline">時間軸提示</span>
             </span>
           </h1>
           
           {/* Tabs Group */}
-          <div className="flex items-center gap-2">
-            <div className="flex bg-neutral-800/80 p-1 rounded-lg border border-neutral-700/50 relative">
+          <div className="flex items-center gap-1.5">
+            <div className="flex bg-neutral-800/80 p-0.5 md:p-1 rounded-lg border border-neutral-700/50 relative">
               <button 
                 onClick={() => switchTab('M2S')} 
-                className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10 ${
+                className={`px-2.5 md:px-4 py-1 md:py-1.5 rounded-md text-xs md:text-sm font-bold transition-all z-10 ${
                   currentTab === 'M2S' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
                 }`}
               >
@@ -857,7 +920,7 @@ export default function App() {
               </button>
               <button 
                 onClick={() => switchTab('M3S')} 
-                className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10 ${
+                className={`px-2.5 md:px-4 py-1 md:py-1.5 rounded-md text-xs md:text-sm font-bold transition-all z-10 ${
                   currentTab === 'M3S' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
                 }`}
               >
@@ -865,7 +928,7 @@ export default function App() {
               </button>
               <button 
                 onClick={() => switchTab('M4S')} 
-                className={`px-4 py-1.5 rounded-md text-sm font-bold transition-all z-10 ${
+                className={`px-2.5 md:px-4 py-1 md:py-1.5 rounded-md text-xs md:text-sm font-bold transition-all z-10 ${
                   currentTab === 'M4S' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
                 }`}
               >
@@ -879,7 +942,7 @@ export default function App() {
                 localStorage.setItem('default_homepage', currentTab);
                 setDefaultHomepage(currentTab);
               }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border flex items-center gap-1.5 transition-all outline-none ${
+              className={`p-1.5 md:px-2.5 md:py-1.5 rounded-lg text-xs font-bold border flex items-center gap-1.5 transition-all outline-none ${
                 defaultHomepage === currentTab
                   ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 hover:bg-amber-500/15'
                   : 'bg-neutral-800/30 border-neutral-700/50 text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/60'
@@ -887,114 +950,160 @@ export default function App() {
               title="點擊將當前頁面設為預設首頁"
             >
               <StarIcon className={`w-3.5 h-3.5 ${defaultHomepage === currentTab ? 'fill-amber-500 text-amber-500' : 'text-neutral-400'}`} />
-              <span>{defaultHomepage === currentTab ? '預設首頁' : '設為首頁'}</span>
+              <span className="hidden sm:inline">{defaultHomepage === currentTab ? '預設首頁' : '設為首頁'}</span>
             </button>
           </div>
         </div>
 
-        {/* Volume & TTS Controls */}
-        <div className="flex items-center gap-4 bg-neutral-900/60 px-4 py-1.5 rounded-full border border-neutral-800 backdrop-blur-sm shadow-sm ring-1 ring-neutral-800/25">
-          {/* Volume Control */}
-          <div className="flex items-center gap-2 border-r border-neutral-800/80 pr-3.5">
-            <button 
-              onClick={() => setSoundEnabled(!soundEnabled)}
-              className="p-1 rounded-full text-neutral-400 hover:text-white transition-all duration-200 active:scale-95"
-              title={soundEnabled ? '點擊靜音' : '點擊解除靜音'}
-            >
-              {soundEnabled ? (
-                <Volume2Icon className="w-4.5 h-4.5 text-amber-500" />
-              ) : (
-                <VolumeXIcon className="w-4.5 h-4.5 text-neutral-500" />
-              )}
-            </button>
-            <div className="flex items-center gap-1.5 w-16 md:w-24 transition-all duration-300">
-              <input 
-                type="range" 
-                min="0" 
-                max="1" 
-                step="0.05" 
-                value={volume}
-                onChange={(e) => {
-                  const val = parseFloat(e.target.value);
-                  setVolume(val);
-                  triggerVolumeDemo(val);
-                }}
-                disabled={!soundEnabled}
-                className="w-full accent-amber-500 bg-neutral-700 h-1.5 rounded-lg appearance-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed outline-none focus:ring-1 focus:ring-amber-500/50"
-                title="調整音量"
-              />
-              <span className="text-[10px] font-mono text-neutral-400 w-6 text-right tabular-nums">
-                {soundEnabled ? Math.round(volume * 100) : 0}%
+        {/* Collapsed Settings Button (Mobile size adaptation) */}
+        <div className="relative self-end md:self-auto shrink-0" ref={settingsRef}>
+          <button
+            onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+            className={`px-3 py-1.5 rounded-full border text-xs font-semibold flex items-center gap-1.5 transition-all outline-none focus:ring-1 focus:ring-amber-500/35 backdrop-blur-sm shadow-sm ${
+              isSettingsOpen 
+                ? 'bg-amber-500/10 border-amber-500/50 text-amber-400' 
+                : 'bg-neutral-900/60 border-neutral-800 text-neutral-300 hover:text-white hover:bg-neutral-800'
+            }`}
+          >
+            <SettingsIcon className={`w-3.5 h-3.5 ${soundEnabled ? 'text-amber-500 animate-[spin_6s_linear_infinite]' : 'text-neutral-400'}`} />
+            <span>語音設定</span>
+            {soundEnabled && (
+              <span className="flex h-1.5 w-1.5 relative shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-500"></span>
               </span>
-            </div>
-          </div>
+            )}
+          </button>
 
-          {/* Speech Speed Control */}
-          <div className="flex items-center gap-1.5 border-r border-neutral-800/80 pr-3.5">
-            <span className="text-[10.5px] text-neutral-400 font-bold select-none shrink-0">語速:</span>
-            <div className="flex bg-neutral-950/40 p-0.5 rounded-md border border-neutral-800/60 gap-0.5">
-              {[1, 2, 3, 4, 5].map((s) => (
-                <button
-                  key={s}
-                  onClick={() => {
-                    setSpeechRate(s);
-                    speakText(`語速${s}`, s, speechGender);
-                  }}
-                  className={`w-4.5 h-4.5 rounded text-[9.5px] font-black transition-all flex items-center justify-center ${
-                    speechRate === s 
-                      ? 'bg-amber-500 text-neutral-950 shadow-sm shadow-amber-500/15 scale-105' 
-                      : 'text-neutral-400 hover:bg-neutral-800/60 hover:text-neutral-200'
-                  }`}
-                  title={`語速階段 ${s}`}
+          {/* Settings Dropdown/Popover */}
+          {isSettingsOpen && (
+            <div 
+              className="absolute right-0 mt-2 bg-neutral-900 border border-neutral-800 rounded-2xl p-4 shadow-2xl backdrop-blur-md z-30 flex flex-col gap-4 w-72 animate-fadeIn ring-1 ring-amber-500/10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between border-b border-neutral-800 pb-2">
+                <h3 className="text-amber-500 font-extrabold text-xs uppercase tracking-widest flex items-center gap-1.5">
+                  <SettingsIcon className="w-3.5 h-3.5" /> 語音與系統設定
+                </h3>
+                <button 
+                  onClick={() => setIsSettingsOpen(false)}
+                  className="text-neutral-500 hover:text-neutral-300 font-bold text-xs"
                 >
-                  {s}
+                  ✕
                 </button>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          {/* Voice Gender Control */}
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10.5px] text-neutral-400 font-bold select-none shrink-0">人聲:</span>
-            <div className="flex bg-neutral-950/40 p-0.5 rounded-md border border-neutral-800/60 gap-0.5 select-none">
-              <button
-                onClick={() => {
-                  setSpeechGender('female');
-                  speakText('選擇女聲', undefined, 'female');
-                }}
-                className={`px-1.5 py-0.5 rounded text-[9.5px] font-black transition-all ${
-                  speechGender === 'female'
-                    ? 'bg-neutral-800 text-amber-400 border border-neutral-700/50 shadow-inner'
-                    : 'text-neutral-400 hover:text-neutral-200'
-                }`}
-              >
-                女聲
-              </button>
-              <button
-                onClick={() => {
-                  setSpeechGender('male');
-                  speakText('選擇男聲', undefined, 'male');
-                }}
-                className={`px-1.5 py-0.5 rounded text-[9.5px] font-black transition-all ${
-                  speechGender === 'male'
-                    ? 'bg-neutral-800 text-amber-400 border border-neutral-700/50 shadow-inner'
-                    : 'text-neutral-400 hover:text-neutral-200'
-                }`}
-              >
-                男聲
-              </button>
+              {/* Volume Control */}
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-neutral-400 font-bold">音量 & 開關</span>
+                  <span className="text-[10px] font-mono text-neutral-400 tabular-nums">
+                    {soundEnabled ? Math.round(volume * 100) : 0}%
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 bg-neutral-950/40 p-2.5 rounded-2xl border border-neutral-800/60">
+                  <button 
+                    onClick={() => setSoundEnabled(!soundEnabled)}
+                    className="p-1 rounded-full text-neutral-400 hover:text-white transition-all duration-200 active:scale-95 shrink-0"
+                    title={soundEnabled ? '點擊靜音' : '點擊解除靜音'}
+                  >
+                    {soundEnabled ? (
+                      <Volume2Icon className="w-4.5 h-4.5 text-amber-500" />
+                    ) : (
+                      <VolumeXIcon className="w-4.5 h-4.5 text-neutral-500" />
+                    )}
+                  </button>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="1" 
+                    step="0.05" 
+                    value={volume}
+                    onChange={(e) => {
+                      const val = parseFloat(e.target.value);
+                      setVolume(val);
+                      triggerVolumeDemo(val);
+                    }}
+                    disabled={!soundEnabled}
+                    className="w-full accent-amber-500 bg-neutral-700 h-1.5 rounded-lg appearance-none cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed outline-none focus:ring-1 focus:ring-amber-500/50"
+                    title="調整音量"
+                  />
+                </div>
+              </div>
+
+              {/* Speech Speed Control */}
+              <div className="flex flex-col gap-2">
+                <span className="text-xs text-neutral-400 font-bold">語音播報速度 (語速)</span>
+                <div className="flex bg-neutral-950/40 p-1 rounded-xl border border-neutral-800/60 gap-1 w-full justify-between">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => {
+                        setSpeechRate(s);
+                        speakText(`語速${s}`, s, speechGender);
+                      }}
+                      className={`flex-1 h-7 rounded-lg text-[10px] font-black transition-all flex items-center justify-center ${
+                        speechRate === s 
+                          ? 'bg-amber-500 text-neutral-950 shadow-sm shadow-amber-500/15 scale-105' 
+                          : 'text-neutral-400 hover:bg-neutral-800/60 hover:text-neutral-200'
+                      }`}
+                      title={`語速階段 ${s}`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Voice Gender Control */}
+              <div className="flex flex-col gap-2">
+                <span className="text-xs text-neutral-400 font-bold">播報人聲性別</span>
+                <div className="flex bg-neutral-950/40 p-1 rounded-xl border border-neutral-800/60 gap-1 select-none w-full">
+                  <button
+                    onClick={() => {
+                      setSpeechGender('female');
+                      speakText('選擇女聲', undefined, 'female');
+                    }}
+                    className={`flex-1 py-1 px-2.5 rounded-lg text-[10px] font-black transition-all border ${
+                      speechGender === 'female'
+                        ? 'bg-neutral-800 text-amber-400 border-neutral-700 shadow-inner'
+                        : 'text-neutral-400 hover:text-neutral-200 border-transparent'
+                    }`}
+                  >
+                    👩 女聲
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSpeechGender('male');
+                      speakText('選擇男聲', undefined, 'male');
+                    }}
+                    className={`flex-1 py-1 px-2.5 rounded-lg text-[10px] font-black transition-all border ${
+                      speechGender === 'male'
+                        ? 'bg-neutral-800 text-amber-400 border-neutral-700 shadow-inner'
+                        : 'text-neutral-400 hover:text-neutral-200 border-transparent'
+                    }`}
+                  >
+                    👨 男聲
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </header>
 
       {/* Main Container */}
-      <main className="flex-1 w-full h-[calc(100vh-60px)] overflow-hidden relative">
-        <div className="w-full max-w-7xl mx-auto p-4 md:p-6 h-full flex flex-col lg:flex-row gap-6 items-start overflow-y-auto custom-scrollbar">
+      <main className="flex-1 w-full lg:h-[calc(100vh-60px)] h-auto lg:overflow-hidden overflow-y-auto relative">
+        <div className="w-full max-w-7xl mx-auto p-4 md:p-6 lg:h-full h-auto flex flex-col lg:flex-row gap-6 items-start overflow-y-auto custom-scrollbar">
             
             {/* Left Side: Live Tactical Maps (即時戰術圖), occupant width is 65% for double size! */}
             <section className="w-full lg:w-[65%] flex flex-col gap-5 shrink-0 animate-fadeIn">
               
+              {/* Mobile Timer Display (Rank #1 priority on mobile) */}
+              <div className="block lg:hidden w-full animate-fadeIn">
+                {renderElapsedControls()}
+              </div>
+
               {/* Live Tactical Map that auto-switches per phase */}
               {(currentTab === 'M2S' || currentTab === 'M3S' || currentTab === 'M4S') && (
                 <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-5 flex flex-col items-center transition-all duration-500 shadow-xl w-full">
@@ -1220,49 +1329,8 @@ export default function App() {
             <section className="flex-1 w-full flex flex-col gap-5 overflow-hidden">
               
               {/* Compact Elapsed Time Controls */}
-              <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-4 flex flex-col items-center shadow-lg w-full shrink-0">
-                <h2 className="text-neutral-500 font-bold tracking-widest text-[9px] uppercase font-sans mb-1">
-                  Elapsed Time
-                </h2>
-                <div className="text-4xl lg:text-4xl font-extrabold font-mono tracking-tight text-white tabular-nums mb-3">
-                  {formatTime(elapsed)}
-                </div>
-
-                <div className="flex gap-1.5 w-full justify-center mb-3">
-                  <button onClick={() => handleAdjustTime(-1)} className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition-all font-medium active:scale-95" title="倒退 1 秒">
-                    <SkipBackIcon className="w-3.5 h-3.5" /> 1s
-                  </button>
-                  <button onClick={() => handleAdjustTime(-0.1)} className="px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition-all font-medium active:scale-95">
-                    -0.1s
-                  </button>
-                  <button onClick={() => handleAdjustTime(0.1)} className="px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition-all font-medium active:scale-95">
-                    +0.1s
-                  </button>
-                  <button onClick={() => handleAdjustTime(1)} className="flex items-center gap-0.5 px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-[11px] transition-all font-medium active:scale-95" title="快進 1 秒">
-                    1s <SkipForwardIcon className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                <div className="flex gap-2 w-full">
-                  <button 
-                    onClick={handlePlayPause}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-bold transition-all text-xs active:scale-[0.98] ${
-                      isPlaying 
-                        ? 'bg-neutral-800 text-amber-500 hover:bg-neutral-700 font-sans' 
-                        : 'bg-amber-600 text-white hover:bg-amber-500 shadow-md shadow-amber-900/15 font-sans'
-                    }`}
-                  >
-                    {isPlaying ? <PauseIcon className="w-4 h-4 fill-current" /> : <PlayIcon className="w-4 h-4 fill-current" />}
-                    {isPlaying ? '暫停計時' : '開始計時'}
-                  </button>
-                  <button 
-                    onClick={handleReset}
-                    className="px-3.5 py-2.5 rounded-xl bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white transition-all flex items-center justify-center active:scale-[0.98]"
-                    title="重設時間"
-                  >
-                    <RotateCcwIcon className="w-4 h-4" />
-                  </button>
-                </div>
+              <div className="hidden lg:block w-full">
+                {renderElapsedControls()}
               </div>
 
               {/* Smaller/Compact Next Mechanic Card */}
