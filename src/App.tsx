@@ -1114,13 +1114,9 @@ export default function App() {
               </p>
               <div className="bg-neutral-950 rounded-xl p-4 md:p-5 border-l-4 border-amber-600 shadow-inner">
                 <p className="text-xs md:text-sm text-neutral-400 font-medium">
-                  註：本 M4S 攻略圖示素材來源，前半部分採用蘇帕（Supar）的資訊，後半部分採用 MMW 的內容。
+                  註：本 M4S 攻略圖示素材來源，前半部分採用蘇帕的資訊，後半部分採用 MMW 的內容。
                 </p>
               </div>
-              <hr className="border-t border-neutral-800 w-full" />
-              <p className="text-neutral-400">
-                鳳凰サーバーの<span className="text-amber-400 font-semibold">Star芭</span>です。現在、M4S攻略用にギミック通知ツールを開発しています。戦闘中に次のフェーズのギミックをリアルタイムで通知し、タイムラインを正確に把握できるようサポートします。反応の負担を軽減し、チームがより安定して攻略できることを目指しています。効率的な攻略を追求する方は、ぜひ一緒に使ってみてください。
-              </p>
             </div>
           </div>
         </main>
