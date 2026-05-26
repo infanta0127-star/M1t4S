@@ -231,17 +231,17 @@ function getMechanicInfo(currentTab: string, eventName: string, eventTimeSec?: n
 }
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<'M2S' | 'M3S' | 'M4S'>(() => {
+  const [currentTab, setCurrentTab] = useState<'M2S' | 'M3S' | 'M4S' | 'AUTHOR'>(() => {
     const saved = localStorage.getItem('default_homepage');
-    if (saved === 'M2S' || saved === 'M3S' || saved === 'M4S') {
-      return saved as 'M2S' | 'M3S' | 'M4S';
+    if (saved === 'M2S' || saved === 'M3S' || saved === 'M4S' || saved === 'AUTHOR') {
+      return saved as 'M2S' | 'M3S' | 'M4S' | 'AUTHOR';
     }
     return 'M4S';
   });
-  const [defaultHomepage, setDefaultHomepage] = useState<'M2S' | 'M3S' | 'M4S'>(() => {
+  const [defaultHomepage, setDefaultHomepage] = useState<'M2S' | 'M3S' | 'M4S' | 'AUTHOR'>(() => {
     const saved = localStorage.getItem('default_homepage');
-    if (saved === 'M2S' || saved === 'M3S' || saved === 'M4S') {
-      return saved as 'M2S' | 'M3S' | 'M4S';
+    if (saved === 'M2S' || saved === 'M3S' || saved === 'M4S' || saved === 'AUTHOR') {
+      return saved as 'M2S' | 'M3S' | 'M4S' | 'AUTHOR';
     }
     return 'M4S';
   });
@@ -833,7 +833,7 @@ export default function App() {
     }
   };
 
-  const switchTab = (tab: 'M2S' | 'M3S' | 'M4S') => {
+  const switchTab = (tab: 'M2S' | 'M3S' | 'M4S' | 'AUTHOR') => {
     if (currentTab === tab) return;
     setCurrentTab(tab);
     handleReset();
@@ -933,6 +933,14 @@ export default function App() {
                 }`}
               >
                 M4S
+              </button>
+              <button 
+                onClick={() => switchTab('AUTHOR')} 
+                className={`px-2.5 md:px-4 py-1 md:py-1.5 rounded-md text-xs md:text-sm font-bold transition-all z-10 ${
+                  currentTab === 'AUTHOR' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
+                }`}
+              >
+                關於作者
               </button>
             </div>
 
@@ -1093,6 +1101,30 @@ export default function App() {
       </header>
 
       {/* Main Container */}
+      {currentTab === 'AUTHOR' ? (
+        <main className="flex-1 w-full bg-[#111111] flex flex-col items-center p-6 lg:p-10 overflow-y-auto relative custom-scrollbar">
+          <div className="max-w-3xl w-full bg-neutral-900/60 border border-neutral-800 rounded-3xl p-8 md:p-12 flex flex-col items-center text-center shadow-2xl animate-fadeIn">
+            <img src="./作者.png" alt="Star芭" className="w-32 h-32 md:w-40 md:h-40 rounded-full mb-6 border-4 border-neutral-800 shadow-xl object-cover" />
+            <h2 className="text-3xl md:text-4xl font-extrabold text-amber-500 mb-2">Star芭</h2>
+            <p className="text-neutral-400 font-mono text-sm tracking-wider mb-8 md:mb-10 uppercase">鳳凰伺服器</p>
+            
+            <div className="text-left text-neutral-300 space-y-6 md:space-y-8 leading-relaxed text-sm md:text-base w-full">
+              <p>
+                我是 <span className="text-amber-400 font-semibold">Star芭</span>，來自鳳凰伺服器。我目前為 M4S 開發了一款機制提示工具，專注於在戰鬥中即時提醒下一個階段的機制，協助隊友精準掌握時間軸。我的目標是透過降低反應壓力，讓團隊能更穩定地攻略副本。歡迎同樣追求高效率攻略的朋友一起使用並交流。
+              </p>
+              <div className="bg-neutral-950 rounded-xl p-4 md:p-5 border-l-4 border-amber-600 shadow-inner">
+                <p className="text-xs md:text-sm text-neutral-400 font-medium">
+                  註：本 M4S 攻略圖示素材來源，前半部分採用蘇帕（Supar）的資訊，後半部分採用 MMW 的內容。
+                </p>
+              </div>
+              <hr className="border-t border-neutral-800 w-full" />
+              <p className="text-neutral-400">
+                鳳凰サーバーの<span className="text-amber-400 font-semibold">Star芭</span>です。現在、M4S攻略用にギミック通知ツールを開発しています。戦闘中に次のフェーズのギミックをリアルタイムで通知し、タイムラインを正確に把握できるようサポートします。反応の負担を軽減し、チームがより安定して攻略できることを目指しています。効率的な攻略を追求する方は、ぜひ一緒に使ってみてください。
+              </p>
+            </div>
+          </div>
+        </main>
+      ) : (
       <main className="flex-1 w-full lg:h-[calc(100vh-60px)] h-auto lg:overflow-hidden overflow-y-auto relative">
         <div className="w-full max-w-7xl mx-auto p-4 md:p-6 lg:h-full h-auto flex flex-col lg:flex-row gap-6 items-start overflow-y-auto custom-scrollbar">
             
@@ -1858,6 +1890,7 @@ export default function App() {
             </section>
           </div>
       </main>
+      )}
 
       {/* Import / Export Modal */}
       {isImportExportOpen && (
