@@ -1106,11 +1106,11 @@ export default function App() {
           <div className="max-w-3xl w-full bg-neutral-900/60 border border-neutral-800 rounded-3xl p-8 md:p-12 flex flex-col items-center text-center shadow-2xl animate-fadeIn">
             <img src="./作者.png" alt="Star芭" className="w-32 h-32 md:w-40 md:h-40 rounded-full mb-6 border-4 border-neutral-800 shadow-xl object-cover" />
             <h2 className="text-3xl md:text-4xl font-extrabold text-amber-500 mb-2">Star芭</h2>
-            <p className="text-neutral-400 font-mono text-sm tracking-wider mb-8 md:mb-10 uppercase">鳳凰伺服器</p>
+            <p className="text-neutral-400 font-mono text-sm tracking-wider mb-8 md:mb-10 uppercase">World:鳳凰</p>
             
             <div className="text-left text-neutral-300 space-y-6 md:space-y-8 leading-relaxed text-sm md:text-base w-full">
               <p>
-                我是 <span className="text-amber-400 font-semibold">Star芭</span>，來自鳳凰伺服器。我目前為 M4S 開發了一款機制提示工具，專注於在戰鬥中即時提醒下一個階段的機制，協助隊友精準掌握時間軸。我的目標是透過降低反應壓力，讓團隊能更穩定地攻略副本。歡迎同樣追求高效率攻略的朋友一起使用並交流。
+                我是 <span className="text-amber-400 font-semibold">Star芭</span>，來自鳳凰。我目前為 M4S 開發了一款機制提示工具，專注於在戰鬥中即時提醒下一個階段的機制，協助隊友精準掌握時間軸。我的目標是透過降低反應壓力，讓團隊能更穩定地攻略副本。歡迎同樣追求高效率攻略的朋友一起使用並交流。
               </p>
               <div className="bg-neutral-950 rounded-xl p-4 md:p-5 border-l-4 border-amber-600 shadow-inner">
                 <p className="text-xs md:text-sm text-neutral-400 font-medium">
