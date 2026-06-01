@@ -2402,31 +2402,36 @@ function ArenaMapViewer({
         </div>
       );
     } else if (isSunrise) {
-      const imgMissing = missingProjectImages["m4sp2_map8.png"];
       mainMapDisplay = (
-        <div className="w-full h-full relative flex flex-col items-center justify-center bg-neutral-950 p-2.5 animate-fadeIn">
-          {!imgMissing ? (
-            <div className="flex flex-col gap-2 w-full max-w-[800px]">
-              <div className="w-full aspect-[2.2/1] relative overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 shadow-inner group/item">
-                <img 
-                  src="./m4sp2_map8.png" 
-                  alt="長短BUFF引導+踩塔" 
-                  onError={() => onMarkProjectImageMissing("m4sp2_map8.png")}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover/item:scale-[1.02]"
-                  referrerPolicy="no-referrer"
-                />
+        <div className="w-full flex flex-col gap-3.5 bg-neutral-900/10 p-2.5 animate-fadeIn font-sans">
+          {[
+            { file: "m4sp2_map8.png", title: "長短消BUFF大連鎖", aspect: "aspect-[2.2/1]", ratioText: "2.2:1" },
+            { file: "m4sp2_map82.png", title: "長短消BUFF / 踩塔細節", aspect: "aspect-[4/3]", ratioText: "4:3" }
+          ].map((item, idx) => {
+            const imgMissing = missingProjectImages[item.file];
+            return (
+              <div key={idx} className={`relative w-full ${item.aspect} rounded-xl overflow-hidden border border-neutral-800 bg-neutral-950 shadow-inner group/item max-w-[800px] mx-auto`}>
+                {!imgMissing ? (
+                  <img 
+                    src={`./${item.file}`} 
+                    alt={item.title} 
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover/item:scale-[1.02]"
+                    onError={() => onMarkProjectImageMissing(item.file)}
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-900/40 min-h-[160px]">
+                    <span className="text-xs text-neutral-500 font-mono">缺少 /{item.file} ({item.title})</span>
+                  </div>
+                )}
+                <div className="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-lg bg-neutral-950/85 border border-neutral-800 text-amber-400 text-[10px] font-black tracking-wider backdrop-blur-sm shadow-md flex items-center gap-1.5 font-sans">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                  <span>{item.title} ({activeEventName})</span>
+                  <span className="text-neutral-500 font-mono text-[9px] pl-1 font-normal">{item.ratioText}</span>
+                </div>
               </div>
-              <div className="self-start px-2.5 py-1 rounded-lg bg-neutral-900/40 border border-neutral-800/60 text-amber-400 text-[10.5px] font-black tracking-wider shadow-sm flex items-center gap-1.5 font-sans">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                <span>長短BUFF引導+踩塔 ({activeEventName})</span>
-                <span className="text-neutral-500 font-mono text-[9px] pl-1 font-normal">2.2:1</span>
-              </div>
-            </div>
-          ) : (
-            <div className="w-full aspect-[2.2/1] flex flex-col items-center justify-center bg-neutral-900/40 border border-neutral-800 rounded-xl max-w-[800px] w-full">
-              <span className="text-xs text-neutral-500 font-mono">缺少 /m4sp2_map8.png (長短BUFF引導+踩塔)</span>
-            </div>
-          )}
+            );
+          })}
         </div>
       );
     } else if (isSwordDance) {
