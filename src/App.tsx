@@ -13,7 +13,8 @@ import {
   CircleOff as CircleOffIcon, 
   Users as UsersIcon,
   Star as StarIcon,
-  Settings as SettingsIcon
+  Settings as SettingsIcon,
+  ChevronDown as ChevronDownIcon
 } from 'lucide-react';
 
 interface TimelineEvent {
@@ -198,7 +199,32 @@ const M4S_MECHANICS_CONFIG: MechanicMapConfig[] = [
   { key: "sword_dance", filename: "m4sp2_map9.png", displayName: "劍舞狂暴階段", pattern: ["劍舞", "狂暴"] }
 ];
 
-function getMechanicInfo(currentTab: string, eventName: string, eventTimeSec?: number): MechanicMapConfig {
+function getMechanicInfo(
+  currentTab: TabType,
+  eventName: string,
+  eventTimeSec?: number,
+  selectedUwuPhase?: 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3'
+): MechanicMapConfig {
+  if (currentTab === 'AUTHOR') return { key: 'none', filename: '', displayName: '', pattern: [] };
+  
+  if (currentTab === 'UWU') {
+    switch (selectedUwuPhase) {
+      case 'IFRIT':
+        return { key: 'uwu_ifrit', filename: 'uwu_ifrit.png', displayName: '火神階段', pattern: [] };
+      case 'TITAN':
+        return { key: 'uwu_titan', filename: 'uwu_titan.png', displayName: '土神階段', pattern: [] };
+      case 'ULTIMA1':
+        return { key: 'uwu_ultima1', filename: 'uwu_ultima1.png', displayName: '最終階段1', pattern: [] };
+      case 'ULTIMA2':
+        return { key: 'uwu_ultima2', filename: 'uwu_ultima2.png', displayName: '最終階段2', pattern: [] };
+      case 'ULTIMA3':
+        return { key: 'uwu_ultima3', filename: 'uwu_ultima3.png', displayName: '最終階段3', pattern: [] };
+      case 'GARUDA':
+      default:
+        return { key: 'uwu_garuda', filename: 'uwu_garuda.png', displayName: '風神階段', pattern: [] };
+    }
+  }
+
   const configs = currentTab === "M4S" ? M4S_MECHANICS_CONFIG : (currentTab === "M3S" ? M3S_MECHANICS_CONFIG : M2S_MECHANICS_CONFIG);
   const name = eventName || "";
   if (currentTab === "M2S" && eventTimeSec !== undefined) {
@@ -230,18 +256,54 @@ function getMechanicInfo(currentTab: string, eventName: string, eventTimeSec?: n
   };
 }
 
+export type TabType = 'M2S' | 'M3S' | 'M4S' | 'UWU' | 'AUTHOR';
+
+export const TAB_GROUPS = [
+  {
+    label: "零式輕量級",
+    tabs: [
+      { id: 'M2S', label: 'M2S' },
+      { id: 'M3S', label: 'M3S' },
+      { id: 'M4S', label: 'M4S' }
+    ]
+  },
+  {
+    label: "絕境戰",
+    tabs: [
+      { id: 'UWU', label: '絕神兵' }
+    ]
+  }
+];
+
+export const getTabLabel = (id: TabType) => {
+  if (id === 'AUTHOR') return '關於作者';
+  for (const group of TAB_GROUPS) {
+    const found = group.tabs.find(t => t.id === id);
+    if (found) return found.label;
+  }
+  return id;
+};
+
+export const getTabGroupLabel = (id: TabType) => {
+  if (id === 'AUTHOR') return '';
+  for (const group of TAB_GROUPS) {
+    if (group.tabs.some(t => t.id === id)) return group.label;
+  }
+  return '';
+};
+
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<'M2S' | 'M3S' | 'M4S' | 'AUTHOR'>(() => {
-    const saved = localStorage.getItem('default_homepage');
-    if (saved === 'M2S' || saved === 'M3S' || saved === 'M4S' || saved === 'AUTHOR') {
-      return saved as 'M2S' | 'M3S' | 'M4S' | 'AUTHOR';
+  const [currentTab, setCurrentTab] = useState<TabType>(() => {
+    const saved = localStorage.getItem('default_homepage') as TabType;
+    if (['M2S', 'M3S', 'M4S', 'AUTHOR', 'UWU'].includes(saved)) {
+      return saved;
     }
     return 'M4S';
   });
-  const [defaultHomepage, setDefaultHomepage] = useState<'M2S' | 'M3S' | 'M4S' | 'AUTHOR'>(() => {
-    const saved = localStorage.getItem('default_homepage');
-    if (saved === 'M2S' || saved === 'M3S' || saved === 'M4S' || saved === 'AUTHOR') {
-      return saved as 'M2S' | 'M3S' | 'M4S' | 'AUTHOR';
+  const [defaultHomepage, setDefaultHomepage] = useState<TabType>(() => {
+    const saved = localStorage.getItem('default_homepage') as TabType;
+    if (['M2S', 'M3S', 'M4S', 'AUTHOR', 'UWU'].includes(saved)) {
+      return saved;
     }
     return 'M4S';
   });
@@ -267,10 +329,16 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const settingsRef = useRef<HTMLDivElement>(null);
 
+  const [isTabMenuOpen, setIsTabMenuOpen] = useState<boolean>(false);
+  const tabMenuRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
         setIsSettingsOpen(false);
+      }
+      if (tabMenuRef.current && !tabMenuRef.current.contains(event.target as Node)) {
+        setIsTabMenuOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -310,6 +378,18 @@ export default function App() {
     setMissingProjectImages(prev => ({ ...prev, [filename]: true }));
   };
 
+  const [selectedUwuPhase, setSelectedUwuPhase] = useState<'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3'>(() => {
+    const saved = localStorage.getItem('selected_uwu_phase') as 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3';
+    if (['GARUDA', 'IFRIT', 'TITAN', 'ULTIMA1', 'ULTIMA2', 'ULTIMA3'].includes(saved)) {
+      return saved;
+    }
+    return 'GARUDA';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('selected_uwu_phase', selectedUwuPhase);
+  }, [selectedUwuPhase]);
+
   const [m2sTimeline, setM2sTimeline] = useState<TimelineEvent[]>(() => {
     try {
       const saved = localStorage.getItem('m2s_timeline_custom_v1');
@@ -337,10 +417,66 @@ export default function App() {
     }
   });
 
+  const [uwuGarudaTimeline, setUwuGarudaTimeline] = useState<TimelineEvent[]>(() => {
+    try {
+      const saved = localStorage.getItem('uwu_garuda_timeline_custom_v1');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+
+  const [uwuIfritTimeline, setUwuIfritTimeline] = useState<TimelineEvent[]>(() => {
+    try {
+      const saved = localStorage.getItem('uwu_ifrit_timeline_custom_v1');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+
+  const [uwuTitanTimeline, setUwuTitanTimeline] = useState<TimelineEvent[]>(() => {
+    try {
+      const saved = localStorage.getItem('uwu_titan_timeline_custom_v1');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+
+  const [uwuUltima1Timeline, setUwuUltima1Timeline] = useState<TimelineEvent[]>(() => {
+    try {
+      const saved = localStorage.getItem('uwu_ultima1_timeline_custom_v1');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+
+  const [uwuUltima2Timeline, setUwuUltima2Timeline] = useState<TimelineEvent[]>(() => {
+    try {
+      const saved = localStorage.getItem('uwu_ultima2_timeline_custom_v1');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+
+  const [uwuUltima3Timeline, setUwuUltima3Timeline] = useState<TimelineEvent[]>(() => {
+    try {
+      const saved = localStorage.getItem('uwu_ultima3_timeline_custom_v1');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+
   const timeline = useMemo(() => {
-    if (currentTab === 'M2S') return m2sTimeline;
-    return currentTab === 'M3S' ? m3sTimeline : m4sTimeline;
-  }, [currentTab, m2sTimeline, m3sTimeline, m4sTimeline]);
+    switch (currentTab) {
+      case 'M2S': return m2sTimeline;
+      case 'M3S': return m3sTimeline;
+      case 'UWU':
+        switch (selectedUwuPhase) {
+          case 'GARUDA': return uwuGarudaTimeline;
+          case 'IFRIT': return uwuIfritTimeline;
+          case 'TITAN': return uwuTitanTimeline;
+          case 'ULTIMA1': return uwuUltima1Timeline;
+          case 'ULTIMA2': return uwuUltima2Timeline;
+          case 'ULTIMA3': return uwuUltima3Timeline;
+          default: return [];
+        }
+      case 'M4S':
+      default: return m4sTimeline;
+    }
+  }, [currentTab, m2sTimeline, m3sTimeline, m4sTimeline, selectedUwuPhase, uwuGarudaTimeline, uwuIfritTimeline, uwuTitanTimeline, uwuUltima1Timeline, uwuUltima2Timeline, uwuUltima3Timeline]);
 
   const [isEditingTimeline, setIsEditingTimeline] = useState<boolean>(false);
   const [selectedEventForEdit, setSelectedEventForEdit] = useState<TimelineEvent | null>(null);
@@ -589,6 +725,41 @@ export default function App() {
     }
   }, [elapsed, isPlaying, nextEvent]);
 
+  // Auto-advance UWU phase when the last event of the phase finishes
+  useEffect(() => {
+    if (currentTab === 'UWU' && isPlaying && timeline.length > 0) {
+      const maxTime = Math.max(...timeline.map((ev) => ev.timeSec));
+      // Buffer of 3 seconds after the last event to move to the next phase
+      if (elapsed > maxTime + 3.0) {
+        const phases: Array<'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3'> = [
+          'GARUDA', 'IFRIT', 'TITAN', 'ULTIMA1', 'ULTIMA2', 'ULTIMA3'
+        ];
+        const currentIndex = phases.indexOf(selectedUwuPhase);
+        if (currentIndex !== -1 && currentIndex < phases.length - 1) {
+          const nextPhase = phases[currentIndex + 1];
+          const phaseNames: Record<string, string> = {
+            'IFRIT': '已自動進入火神階段',
+            'TITAN': '已自動進入土神階段',
+            'ULTIMA1': '已自動進入最終階段一',
+            'ULTIMA2': '已自動進入最終階段二',
+            'ULTIMA3': '已自動進入最終階段三',
+          };
+          const text = phaseNames[nextPhase] || '已自動進入下一階段';
+          
+          // Do NOT reset player progress or elapsed times as UWU phase times are continuous.
+          // Simply clear speaking/alerting guards so the new phase can fire its own voice triggers seamlessly
+          lastSpokenEventIdRef.current = null;
+          alerted5sRef.current = false;
+          alerted0sRef.current = false;
+          
+          setSelectedUwuPhase(nextPhase);
+          speakText(text);
+          showToast(text);
+        }
+      }
+    }
+  }, [elapsed, currentTab, selectedUwuPhase, isPlaying, timeline]);
+
   // Handle manual scroll lock
   const handleScroll = () => {
     setIsUserScrolling(true);
@@ -706,28 +877,94 @@ export default function App() {
 
     const reindexed = sorted.map((ev, index) => ({ ...ev, id: index }));
 
-    if (currentTab === 'M2S') {
-      setM2sTimeline(reindexed);
-      localStorage.setItem('m2s_timeline_custom_v1', JSON.stringify(reindexed));
-    } else if (currentTab === 'M3S') {
-      setM3sTimeline(reindexed);
-      localStorage.setItem('m3s_timeline_custom_v1', JSON.stringify(reindexed));
-    } else {
-      setM4sTimeline(reindexed);
-      localStorage.setItem('m4s_timeline_custom_v1', JSON.stringify(reindexed));
+    switch (currentTab) {
+      case 'M2S':
+        setM2sTimeline(reindexed);
+        localStorage.setItem('m2s_timeline_custom_v1', JSON.stringify(reindexed));
+        break;
+      case 'M3S':
+        setM3sTimeline(reindexed);
+        localStorage.setItem('m3s_timeline_custom_v1', JSON.stringify(reindexed));
+        break;
+      case 'UWU':
+        switch (selectedUwuPhase) {
+          case 'GARUDA':
+            setUwuGarudaTimeline(reindexed);
+            localStorage.setItem('uwu_garuda_timeline_custom_v1', JSON.stringify(reindexed));
+            break;
+          case 'IFRIT':
+            setUwuIfritTimeline(reindexed);
+            localStorage.setItem('uwu_ifrit_timeline_custom_v1', JSON.stringify(reindexed));
+            break;
+          case 'TITAN':
+            setUwuTitanTimeline(reindexed);
+            localStorage.setItem('uwu_titan_timeline_custom_v1', JSON.stringify(reindexed));
+            break;
+          case 'ULTIMA1':
+            setUwuUltima1Timeline(reindexed);
+            localStorage.setItem('uwu_ultima1_timeline_custom_v1', JSON.stringify(reindexed));
+            break;
+          case 'ULTIMA2':
+            setUwuUltima2Timeline(reindexed);
+            localStorage.setItem('uwu_ultima2_timeline_custom_v1', JSON.stringify(reindexed));
+            break;
+          case 'ULTIMA3':
+            setUwuUltima3Timeline(reindexed);
+            localStorage.setItem('uwu_ultima3_timeline_custom_v1', JSON.stringify(reindexed));
+            break;
+        }
+        break;
+      case 'M4S':
+      default:
+        setM4sTimeline(reindexed);
+        localStorage.setItem('m4s_timeline_custom_v1', JSON.stringify(reindexed));
+        break;
     }
   };
 
   const handleResetDefaultTimeline = () => {
-    if (currentTab === 'M2S') {
-      setM2sTimeline(M2S_TIMELINE);
-      localStorage.removeItem('m2s_timeline_custom_v1');
-    } else if (currentTab === 'M3S') {
-      setM3sTimeline(M3S_TIMELINE);
-      localStorage.removeItem('m3s_timeline_custom_v1');
-    } else {
-      setM4sTimeline(M4S_TIMELINE);
-      localStorage.removeItem('m4s_timeline_custom_v1');
+    switch (currentTab) {
+      case 'M2S':
+        setM2sTimeline(M2S_TIMELINE);
+        localStorage.removeItem('m2s_timeline_custom_v1');
+        break;
+      case 'M3S':
+        setM3sTimeline(M3S_TIMELINE);
+        localStorage.removeItem('m3s_timeline_custom_v1');
+        break;
+      case 'UWU':
+        switch (selectedUwuPhase) {
+          case 'GARUDA':
+            setUwuGarudaTimeline([]);
+            localStorage.removeItem('uwu_garuda_timeline_custom_v1');
+            break;
+          case 'IFRIT':
+            setUwuIfritTimeline([]);
+            localStorage.removeItem('uwu_ifrit_timeline_custom_v1');
+            break;
+          case 'TITAN':
+            setUwuTitanTimeline([]);
+            localStorage.removeItem('uwu_titan_timeline_custom_v1');
+            break;
+          case 'ULTIMA1':
+            setUwuUltima1Timeline([]);
+            localStorage.removeItem('uwu_ultima1_timeline_custom_v1');
+            break;
+          case 'ULTIMA2':
+            setUwuUltima2Timeline([]);
+            localStorage.removeItem('uwu_ultima2_timeline_custom_v1');
+            break;
+          case 'ULTIMA3':
+            setUwuUltima3Timeline([]);
+            localStorage.removeItem('uwu_ultima3_timeline_custom_v1');
+            break;
+        }
+        break;
+      case 'M4S':
+      default:
+        setM4sTimeline(M4S_TIMELINE);
+        localStorage.removeItem('m4s_timeline_custom_v1');
+        break;
     }
   };
 
@@ -783,15 +1020,48 @@ export default function App() {
       sanitized.sort((a, b) => a.timeSec - b.timeSec);
       const finalEvents = sanitized.map((ev, idx) => ({ ...ev, id: idx }));
 
-      if (currentTab === 'M2S') {
-        setM2sTimeline(finalEvents);
-        localStorage.setItem('m2s_timeline_custom_v1', JSON.stringify(finalEvents));
-      } else if (currentTab === 'M3S') {
-        setM3sTimeline(finalEvents);
-        localStorage.setItem('m3s_timeline_custom_v1', JSON.stringify(finalEvents));
-      } else {
-        setM4sTimeline(finalEvents);
-        localStorage.setItem('m4s_timeline_custom_v1', JSON.stringify(finalEvents));
+      switch (currentTab) {
+        case 'M2S':
+          setM2sTimeline(finalEvents);
+          localStorage.setItem('m2s_timeline_custom_v1', JSON.stringify(finalEvents));
+          break;
+        case 'M3S':
+          setM3sTimeline(finalEvents);
+          localStorage.setItem('m3s_timeline_custom_v1', JSON.stringify(finalEvents));
+          break;
+        case 'UWU':
+          switch (selectedUwuPhase) {
+            case 'GARUDA':
+              setUwuGarudaTimeline(finalEvents);
+              localStorage.setItem('uwu_garuda_timeline_custom_v1', JSON.stringify(finalEvents));
+              break;
+            case 'IFRIT':
+              setUwuIfritTimeline(finalEvents);
+              localStorage.setItem('uwu_ifrit_timeline_custom_v1', JSON.stringify(finalEvents));
+              break;
+            case 'TITAN':
+              setUwuTitanTimeline(finalEvents);
+              localStorage.setItem('uwu_titan_timeline_custom_v1', JSON.stringify(finalEvents));
+              break;
+            case 'ULTIMA1':
+              setUwuUltima1Timeline(finalEvents);
+              localStorage.setItem('uwu_ultima1_timeline_custom_v1', JSON.stringify(finalEvents));
+              break;
+            case 'ULTIMA2':
+              setUwuUltima2Timeline(finalEvents);
+              localStorage.setItem('uwu_ultima2_timeline_custom_v1', JSON.stringify(finalEvents));
+              break;
+            case 'ULTIMA3':
+              setUwuUltima3Timeline(finalEvents);
+              localStorage.setItem('uwu_ultima3_timeline_custom_v1', JSON.stringify(finalEvents));
+              break;
+          }
+          break;
+        case 'M4S':
+        default:
+          setM4sTimeline(finalEvents);
+          localStorage.setItem('m4s_timeline_custom_v1', JSON.stringify(finalEvents));
+          break;
       }
 
       return null;
@@ -833,7 +1103,7 @@ export default function App() {
     }
   };
 
-  const switchTab = (tab: 'M2S' | 'M3S' | 'M4S' | 'AUTHOR') => {
+  const switchTab = (tab: TabType) => {
     if (currentTab === tab) return;
     setCurrentTab(tab);
     handleReset();
@@ -900,50 +1170,49 @@ export default function App() {
       {/* Header */}
       <header className="px-4 md:px-6 py-3 border-b border-neutral-800 bg-neutral-900/50 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-6 z-20 backdrop-blur-md relative">
         <div className="flex flex-wrap items-center justify-between md:justify-start gap-3 md:gap-6 w-full md:w-auto">
-          <h1 className="text-lg md:text-xl font-bold tracking-tight text-amber-500 flex items-center gap-1.5 shrink-0">
-            <ClockIcon className="w-4.5 h-4.5 md:w-5 md:h-5 text-amber-500" />
-            <span className="font-sans">
-              <span className="text-neutral-100">{currentTab}</span> <span className="hidden xs:inline">時間軸提示</span>
-            </span>
-          </h1>
-          
-          {/* Tabs Group */}
-          <div className="flex items-center gap-1.5">
-            <div className="flex bg-neutral-800/80 p-0.5 md:p-1 rounded-lg border border-neutral-700/50 relative">
-              <button 
-                onClick={() => switchTab('M2S')} 
-                className={`px-2.5 md:px-4 py-1 md:py-1.5 rounded-md text-xs md:text-sm font-bold transition-all z-10 ${
-                  currentTab === 'M2S' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
-                }`}
-              >
-                M2S
-              </button>
-              <button 
-                onClick={() => switchTab('M3S')} 
-                className={`px-2.5 md:px-4 py-1 md:py-1.5 rounded-md text-xs md:text-sm font-bold transition-all z-10 ${
-                  currentTab === 'M3S' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
-                }`}
-              >
-                M3S
-              </button>
-              <button 
-                onClick={() => switchTab('M4S')} 
-                className={`px-2.5 md:px-4 py-1 md:py-1.5 rounded-md text-xs md:text-sm font-bold transition-all z-10 ${
-                  currentTab === 'M4S' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
-                }`}
-              >
-                M4S
-              </button>
-              <button 
-                onClick={() => switchTab('AUTHOR')} 
-                className={`px-2.5 md:px-4 py-1 md:py-1.5 rounded-md text-xs md:text-sm font-bold transition-all z-10 ${
-                  currentTab === 'AUTHOR' ? 'text-white shadow-sm bg-neutral-700/80' : 'text-neutral-400 hover:text-neutral-200'
-                }`}
-              >
-                關於作者
-              </button>
-            </div>
+          <div className="relative" ref={tabMenuRef}>
+            <button 
+              onClick={() => setIsTabMenuOpen(!isTabMenuOpen)}
+              className="text-lg md:text-xl font-bold tracking-tight text-amber-500 flex items-center gap-2 shrink-0 hover:opacity-80 active:scale-[0.98] transition-all outline-none"
+            >
+              <ClockIcon className="w-5 h-5 text-amber-500" />
+              <span className="font-sans flex items-center gap-1.5">
+                <span className="text-neutral-100">{getTabLabel(currentTab)}</span> 
+                <span className="hidden xs:inline text-neutral-400 text-sm md:text-lg self-end pb-0.5">時間軸提示</span>
+              </span>
+              <ChevronDownIcon className={`w-4 h-4 text-neutral-400 transition-transform ${isTabMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
 
+            {isTabMenuOpen && (
+              <div className="absolute top-full left-0 mt-3 w-56 md:w-64 bg-neutral-900 border border-neutral-700/80 rounded-xl max-h-[70vh] overflow-y-auto shadow-2xl z-50 animate-fadeIn" onClick={(e) => e.stopPropagation()}>
+                <div className="p-2 flex flex-col gap-1">
+                  <button
+                    onClick={() => { switchTab('AUTHOR'); setIsTabMenuOpen(false); }}
+                    className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold transition-all ${currentTab === 'AUTHOR' ? 'bg-amber-500/20 text-amber-400' : 'text-neutral-300 hover:bg-neutral-800'}`}
+                  >
+                    關於作者
+                  </button>
+                  {TAB_GROUPS.map((group, gIdx) => (
+                    <div key={gIdx} className="mt-1">
+                      <div className="px-3 py-1.5 text-[10px] font-black text-neutral-500 uppercase tracking-widest">{group.label}</div>
+                      {group.tabs.map((tab) => (
+                        <button
+                          key={tab.id}
+                          onClick={() => { switchTab(tab.id as TabType); setIsTabMenuOpen(false); }}
+                          className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${currentTab === tab.id ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'text-neutral-300 hover:bg-neutral-800 border border-transparent'}`}
+                        >
+                          <span className={`w-1.5 h-1.5 rounded-full ${currentTab === tab.id ? 'bg-amber-500 animate-pulse' : 'bg-transparent'}`}></span>
+                          {tab.label}
+                        </button>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-1.5">
             {/* Set Homepage Button */}
             <button
               onClick={() => {
@@ -1132,13 +1401,100 @@ export default function App() {
                 {renderElapsedControls()}
               </div>
 
+              {/* UWU Phase Selector */}
+              {currentTab === 'UWU' && (
+                <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-4 flex flex-col gap-3 shadow-xl w-full animate-fadeIn">
+                  <div className="flex items-center gap-1.5 pb-2 border-b border-neutral-800/60 justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 animate-pulse" />
+                      <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-widest">絕境戰：絕神兵 ✕ 階段選擇</h3>
+                    </div>
+                    <span className="text-[10px] bg-neutral-800 px-2 py-0.5 rounded text-neutral-450 font-mono font-bold">
+                      {selectedUwuPhase === 'GARUDA' && 'GARUDA PHASE'}
+                      {selectedUwuPhase === 'IFRIT' && 'IFRIT PHASE'}
+                      {selectedUwuPhase === 'TITAN' && 'TITAN PHASE'}
+                      {selectedUwuPhase === 'ULTIMA1' && 'ULTIMA PHASE PART I'}
+                      {selectedUwuPhase === 'ULTIMA2' && 'ULTIMA PHASE PART II'}
+                      {selectedUwuPhase === 'ULTIMA3' && 'ULTIMA PHASE PART III'}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 xs:grid-cols-6 gap-2 w-full">
+                    {[
+                      { id: 'GARUDA', label: '風神' },
+                      { id: 'IFRIT', label: '火神' },
+                      { id: 'TITAN', label: '土神' },
+                      { id: 'ULTIMA1', label: '最終階段1' },
+                      { id: 'ULTIMA2', label: '最終階段2' },
+                      { id: 'ULTIMA3', label: '最終階段3' },
+                    ].map((phase) => (
+                      <button
+                        key={phase.id}
+                        onClick={() => {
+                          const phaseId = phase.id as 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3';
+                          setSelectedUwuPhase(phaseId);
+                          
+                          let phaseTimeline: TimelineEvent[] = [];
+                          if (phaseId === 'GARUDA') phaseTimeline = uwuGarudaTimeline;
+                          else if (phaseId === 'IFRIT') phaseTimeline = uwuIfritTimeline;
+                          else if (phaseId === 'TITAN') phaseTimeline = uwuTitanTimeline;
+                          else if (phaseId === 'ULTIMA1') phaseTimeline = uwuUltima1Timeline;
+                          else if (phaseId === 'ULTIMA2') phaseTimeline = uwuUltima2Timeline;
+                          else if (phaseId === 'ULTIMA3') phaseTimeline = uwuUltima3Timeline;
+
+                          let jumpTime = -10;
+                          if (phaseTimeline.length > 0) {
+                            const times = phaseTimeline.map(ev => ev.timeSec);
+                            const minTime = Math.min(...times);
+                            jumpTime = Math.max(-10, minTime - 5);
+                          } else {
+                            const defaults: Record<string, number> = {
+                              'GARUDA': -10,
+                              'IFRIT': 160,
+                              'TITAN': 270,
+                              'ULTIMA1': 410,
+                              'ULTIMA2': 530,
+                              'ULTIMA3': 670
+                            };
+                            jumpTime = defaults[phaseId] ?? -10;
+                          }
+
+                          setElapsed(jumpTime);
+                          pausedTimeRef.current = jumpTime;
+                          lastSpokenEventIdRef.current = null;
+                          alerted5sRef.current = false;
+                          alerted0sRef.current = false;
+                          if (isPlaying) {
+                            startTimeRef.current = performance.now();
+                          }
+                        }}
+                        className={`py-2 px-1 rounded-xl text-xs font-bold transition-all border text-center cursor-pointer select-none ${
+                          selectedUwuPhase === phase.id
+                            ? 'bg-amber-500/10 text-amber-500 border-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.15)] font-black scale-[1.02]'
+                            : 'bg-neutral-950/45 border-neutral-800/80 text-neutral-400 hover:text-neutral-200 hover:border-neutral-700 hover:bg-neutral-800/20'
+                        }`}
+                      >
+                        {phase.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-1 flex flex-col xs:flex-row xs:items-center gap-1.5 text-[11px] text-amber-500/90 font-sans tracking-wide bg-amber-500/5 px-3 py-2 rounded-xl border border-amber-500/10">
+                    <span className="shrink-0 inline-flex items-center justify-center bg-amber-500/15 text-amber-400 border border-amber-500/20 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider animate-pulse whitespace-nowrap self-start xs:self-auto">
+                      🔄 連續自動連播已啟用
+                    </span>
+                    <span className="leading-normal">
+                      絕神兵副本無休息點。當前階段播放完畢後，系統將<strong>無縫自動切換</strong>至下一階段繼續播放（無須倒數）。點擊上方各階段可快速跳轉至該階段秒數，方便戰術檢討。
+                    </span>
+                  </div>
+                </div>
+              )}
+
               {/* Live Tactical Map that auto-switches per phase */}
-              {(currentTab === 'M2S' || currentTab === 'M3S' || currentTab === 'M4S') && (
+              {currentTab !== 'AUTHOR' && (
                 <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-5 flex flex-col items-center transition-all duration-500 shadow-xl w-full">
                   <div className="flex items-center justify-between w-full mb-3 pb-2 border-b border-neutral-800">
                     <h3 className="text-neutral-300 font-bold text-xs uppercase tracking-widest flex items-center gap-1.5 self-start">
                       <MapIcon className="w-4 h-4 text-amber-500" /> 
-                      {currentTab} {nextEvent ? `即時戰術圖 (${nextEvent.name.split('，')[0].split('+')[0]})` : "戰術地圖"}
+                      {getTabLabel(currentTab)} {nextEvent ? `即時戰術圖 (${nextEvent.name.split('，')[0].split('+')[0]})` : "戰術地圖"}
                     </h3>
                     <span className="text-[9px] text-neutral-500 font-mono tracking-wider">LIVE DATA</span>
                   </div>
@@ -1150,6 +1506,7 @@ export default function App() {
                       activeEventTimeSec={nextEvent?.timeSec}
                       missingProjectImages={missingProjectImages}
                       onMarkProjectImageMissing={handleMarkProjectImageMissing}
+                      selectedUwuPhase={selectedUwuPhase}
                     />
                   </div>
                 </div>
@@ -1804,7 +2161,15 @@ export default function App() {
                 className="w-full h-[185px] overflow-y-auto custom-scrollbar relative scroll-smooth bg-neutral-900/40 border border-neutral-800 rounded-3xl p-2.5 shrink-0"
               >
                 <div className="flex flex-col gap-1 pb-10">
-                  {timeline.map((ev) => {
+                  {timeline.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-10 px-4 text-center bg-neutral-950/25 rounded-2xl border border-dashed border-neutral-800/60 m-1 animate-fadeIn">
+                      <ClockIcon className="w-8 h-8 text-neutral-600 mb-2 stroke-[1.5]" />
+                      <p className="text-neutral-450 font-bold text-xs">{selectedUwuPhase === 'GARUDA' ? '風神階段' : selectedUwuPhase === 'IFRIT' ? '火神階段' : selectedUwuPhase === 'TITAN' ? '土神階段' : selectedUwuPhase === 'ULTIMA1' ? '最終階段1' : selectedUwuPhase === 'ULTIMA2' ? '最終階段2' : '最終階段3'} 尚無時間軸資料</p>
+                      <p className="text-neutral-500 text-[10px] mt-1.5 max-w-[240px] leading-relaxed font-sans">
+                        此階段空頁面已先建立。您可以使用右上方的對話框或右上角的「匯入/匯出」客製化時間軸，或等待官方更新。
+                      </p>
+                    </div>
+                  ) : timeline.map((ev) => {
                     const isBeingEdited = selectedEventForEdit?.id === ev.id;
                     const isActive = nextEvent?.id === ev.id;
                     return (
@@ -2028,17 +2393,19 @@ function ArenaMapViewer({
   activeEventTimeSec,
   missingProjectImages,
   onMarkProjectImageMissing,
+  selectedUwuPhase,
 }: {
-  currentTab: 'M2S' | 'M3S' | 'M4S';
+  currentTab: TabType;
   activeEventName: string;
   activeEventTimeSec?: number;
   missingProjectImages: Record<string, boolean>;
   onMarkProjectImageMissing: (filename: string) => void;
+  selectedUwuPhase?: 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3';
 }) {
   const useProjectMapImage = true;
   const [activeAltSelect, setActiveAltSelect] = useState<'primary' | 'secondary'>('primary');
 
-  const info = getMechanicInfo(currentTab, activeEventName, activeEventTimeSec);
+  const info = getMechanicInfo(currentTab, activeEventName, activeEventTimeSec, selectedUwuPhase);
 
   useEffect(() => {
     setActiveAltSelect('primary');
@@ -2058,7 +2425,50 @@ function ArenaMapViewer({
   // Determine standard map render nodes with crystal-clear conditionals
   let mainMapDisplay = null;
 
-  if (currentTab === 'M4S') {
+  if (currentTab === 'UWU') {
+    if (!hasProjectImage) {
+      mainMapDisplay = (
+        <div className="w-full h-full flex flex-col items-center justify-center bg-neutral-950 p-6 text-center select-none animate-fadeIn border border-neutral-850 rounded-2xl min-h-[300px]">
+          <div className="w-16 h-16 rounded-full bg-amber-500/15 flex items-center justify-center mb-4 border border-amber-500/25 text-amber-500 font-black tracking-widest text-lg font-mono shadow-[0_0_15px_rgba(245,158,11,0.08)] scale-102">
+            UWU
+          </div>
+          <h4 className="text-neutral-200 font-extrabold text-sm mb-1.5 flex items-center gap-1.5 justify-center">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+            {selectedUwuPhase === 'GARUDA' && '風神階段 戰術提示'}
+            {selectedUwuPhase === 'IFRIT' && '火神階段 戰術提示'}
+            {selectedUwuPhase === 'TITAN' && '土神階段 戰術提示'}
+            {selectedUwuPhase === 'ULTIMA1' && '最終階段1 戰術提示'}
+            {selectedUwuPhase === 'ULTIMA2' && '最終階段2 戰術提示'}
+            {selectedUwuPhase === 'ULTIMA3' && '最終階段3 戰術提示'}
+          </h4>
+          <p className="text-neutral-450 text-[11px] leading-relaxed max-w-[320px]">
+            此副本階段頁面架構已完成，暫缺少專案圖檔 <code className="text-amber-500 bg-neutral-900 px-1 py-0.5 rounded text-[10px] font-mono">/{projectImageOnThisPhaseFilename}</code>。
+          </p>
+          <div className="mt-4 bg-neutral-900/60 border border-neutral-850 px-3.5 py-2.5 rounded-xl text-[10px] text-neutral-500 max-w-[280px] leading-relaxed font-sans">
+            💡 【提示】內容與戰術圖均可自定義，只需將該檔名對應的圖片放置於專案資料夾根目錄便可自動在此載入顯示！
+          </div>
+        </div>
+      );
+    } else {
+      mainMapDisplay = (
+        <div className="w-full h-full relative">
+          <img 
+            src={projectImageSrc} 
+            alt="Team Arena Map" 
+            onError={() => onMarkProjectImageMissing(projectImageOnThisPhaseFilename)}
+            className="w-full h-full object-cover rounded-xl"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1.5 transition-all duration-300 rounded-xl">
+            <span className="text-xs text-amber-500 font-bold tracking-wider text-center px-4 leading-normal">
+              已啟用專案共享圖 <br />
+              <span className="text-[10px] font-mono font-medium text-neutral-400">/{projectImageOnThisPhaseFilename}</span>
+            </span>
+          </div>
+        </div>
+      );
+    }
+  } else if (currentTab === 'M4S') {
     const isWitchHunt = info.key === 'witch_hunt' || activeEventName.includes("魔女狩獵");
     const isFourEight1 = info.key === 'four_eight_1' || activeEventName.includes("四八雷星1");
     const isFourEight2 = info.key === 'four_eight_2' || activeEventName.includes("四八雷星2");
