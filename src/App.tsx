@@ -159,26 +159,78 @@ const M4S_TIMELINE: TimelineEvent[] = [
 
 const UWU_GARUDA_TIMELINE: TimelineEvent[] = [
   { id: 0, timeSec: 0.0, timeStr: "00:00.0", name: "開場ST、兩奶到B點", phase: "" },
-  { id: 1, timeSec: 10.0, timeStr: "00:10.0", name: "側風", phase: "" },
-  { id: 2, timeSec: 26.0, timeStr: "00:26.0", name: "柔羽，ST拉走一隻", phase: "" },
-  { id: 3, timeSec: 40.0, timeStr: "00:40.0", name: "鳥叫", phase: "" },
-  { id: 4, timeSec: 44.0, timeStr: "00:44.0", name: "集合減傷", phase: "" },
-  { id: 5, timeSec: 47.0, timeStr: "00:47.0", name: "ST", phase: "" },
-  { id: 6, timeSec: 52.0, timeStr: "00:52.0", name: "其他", phase: "" },
-  { id: 7, timeSec: 60.0, timeStr: "01:00.0", name: "D1", phase: "" },
-  { id: 8, timeSec: 63.0, timeStr: "01:03.0", name: "D2", phase: "" },
-  { id: 9, timeSec: 68.0, timeStr: "01:08.0", name: "鳥叫", phase: "" },
-  { id: 10, timeSec: 87.0, timeStr: "01:27.0", name: "分身", phase: "" },
-  { id: 11, timeSec: 89.0, timeStr: "01:29.0", name: "柔羽", phase: "" },
-  { id: 12, timeSec: 92.0, timeStr: "01:32.0", name: "左右擋線", phase: "" },
-  { id: 13, timeSec: 95.0, timeStr: "01:35.0", name: "減傷", phase: "" },
-  { id: 14, timeSec: 99.0, timeStr: "01:39.0", name: "鳥叫", phase: "" },
-  { id: 15, timeSec: 109.0, timeStr: "01:49.0", name: "柔羽", phase: "" },
-  { id: 16, timeSec: 115.0, timeStr: "01:55.0", name: "左右擋線", phase: "" },
-  { id: 17, timeSec: 124.0, timeStr: "02:04.0", name: "鳥叫", phase: "" },
-  { id: 18, timeSec: 137.0, timeStr: "02:17.0", name: "鋼鐵", phase: "" },
-  { id: 19, timeSec: 150.0, timeStr: "02:30.0", name: "月環", phase: "" },
-  { id: 20, timeSec: 153.0, timeStr: "02:33.0", name: "分擔", phase: "" }
+  { id: 1, timeSec: 10.0, timeStr: "00:10.0", name: "風槍", phase: "" },
+  { id: 2, timeSec: 26.0, timeStr: "00:26.0", name: "柔羽", phase: "" },
+  { id: 3, timeSec: 33.0, timeStr: "00:33.0", name: "鳥叫", phase: "" },
+  { id: 4, timeSec: 41.0, timeStr: "00:41.0", name: "集合減傷", phase: "" },
+  { id: 5, timeSec: 44.0, timeStr: "00:44.0", name: "ST進", phase: "" },
+  { id: 6, timeSec: 49.0, timeStr: "00:49.0", name: "第一次烈風刃", phase: "" },
+  { id: 7, timeSec: 55.0, timeStr: "00:55.0", name: "第二次烈風刃", phase: "" },
+  { id: 8, timeSec: 60.0, timeStr: "01:00.0", name: "D1進", phase: "" },
+  { id: 9, timeSec: 63.0, timeStr: "01:03.0", name: "D2進", phase: "" },
+  { id: 10, timeSec: 68.0, timeStr: "01:08.0", name: "鳥叫", phase: "" },
+  { id: 11, timeSec: 77.0, timeStr: "01:17.0", name: "大氣爆發，減傷", phase: "" },
+  { id: 12, timeSec: 85.0, timeStr: "01:25.0", name: "注意分身位置", phase: "" },
+  { id: 13, timeSec: 87.0, timeStr: "01:27.0", name: "鳥叫", phase: "" },
+  { id: 14, timeSec: 97.0, timeStr: "01:37.0", name: "分身風槍，減傷", phase: "" },
+  { id: 15, timeSec: 99.0, timeStr: "01:39.0", name: "鳥叫", phase: "" },
+  { id: 16, timeSec: 116.0, timeStr: "01:56.0", name: "柔羽", phase: "" },
+  { id: 17, timeSec: 123.0, timeStr: "02:03.0", name: "左右擋線，減傷", phase: "" },
+  { id: 18, timeSec: 124.0, timeStr: "02:04.0", name: "鳥叫", phase: "" },
+  { id: 19, timeSec: 145.0, timeStr: "02:25.0", name: "鋼鐵", phase: "" },
+  { id: 20, timeSec: 147.0, timeStr: "02:27.0", name: "月環", phase: "" },
+  { id: 21, timeSec: 153.0, timeStr: "02:33.0", name: "分擔，減傷", phase: "" }
+];
+
+const UWU_IFRIT_TIMELINE: TimelineEvent[] = [
+  { id: 0, timeSec: 0.0, timeStr: "00:00.0", name: "1號集中", phase: "" },
+  { id: 1, timeSec: 4.0, timeStr: "00:04.0", name: "疾跑、面向王看左右", phase: "" },
+  { id: 2, timeSec: 6.0, timeStr: "00:06.0", name: "跑!", phase: "" },
+  { id: 3, timeSec: 10.0, timeStr: "00:10.0", name: "遠離C點", phase: "" },
+  { id: 4, timeSec: 13.0, timeStr: "00:13.0", name: "減傷＋群補＋爆發", phase: "" },
+  { id: 5, timeSec: 41.0, timeStr: "00:41.0", name: "注意梯形", phase: "" },
+  { id: 6, timeSec: 41.0, timeStr: "00:41.0", name: "引導地火", phase: "" },
+  { id: 7, timeSec: 49.0, timeStr: "00:49.0", name: "熱風奶出去，逆Z打火柱", phase: "" },
+  { id: 8, timeSec: 77.0, timeStr: "01:17.0", name: "減傷＋群補", phase: "" },
+  { id: 9, timeSec: 84.0, timeStr: "01:24.0", name: "引導地火", phase: "" },
+  { id: 10, timeSec: 86.0, timeStr: "01:26.0", name: "熱風奶出去", phase: "" },
+  { id: 11, timeSec: 104.0, timeStr: "01:44.0", name: "第二次熱風奶", phase: "" },
+  { id: 12, timeSec: 110.0, timeStr: "01:50.0", name: "火神衝預備", phase: "" },
+  { id: 13, timeSec: 115.0, timeStr: "01:55.0", name: "調整位置", phase: "" },
+  { id: 14, timeSec: 120.0, timeStr: "02:00.0", name: "開疾跑", phase: "" },
+  { id: 15, timeSec: 123.0, timeStr: "02:03.0", name: "衝!", phase: "" },
+  { id: 16, timeSec: 130.0, timeStr: "02:10.0", name: "靠邊準備土神", phase: "" }
+];
+
+const UWU_TITAN_TIMELINE: TimelineEvent[] = [
+  { id: 0, timeSec: 5.0, timeStr: "00:05.0", name: "A點集合", phase: "" },
+  { id: 1, timeSec: 7.0, timeStr: "00:07.0", name: "減傷+爆發", phase: "" },
+  { id: 2, timeSec: 23.0, timeStr: "00:23.0", name: "躲流沙1", phase: "" },
+  { id: 3, timeSec: 26.0, timeStr: "00:26.0", name: "流沙2回A點＋自殺組自殺", phase: "" },
+  { id: 4, timeSec: 30.0, timeStr: "00:30.0", name: "觀察王面向", phase: "" },
+  { id: 5, timeSec: 34.0, timeStr: "00:34.0", name: "靠近王", phase: "" },
+  { id: 6, timeSec: 37.0, timeStr: "00:37.0", name: "觀察安全點", phase: "" },
+  { id: 7, timeSec: 43.0, timeStr: "00:43.0", name: "躲安全區，開疾跑引導", phase: "" },
+  { id: 8, timeSec: 52.0, timeStr: "00:52.0", name: "自殺組復活，王腳下集合，減傷", phase: "" },
+  { id: 9, timeSec: 67.0, timeStr: "01:07.0", name: "躲流沙1", phase: "" },
+  { id: 10, timeSec: 70.0, timeStr: "01:10.0", name: "躲流沙2", phase: "" },
+  { id: 11, timeSec: 73.0, timeStr: "01:13.0", name: "躲地裂", phase: "" },
+  { id: 12, timeSec: 75.0, timeStr: "01:15.0", name: "進地裂", phase: "" },
+  { id: 13, timeSec: 81.0, timeStr: "01:21.0", name: "觀察王面向", phase: "" },
+  { id: 14, timeSec: 86.0, timeStr: "01:26.0", name: "1點集合", phase: "" },
+  { id: 15, timeSec: 93.0, timeStr: "01:33.0", name: "打石牢", phase: "" },
+  { id: 16, timeSec: 100.0, timeStr: "01:40.0", name: "躲地裂", phase: "" },
+  { id: 17, timeSec: 102.0, timeStr: "01:42.0", name: "進地裂", phase: "" },
+  { id: 18, timeSec: 108.0, timeStr: "01:48.0", name: "1號點集合，減傷", phase: "" },
+  { id: 19, timeSec: 121.0, timeStr: "02:01.0", name: "王正面集合", phase: "" },
+  { id: 20, timeSec: 123.0, timeStr: "02:03.0", name: "順時針跑", phase: "" },
+  { id: 21, timeSec: 129.0, timeStr: "02:09.0", name: "躲地裂", phase: "" },
+  { id: 22, timeSec: 130.0, timeStr: "02:10.0", name: "進地裂", phase: "" },
+  { id: 23, timeSec: 135.0, timeStr: "02:15.0", name: "爆發", phase: "" },
+  { id: 24, timeSec: 145.0, timeStr: "02:25.0", name: "躲流沙1", phase: "" },
+  { id: 25, timeSec: 148.0, timeStr: "02:28.0", name: "躲流沙2", phase: "" },
+  { id: 26, timeSec: 151.0, timeStr: "02:31.0", name: "躲流沙3", phase: "" },
+  { id: 27, timeSec: 156.0, timeStr: "02:36.0", name: "減傷", phase: "" }
 ];
 
 interface MechanicMapConfig {
@@ -451,15 +503,15 @@ export default function App() {
   const [uwuIfritTimeline, setUwuIfritTimeline] = useState<TimelineEvent[]>(() => {
     try {
       const saved = localStorage.getItem('uwu_ifrit_timeline_custom_v1');
-      return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
+      return saved ? JSON.parse(saved) : UWU_IFRIT_TIMELINE;
+    } catch { return UWU_IFRIT_TIMELINE; }
   });
 
   const [uwuTitanTimeline, setUwuTitanTimeline] = useState<TimelineEvent[]>(() => {
     try {
       const saved = localStorage.getItem('uwu_titan_timeline_custom_v1');
-      return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
+      return saved ? JSON.parse(saved) : UWU_TITAN_TIMELINE;
+    } catch { return UWU_TITAN_TIMELINE; }
   });
 
   const [uwuUltima1Timeline, setUwuUltima1Timeline] = useState<TimelineEvent[]>(() => {
@@ -928,11 +980,11 @@ export default function App() {
             localStorage.removeItem('uwu_garuda_timeline_custom_v1');
             break;
           case 'IFRIT':
-            setUwuIfritTimeline([]);
+            setUwuIfritTimeline(UWU_IFRIT_TIMELINE);
             localStorage.removeItem('uwu_ifrit_timeline_custom_v1');
             break;
           case 'TITAN':
-            setUwuTitanTimeline([]);
+            setUwuTitanTimeline(UWU_TITAN_TIMELINE);
             localStorage.removeItem('uwu_titan_timeline_custom_v1');
             break;
           case 'ULTIMA1':
