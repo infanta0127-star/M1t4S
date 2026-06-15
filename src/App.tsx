@@ -746,8 +746,12 @@ export default function App() {
           };
           const text = phaseNames[nextPhase] || '已自動進入下一階段';
           
-          // Do NOT reset player progress or elapsed times as UWU phase times are continuous.
-          // Simply clear speaking/alerting guards so the new phase can fire its own voice triggers seamlessly
+          // Reset player progress to 0 for the next phase (only Garuda has a -10s countdown)
+          setElapsed(0);
+          pausedTimeRef.current = 0;
+          if (isPlaying) {
+            startTimeRef.current = performance.now();
+          }
           lastSpokenEventIdRef.current = null;
           alerted5sRef.current = false;
           alerted0sRef.current = false;
@@ -1087,8 +1091,9 @@ export default function App() {
 
   const handleReset = () => {
     setIsPlaying(false);
-    pausedTimeRef.current = -10;
-    setElapsed(-10);
+    const resetTime = (currentTab === 'UWU' && selectedUwuPhase !== 'GARUDA') ? 0 : -10;
+    pausedTimeRef.current = resetTime;
+    setElapsed(resetTime);
     startTimeRef.current = null;
     lastSpokenEventIdRef.current = null;
     alerted5sRef.current = false;
@@ -1433,30 +1438,7 @@ export default function App() {
                           const phaseId = phase.id as 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3';
                           setSelectedUwuPhase(phaseId);
                           
-                          let phaseTimeline: TimelineEvent[] = [];
-                          if (phaseId === 'GARUDA') phaseTimeline = uwuGarudaTimeline;
-                          else if (phaseId === 'IFRIT') phaseTimeline = uwuIfritTimeline;
-                          else if (phaseId === 'TITAN') phaseTimeline = uwuTitanTimeline;
-                          else if (phaseId === 'ULTIMA1') phaseTimeline = uwuUltima1Timeline;
-                          else if (phaseId === 'ULTIMA2') phaseTimeline = uwuUltima2Timeline;
-                          else if (phaseId === 'ULTIMA3') phaseTimeline = uwuUltima3Timeline;
-
-                          let jumpTime = -10;
-                          if (phaseTimeline.length > 0) {
-                            const times = phaseTimeline.map(ev => ev.timeSec);
-                            const minTime = Math.min(...times);
-                            jumpTime = Math.max(-10, minTime - 5);
-                          } else {
-                            const defaults: Record<string, number> = {
-                              'GARUDA': -10,
-                              'IFRIT': 160,
-                              'TITAN': 270,
-                              'ULTIMA1': 410,
-                              'ULTIMA2': 530,
-                              'ULTIMA3': 670
-                            };
-                            jumpTime = defaults[phaseId] ?? -10;
-                          }
+                          const jumpTime = phaseId === 'GARUDA' ? -10 : 0;
 
                           setElapsed(jumpTime);
                           pausedTimeRef.current = jumpTime;
@@ -1482,7 +1464,7 @@ export default function App() {
                       🔄 連續自動連播已啟用
                     </span>
                     <span className="leading-normal">
-                      絕神兵副本無休息點。當前階段播放完畢後，系統將<strong>無縫自動切換</strong>至下一階段繼續播放（無須倒數）。點擊上方各階段可快速跳轉至該階段秒數，方便戰術檢討。
+                      絕神兵副本除了第一階段有倒數 10 秒以外，後面的階段皆是從 00:00 開始。各階段播放完畢後，系統將<strong>無縫自動切換</strong>至下一階段重新自 00:00 開始播放。
                     </span>
                   </div>
                 </div>
