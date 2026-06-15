@@ -157,6 +157,30 @@ const M4S_TIMELINE: TimelineEvent[] = [
   { id: 38, timeSec: 810.0, timeStr: "13:30.0", phase: "狂暴", name: "狂暴" }
 ];
 
+const UWU_GARUDA_TIMELINE: TimelineEvent[] = [
+  { id: 0, timeSec: 0.0, timeStr: "00:00.0", name: "開場ST、兩奶到B點", phase: "" },
+  { id: 1, timeSec: 10.0, timeStr: "00:10.0", name: "側風", phase: "" },
+  { id: 2, timeSec: 26.0, timeStr: "00:26.0", name: "柔羽，ST拉走一隻", phase: "" },
+  { id: 3, timeSec: 40.0, timeStr: "00:40.0", name: "鳥叫", phase: "" },
+  { id: 4, timeSec: 44.0, timeStr: "00:44.0", name: "集合減傷", phase: "" },
+  { id: 5, timeSec: 47.0, timeStr: "00:47.0", name: "ST", phase: "" },
+  { id: 6, timeSec: 52.0, timeStr: "00:52.0", name: "其他", phase: "" },
+  { id: 7, timeSec: 60.0, timeStr: "01:00.0", name: "D1", phase: "" },
+  { id: 8, timeSec: 63.0, timeStr: "01:03.0", name: "D2", phase: "" },
+  { id: 9, timeSec: 68.0, timeStr: "01:08.0", name: "鳥叫", phase: "" },
+  { id: 10, timeSec: 87.0, timeStr: "01:27.0", name: "分身", phase: "" },
+  { id: 11, timeSec: 89.0, timeStr: "01:29.0", name: "柔羽", phase: "" },
+  { id: 12, timeSec: 92.0, timeStr: "01:32.0", name: "左右擋線", phase: "" },
+  { id: 13, timeSec: 95.0, timeStr: "01:35.0", name: "減傷", phase: "" },
+  { id: 14, timeSec: 99.0, timeStr: "01:39.0", name: "鳥叫", phase: "" },
+  { id: 15, timeSec: 109.0, timeStr: "01:49.0", name: "柔羽", phase: "" },
+  { id: 16, timeSec: 115.0, timeStr: "01:55.0", name: "左右擋線", phase: "" },
+  { id: 17, timeSec: 124.0, timeStr: "02:04.0", name: "鳥叫", phase: "" },
+  { id: 18, timeSec: 137.0, timeStr: "02:17.0", name: "鋼鐵", phase: "" },
+  { id: 19, timeSec: 150.0, timeStr: "02:30.0", name: "月環", phase: "" },
+  { id: 20, timeSec: 153.0, timeStr: "02:33.0", name: "分擔", phase: "" }
+];
+
 interface MechanicMapConfig {
   key: string;
   filename: string;
@@ -420,8 +444,8 @@ export default function App() {
   const [uwuGarudaTimeline, setUwuGarudaTimeline] = useState<TimelineEvent[]>(() => {
     try {
       const saved = localStorage.getItem('uwu_garuda_timeline_custom_v1');
-      return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
+      return saved ? JSON.parse(saved) : UWU_GARUDA_TIMELINE;
+    } catch { return UWU_GARUDA_TIMELINE; }
   });
 
   const [uwuIfritTimeline, setUwuIfritTimeline] = useState<TimelineEvent[]>(() => {
@@ -725,45 +749,6 @@ export default function App() {
     }
   }, [elapsed, isPlaying, nextEvent]);
 
-  // Auto-advance UWU phase when the last event of the phase finishes
-  useEffect(() => {
-    if (currentTab === 'UWU' && isPlaying && timeline.length > 0) {
-      const maxTime = Math.max(...timeline.map((ev) => ev.timeSec));
-      // Buffer of 3 seconds after the last event to move to the next phase
-      if (elapsed > maxTime + 3.0) {
-        const phases: Array<'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3'> = [
-          'GARUDA', 'IFRIT', 'TITAN', 'ULTIMA1', 'ULTIMA2', 'ULTIMA3'
-        ];
-        const currentIndex = phases.indexOf(selectedUwuPhase);
-        if (currentIndex !== -1 && currentIndex < phases.length - 1) {
-          const nextPhase = phases[currentIndex + 1];
-          const phaseNames: Record<string, string> = {
-            'IFRIT': '已自動進入火神階段',
-            'TITAN': '已自動進入土神階段',
-            'ULTIMA1': '已自動進入最終階段一',
-            'ULTIMA2': '已自動進入最終階段二',
-            'ULTIMA3': '已自動進入最終階段三',
-          };
-          const text = phaseNames[nextPhase] || '已自動進入下一階段';
-          
-          // Reset player progress to 0 for the next phase (only Garuda has a -10s countdown)
-          setElapsed(0);
-          pausedTimeRef.current = 0;
-          if (isPlaying) {
-            startTimeRef.current = performance.now();
-          }
-          lastSpokenEventIdRef.current = null;
-          alerted5sRef.current = false;
-          alerted0sRef.current = false;
-          
-          setSelectedUwuPhase(nextPhase);
-          speakText(text);
-          showToast(text);
-        }
-      }
-    }
-  }, [elapsed, currentTab, selectedUwuPhase, isPlaying, timeline]);
-
   // Handle manual scroll lock
   const handleScroll = () => {
     setIsUserScrolling(true);
@@ -939,7 +924,7 @@ export default function App() {
       case 'UWU':
         switch (selectedUwuPhase) {
           case 'GARUDA':
-            setUwuGarudaTimeline([]);
+            setUwuGarudaTimeline(UWU_GARUDA_TIMELINE);
             localStorage.removeItem('uwu_garuda_timeline_custom_v1');
             break;
           case 'IFRIT':
@@ -1445,9 +1430,8 @@ export default function App() {
                           lastSpokenEventIdRef.current = null;
                           alerted5sRef.current = false;
                           alerted0sRef.current = false;
-                          if (isPlaying) {
-                            startTimeRef.current = performance.now();
-                          }
+                          setIsPlaying(true);
+                          startTimeRef.current = performance.now();
                         }}
                         className={`py-2 px-1 rounded-xl text-xs font-bold transition-all border text-center cursor-pointer select-none ${
                           selectedUwuPhase === phase.id
@@ -1460,11 +1444,11 @@ export default function App() {
                     ))}
                   </div>
                   <div className="mt-1 flex flex-col xs:flex-row xs:items-center gap-1.5 text-[11px] text-amber-500/90 font-sans tracking-wide bg-amber-500/5 px-3 py-2 rounded-xl border border-amber-500/10">
-                    <span className="shrink-0 inline-flex items-center justify-center bg-amber-500/15 text-amber-400 border border-amber-500/20 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider animate-pulse whitespace-nowrap self-start xs:self-auto">
-                      🔄 連續自動連播已啟用
+                    <span className="shrink-0 inline-flex items-center justify-center bg-amber-500/15 text-amber-400 border border-amber-500/20 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider whitespace-nowrap self-start xs:self-auto">
+                      ✋ 需手動切換階段
                     </span>
                     <span className="leading-normal">
-                      絕神兵副本除了第一階段有倒數 10 秒以外，後面的階段皆是從 00:00 開始。各階段播放完畢後，系統將<strong>無縫自動切換</strong>至下一階段重新自 00:00 開始播放。
+                      每一階段擊殺時間不一樣，請自行點擊下一階段的按鈕，按了之後會繼續開始自動播放新的時間軸
                     </span>
                   </div>
                 </div>
