@@ -1391,69 +1391,6 @@ export default function App() {
                 {renderElapsedControls()}
               </div>
 
-              {/* UWU Phase Selector */}
-              {currentTab === 'UWU' && (
-                <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-4 flex flex-col gap-3 shadow-xl w-full animate-fadeIn">
-                  <div className="flex items-center gap-1.5 pb-2 border-b border-neutral-800/60 justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 animate-pulse" />
-                      <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-widest">絕境戰：絕神兵 ✕ 階段選擇</h3>
-                    </div>
-                    <span className="text-[10px] bg-neutral-800 px-2 py-0.5 rounded text-neutral-450 font-mono font-bold">
-                      {selectedUwuPhase === 'GARUDA' && 'GARUDA PHASE'}
-                      {selectedUwuPhase === 'IFRIT' && 'IFRIT PHASE'}
-                      {selectedUwuPhase === 'TITAN' && 'TITAN PHASE'}
-                      {selectedUwuPhase === 'ULTIMA1' && 'ULTIMA PHASE PART I'}
-                      {selectedUwuPhase === 'ULTIMA2' && 'ULTIMA PHASE PART II'}
-                      {selectedUwuPhase === 'ULTIMA3' && 'ULTIMA PHASE PART III'}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-3 xs:grid-cols-6 gap-2 w-full">
-                    {[
-                      { id: 'GARUDA', label: '風神' },
-                      { id: 'IFRIT', label: '火神' },
-                      { id: 'TITAN', label: '土神' },
-                      { id: 'ULTIMA1', label: '最終階段1' },
-                      { id: 'ULTIMA2', label: '最終階段2' },
-                      { id: 'ULTIMA3', label: '最終階段3' },
-                    ].map((phase) => (
-                      <button
-                        key={phase.id}
-                        onClick={() => {
-                          const phaseId = phase.id as 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3';
-                          setSelectedUwuPhase(phaseId);
-                          
-                          const jumpTime = phaseId === 'GARUDA' ? -10 : 0;
-
-                          setElapsed(jumpTime);
-                          pausedTimeRef.current = jumpTime;
-                          lastSpokenEventIdRef.current = null;
-                          alerted5sRef.current = false;
-                          alerted0sRef.current = false;
-                          setIsPlaying(true);
-                          startTimeRef.current = performance.now();
-                        }}
-                        className={`py-2 px-1 rounded-xl text-xs font-bold transition-all border text-center cursor-pointer select-none ${
-                          selectedUwuPhase === phase.id
-                            ? 'bg-amber-500/10 text-amber-500 border-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.15)] font-black scale-[1.02]'
-                            : 'bg-neutral-950/45 border-neutral-800/80 text-neutral-400 hover:text-neutral-200 hover:border-neutral-700 hover:bg-neutral-800/20'
-                        }`}
-                      >
-                        {phase.label}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="mt-1 flex flex-col xs:flex-row xs:items-center gap-1.5 text-[11px] text-amber-500/90 font-sans tracking-wide bg-amber-500/5 px-3 py-2 rounded-xl border border-amber-500/10">
-                    <span className="shrink-0 inline-flex items-center justify-center bg-amber-500/15 text-amber-400 border border-amber-500/20 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider whitespace-nowrap self-start xs:self-auto">
-                      ✋ 需手動切換階段
-                    </span>
-                    <span className="leading-normal">
-                      每一階段擊殺時間不一樣，請自行點擊下一階段的按鈕，按了之後會繼續開始自動播放新的時間軸
-                    </span>
-                  </div>
-                </div>
-              )}
-
               {/* Live Tactical Map that auto-switches per phase */}
               {currentTab !== 'AUTHOR' && (
                 <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-5 flex flex-col items-center transition-all duration-500 shadow-xl w-full">
@@ -1902,6 +1839,69 @@ export default function App() {
                   </div>
                 )}
               </div>
+
+              {/* UWU Phase Selector */}
+              {currentTab === 'UWU' && (
+                <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-4 flex flex-col gap-3 shadow-xl w-full animate-fadeIn shrink-0">
+                  <div className="flex items-center gap-1.5 pb-2 border-b border-neutral-800/60 justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 animate-pulse" />
+                      <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-widest">絕境戰：絕神兵 ✕ 階段選擇</h3>
+                    </div>
+                    <span className="text-[10px] bg-neutral-800 px-2 py-0.5 rounded text-neutral-450 font-mono font-bold">
+                      {selectedUwuPhase === 'GARUDA' && 'GARUDA PHASE'}
+                      {selectedUwuPhase === 'IFRIT' && 'IFRIT PHASE'}
+                      {selectedUwuPhase === 'TITAN' && 'TITAN PHASE'}
+                      {selectedUwuPhase === 'ULTIMA1' && 'ULTIMA PHASE PART I'}
+                      {selectedUwuPhase === 'ULTIMA2' && 'ULTIMA PHASE PART II'}
+                      {selectedUwuPhase === 'ULTIMA3' && 'ULTIMA PHASE PART III'}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 xs:grid-cols-6 gap-2 w-full">
+                    {[
+                      { id: 'GARUDA', label: '風神' },
+                      { id: 'IFRIT', label: '火神' },
+                      { id: 'TITAN', label: '土神' },
+                      { id: 'ULTIMA1', label: '最終階段1' },
+                      { id: 'ULTIMA2', label: '最終階段2' },
+                      { id: 'ULTIMA3', label: '最終階段3' },
+                    ].map((phase) => (
+                      <button
+                        key={phase.id}
+                        onClick={() => {
+                          const phaseId = phase.id as 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3';
+                          setSelectedUwuPhase(phaseId);
+                          
+                          const jumpTime = phaseId === 'GARUDA' ? -10 : 0;
+
+                          setElapsed(jumpTime);
+                          pausedTimeRef.current = jumpTime;
+                          lastSpokenEventIdRef.current = null;
+                          alerted5sRef.current = false;
+                          alerted0sRef.current = false;
+                          setIsPlaying(true);
+                          startTimeRef.current = performance.now();
+                        }}
+                        className={`py-3 px-1.5 rounded-xl text-xs md:text-sm font-bold transition-all border text-center cursor-pointer select-none ${
+                          selectedUwuPhase === phase.id
+                            ? 'bg-amber-500/10 text-amber-500 border-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.15)] font-black scale-[1.02]'
+                            : 'bg-neutral-950/45 border-neutral-800/80 text-neutral-400 hover:text-neutral-200 hover:border-neutral-700 hover:bg-neutral-800/20'
+                        }`}
+                      >
+                        {phase.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-1 flex flex-col xs:flex-row xs:items-center gap-1.5 text-[11px] text-amber-500/90 font-sans tracking-wide bg-amber-500/5 px-3 py-2 rounded-xl border border-amber-500/10">
+                    <span className="shrink-0 inline-flex items-center justify-center bg-amber-500/15 text-amber-400 border border-amber-500/20 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider whitespace-nowrap self-start xs:self-auto">
+                      ✋ 需手動切換階段
+                    </span>
+                    <span className="leading-normal">
+                      每一階段擊殺時間不一樣，請自行點擊下一階段的按鈕，按了之後會繼續開始自動播放新的時間軸
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {/* Timeline Header and Edit Mode Buttons */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mt-2 px-1">
