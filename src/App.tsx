@@ -233,6 +233,84 @@ const UWU_TITAN_TIMELINE: TimelineEvent[] = [
   { id: 27, timeSec: 156.0, timeStr: "02:36.0", name: "減傷", phase: "" }
 ];
 
+const UWU_ULTIMA1_TIMELINE: TimelineEvent[] = [
+  { id: 0, timeSec: 0.0, timeStr: "00:00.0", name: "爆發", phase: "" },
+  { id: 1, timeSec: 4.0, timeStr: "00:04.0", name: "魔導火光", phase: "" },
+  { id: 2, timeSec: 9.0, timeStr: "00:09.0", name: "吸附式炸彈", phase: "" },
+  { id: 3, timeSec: 14.0, timeStr: "00:14.0", name: "誘導射線打", phase: "" },
+  { id: 4, timeSec: 17.0, timeStr: "00:17.0", name: "吸附式炸彈爆炸", phase: "" },
+  { id: 5, timeSec: 22.0, timeStr: "00:22.0", name: "1號位集合", phase: "" },
+  { id: 6, timeSec: 29.0, timeStr: "00:29.0", name: "觀察風神面向，往沒有泰坦的正角移動", phase: "" },
+  { id: 7, timeSec: 35.0, timeStr: "00:35.0", name: "躲地裂", phase: "" },
+  { id: 8, timeSec: 40.0, timeStr: "00:40.0", name: "躲本體傷害，場地減傷", phase: "" },
+  { id: 9, timeSec: 43.0, timeStr: "00:43.0", name: "鳥叫，人群A點集合，D3D4往C點準備引導地火", phase: "" },
+  { id: 10, timeSec: 56.0, timeStr: "00:56.0", name: "開始引導地火", phase: "" },
+  { id: 11, timeSec: 66.0, timeStr: "01:06.0", name: "光輝炎柱，A點左邊集合", phase: "" },
+  { id: 12, timeSec: 69.0, timeStr: "01:09.0", name: "往2號點移動，L字引導地裂", phase: "" },
+  { id: 13, timeSec: 73.0, timeStr: "01:13.0", name: "進地裂", phase: "" },
+  { id: 14, timeSec: 78.0, timeStr: "01:18.0", name: "激震，場地減傷", phase: "" },
+  { id: 15, timeSec: 82.0, timeStr: "01:22.0", name: "吸附式炸彈", phase: "" },
+  { id: 16, timeSec: 88.0, timeStr: "01:28.0", name: "寒風之嘯，場地減傷", phase: "" },
+  { id: 17, timeSec: 90.0, timeStr: "01:30.0", name: "鳥叫，團隊逆時針移動", phase: "" },
+  { id: 18, timeSec: 92.0, timeStr: "01:32.0", name: "吸附式炸彈爆炸", phase: "" },
+  { id: 19, timeSec: 93.0, timeStr: "01:33.0", name: "鳥叫，團隊逆時針移動", phase: "" },
+  { id: 20, timeSec: 95.0, timeStr: "01:35.0", name: "誘導射線", phase: "" },
+  { id: 21, timeSec: 99.0, timeStr: "01:39.0", name: "A點左邊集合", phase: "" },
+  { id: 22, timeSec: 108.0, timeStr: "01:48.0", name: "躲流沙", phase: "" },
+  { id: 23, timeSec: 111.0, timeStr: "01:51.0", name: "躲流沙", phase: "" },
+  { id: 24, timeSec: 114.0, timeStr: "01:54.0", name: "躲流沙", phase: "" },
+  { id: 25, timeSec: 115.0, timeStr: "01:55.0", name: "第一次撞球", phase: "" },
+  { id: 26, timeSec: 118.0, timeStr: "01:58.0", name: "鳥叫，熱風奶到C點方向", phase: "" },
+  { id: 27, timeSec: 120.0, timeStr: "02:00.0", name: "第二次撞球", phase: "" },
+  { id: 28, timeSec: 123.0, timeStr: "02:03.0", name: "第一次熱風傷害，觀察火神位置", phase: "" },
+  { id: 29, timeSec: 124.0, timeStr: "02:04.0", name: "躲地裂1", phase: "" },
+  { id: 30, timeSec: 125.0, timeStr: "02:05.0", name: "斜深紅旋風", phase: "" },
+  { id: 31, timeSec: 126.0, timeStr: "02:06.0", name: "熱風補移動到火神位置，人群移動到泰坦對面", phase: "" },
+  { id: 32, timeSec: 127.0, timeStr: "02:07.0", name: "十字深紅旋風", phase: "" },
+  { id: 33, timeSec: 128.0, timeStr: "02:08.0", name: "躲地裂2，躲颱風眼", phase: "" },
+  { id: 34, timeSec: 129.0, timeStr: "02:09.0", name: "第二次熱風傷害", phase: "" },
+  { id: 35, timeSec: 130.0, timeStr: "02:10.0", name: "第三次撞球，目標減", phase: "" },
+  { id: 36, timeSec: 131.0, timeStr: "02:11.0", name: "颱風眼消失", phase: "" },
+  { id: 37, timeSec: 133.0, timeStr: "02:13.0", name: "第四次撞球", phase: "" },
+  { id: 38, timeSec: 134.0, timeStr: "02:14.0", name: "吃線傷害產生", phase: "" },
+  { id: 39, timeSec: 135.0, timeStr: "02:15.0", name: "第三次熱風傷害", phase: "" },
+  { id: 40, timeSec: 136.0, timeStr: "02:16.0", name: "鳥叫", phase: "" },
+  { id: 41, timeSec: 137.0, timeStr: "02:17.0", name: "魔導火光", phase: "" },
+  { id: 42, timeSec: 141.0, timeStr: "02:21.0", name: "第四次熱風傷害", phase: "" },
+  { id: 43, timeSec: 145.0, timeStr: "02:25.0", name: "颱風眼出現", phase: "" },
+  { id: 44, timeSec: 147.0, timeStr: "02:27.0", name: "第五次熱風傷害", phase: "" },
+  { id: 45, timeSec: 153.0, timeStr: "02:33.0", name: "誘導射線", phase: "" },
+  { id: 46, timeSec: 157.0, timeStr: "02:37.0", name: "向內躲颱風眼", phase: "" },
+  { id: 47, timeSec: 159.0, timeStr: "02:39.0", name: "向外躲光輝炎柱", phase: "" },
+  { id: 48, timeSec: 163.0, timeStr: "02:43.0", name: "向內躲颱風眼", phase: "" },
+  { id: 49, timeSec: 169.0, timeStr: "02:49.0", name: "上盾避免擊退", phase: "" },
+  { id: 50, timeSec: 173.0, timeStr: "02:53.0", name: "誘導射線", phase: "" },
+  { id: 51, timeSec: 181.0, timeStr: "03:01.0", name: "上盾避免擊退", phase: "" },
+  { id: 52, timeSec: 184.0, timeStr: "03:04.0", name: "誘導射線", phase: "" },
+  { id: 53, timeSec: 185.0, timeStr: "03:05.0", name: "到底壓進於50%了沒~", phase: "" }
+];
+
+const UWU_ULTIMA2_TIMELINE: TimelineEvent[] = [
+  { id: 0, timeSec: 0.0, timeStr: "00:00.0", name: "亂擊之究極幻想", phase: "" },
+  { id: 1, timeSec: 10.0, timeStr: "00:10.0", name: "人群1號集合", phase: "" },
+  { id: 2, timeSec: 15.0, timeStr: "00:15.0", name: "坦克LB", phase: "" },
+  { id: 3, timeSec: 20.0, timeStr: "00:20.0", name: "鳥叫，往A點移動", phase: "" },
+  { id: 4, timeSec: 21.0, timeStr: "00:21.0", name: "鳥叫，打石牢", phase: "" },
+  { id: 5, timeSec: 23.0, timeStr: "00:23.0", name: "保持移動，場地減傷", phase: "" },
+  { id: 6, timeSec: 25.0, timeStr: "00:25.0", name: "往D點集合", phase: "" },
+  { id: 7, timeSec: 29.0, timeStr: "00:29.0", name: "躲地裂、躲雷射", phase: "" },
+  { id: 8, timeSec: 31.0, timeStr: "00:31.0", name: "進地裂", phase: "" },
+  { id: 9, timeSec: 37.0, timeStr: "00:37.0", name: "鳥叫", phase: "" },
+  { id: 10, timeSec: 40.0, timeStr: "00:40.0", name: "魔導火光", phase: "" },
+  { id: 11, timeSec: 45.0, timeStr: "00:45.0", name: "打王", phase: "" },
+  { id: 12, timeSec: 47.0, timeStr: "00:47.0", name: "坦克LB、減傷全開", phase: "" },
+  { id: 13, timeSec: 55.0, timeStr: "00:55.0", name: "最終究極", phase: "" },
+  { id: 14, timeSec: 58.0, timeStr: "00:58.0", name: "坦克LB", phase: "" },
+  { id: 15, timeSec: 65.0, timeStr: "01:05.0", name: "撞球", phase: "" },
+  { id: 16, timeSec: 70.0, timeStr: "01:10.0", name: "2號點集合", phase: "" },
+  { id: 17, timeSec: 84.0, timeStr: "01:24.0", name: "家長會開始", phase: "" }
+];
+
 interface MechanicMapConfig {
   key: string;
   filename: string;
@@ -279,7 +357,7 @@ function getMechanicInfo(
   currentTab: TabType,
   eventName: string,
   eventTimeSec?: number,
-  selectedUwuPhase?: 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3'
+  selectedUwuPhase?: 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2'
 ): MechanicMapConfig {
   if (currentTab === 'AUTHOR') return { key: 'none', filename: '', displayName: '', pattern: [] };
   
@@ -290,11 +368,9 @@ function getMechanicInfo(
       case 'TITAN':
         return { key: 'uwu_titan', filename: 'uwu_titan.png', displayName: '土神階段', pattern: [] };
       case 'ULTIMA1':
-        return { key: 'uwu_ultima1', filename: 'uwu_ultima1.png', displayName: '最終階段1', pattern: [] };
+        return { key: 'uwu_ultima1', filename: 'uwu_ultima1.png', displayName: '神兵1運+2運', pattern: [] };
       case 'ULTIMA2':
-        return { key: 'uwu_ultima2', filename: 'uwu_ultima2.png', displayName: '最終階段2', pattern: [] };
-      case 'ULTIMA3':
-        return { key: 'uwu_ultima3', filename: 'uwu_ultima3.png', displayName: '最終階段3', pattern: [] };
+        return { key: 'uwu_ultima2', filename: 'uwu_ultima2.png', displayName: '神兵3運', pattern: [] };
       case 'GARUDA':
       default:
         return { key: 'uwu_garuda', filename: 'uwu_garuda.png', displayName: '風神階段', pattern: [] };
@@ -386,6 +462,20 @@ export default function App() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [elapsed, setElapsed] = useState<number>(-10);
 
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia("(max-width: 1023px)").matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 1023px)");
+    const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
+  }, []);
+
   const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {
     return localStorage.getItem('sound_enabled') !== 'false';
   });
@@ -454,9 +544,9 @@ export default function App() {
     setMissingProjectImages(prev => ({ ...prev, [filename]: true }));
   };
 
-  const [selectedUwuPhase, setSelectedUwuPhase] = useState<'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3'>(() => {
-    const saved = localStorage.getItem('selected_uwu_phase') as 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3';
-    if (['GARUDA', 'IFRIT', 'TITAN', 'ULTIMA1', 'ULTIMA2', 'ULTIMA3'].includes(saved)) {
+  const [selectedUwuPhase, setSelectedUwuPhase] = useState<'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2'>(() => {
+    const saved = localStorage.getItem('selected_uwu_phase') as 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2';
+    if (['GARUDA', 'IFRIT', 'TITAN', 'ULTIMA1', 'ULTIMA2'].includes(saved)) {
       return saved;
     }
     return 'GARUDA';
@@ -517,22 +607,15 @@ export default function App() {
   const [uwuUltima1Timeline, setUwuUltima1Timeline] = useState<TimelineEvent[]>(() => {
     try {
       const saved = localStorage.getItem('uwu_ultima1_timeline_custom_v1');
-      return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
+      return saved ? JSON.parse(saved) : UWU_ULTIMA1_TIMELINE;
+    } catch { return UWU_ULTIMA1_TIMELINE; }
   });
 
   const [uwuUltima2Timeline, setUwuUltima2Timeline] = useState<TimelineEvent[]>(() => {
     try {
       const saved = localStorage.getItem('uwu_ultima2_timeline_custom_v1');
-      return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
-  });
-
-  const [uwuUltima3Timeline, setUwuUltima3Timeline] = useState<TimelineEvent[]>(() => {
-    try {
-      const saved = localStorage.getItem('uwu_ultima3_timeline_custom_v1');
-      return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
+      return saved ? JSON.parse(saved) : UWU_ULTIMA2_TIMELINE;
+    } catch { return UWU_ULTIMA2_TIMELINE; }
   });
 
   const timeline = useMemo(() => {
@@ -546,13 +629,12 @@ export default function App() {
           case 'TITAN': return uwuTitanTimeline;
           case 'ULTIMA1': return uwuUltima1Timeline;
           case 'ULTIMA2': return uwuUltima2Timeline;
-          case 'ULTIMA3': return uwuUltima3Timeline;
           default: return [];
         }
       case 'M4S':
       default: return m4sTimeline;
     }
-  }, [currentTab, m2sTimeline, m3sTimeline, m4sTimeline, selectedUwuPhase, uwuGarudaTimeline, uwuIfritTimeline, uwuTitanTimeline, uwuUltima1Timeline, uwuUltima2Timeline, uwuUltima3Timeline]);
+  }, [currentTab, m2sTimeline, m3sTimeline, m4sTimeline, selectedUwuPhase, uwuGarudaTimeline, uwuIfritTimeline, uwuTitanTimeline, uwuUltima1Timeline, uwuUltima2Timeline]);
 
   const [isEditingTimeline, setIsEditingTimeline] = useState<boolean>(false);
   const [selectedEventForEdit, setSelectedEventForEdit] = useState<TimelineEvent | null>(null);
@@ -949,10 +1031,6 @@ export default function App() {
             setUwuUltima2Timeline(reindexed);
             localStorage.setItem('uwu_ultima2_timeline_custom_v1', JSON.stringify(reindexed));
             break;
-          case 'ULTIMA3':
-            setUwuUltima3Timeline(reindexed);
-            localStorage.setItem('uwu_ultima3_timeline_custom_v1', JSON.stringify(reindexed));
-            break;
         }
         break;
       case 'M4S':
@@ -988,16 +1066,12 @@ export default function App() {
             localStorage.removeItem('uwu_titan_timeline_custom_v1');
             break;
           case 'ULTIMA1':
-            setUwuUltima1Timeline([]);
+            setUwuUltima1Timeline(UWU_ULTIMA1_TIMELINE);
             localStorage.removeItem('uwu_ultima1_timeline_custom_v1');
             break;
           case 'ULTIMA2':
-            setUwuUltima2Timeline([]);
+            setUwuUltima2Timeline(UWU_ULTIMA2_TIMELINE);
             localStorage.removeItem('uwu_ultima2_timeline_custom_v1');
-            break;
-          case 'ULTIMA3':
-            setUwuUltima3Timeline([]);
-            localStorage.removeItem('uwu_ultima3_timeline_custom_v1');
             break;
         }
         break;
@@ -1091,10 +1165,6 @@ export default function App() {
             case 'ULTIMA2':
               setUwuUltima2Timeline(finalEvents);
               localStorage.setItem('uwu_ultima2_timeline_custom_v1', JSON.stringify(finalEvents));
-              break;
-            case 'ULTIMA3':
-              setUwuUltima3Timeline(finalEvents);
-              localStorage.setItem('uwu_ultima3_timeline_custom_v1', JSON.stringify(finalEvents));
               break;
           }
           break;
@@ -1206,6 +1276,326 @@ export default function App() {
       </div>
     </div>
   );
+
+  const renderTimelineSection = () => {
+    return (
+      <>
+        {/* Timeline Header and Edit Mode Buttons */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mt-2 px-1">
+          <span className="text-xs font-bold text-neutral-400 tracking-wider uppercase flex items-center gap-1.5 font-mono">
+            📁 時間軸清單 ({timeline.length} 個機制)
+          </span>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => {
+                setImportError(null);
+                setImportSuccess(false);
+                setImportJsonStr(JSON.stringify(timeline, null, 2));
+                setIsImportExportOpen(true);
+              }}
+              className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 hover:text-amber-400 text-neutral-300 text-[11px] font-bold transition-all border border-neutral-700/50 flex items-center gap-1 active:scale-95 cursor-pointer select-none"
+              title="匯入/匯出自訂時間軸"
+            >
+              📂 匯入/匯出 JSON
+            </button>
+            <button 
+              onClick={() => {
+                setIsEditingTimeline(!isEditingTimeline);
+                setSelectedEventForEdit(null);
+                setIsAddingNewEvent(false);
+              }}
+              className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all border flex items-center gap-1 active:scale-95 cursor-pointer select-none ${
+                isEditingTimeline 
+                  ? 'bg-amber-600 border-amber-500 text-white shadow-md' 
+                  : 'bg-neutral-800 border-neutral-700/50 hover:bg-neutral-700 text-neutral-300 hover:text-amber-500'
+              }`}
+            >
+              ⚙️ {isEditingTimeline ? '退出編輯' : '編輯時間軸'}
+            </button>
+          </div>
+        </div>
+
+        {/* Event Editor Form (Adding or Updating) */}
+        {(selectedEventForEdit || isAddingNewEvent) && (
+          <div className="bg-neutral-900/95 border border-amber-500/50 rounded-2xl p-4 flex flex-col gap-3 shadow-2xl animate-fadeIn">
+            <div className="flex items-center justify-between border-b border-neutral-800 pb-1.5">
+              <span className="text-amber-400 font-extrabold text-xs tracking-wider flex items-center gap-1.5 font-sans">
+                {isAddingNewEvent ? '➕ 新增副本機制' : '✏️ 調整機制秒數 & 名稱'}
+              </span>
+              <button 
+                onClick={() => {
+                  setSelectedEventForEdit(null);
+                  setIsAddingNewEvent(false);
+                }}
+                className="text-neutral-500 hover:text-neutral-300 text-xs font-bold font-mono"
+              >
+                ✕ 關閉
+              </button>
+            </div>
+
+            {editorError && (
+              <div className="bg-red-950/40 border border-red-500/30 rounded-xl px-3 py-2 text-xs text-red-400 font-bold flex items-center gap-1.5 animate-fadeIn">
+                <span>⚠️ {editorError}</span>
+              </div>
+            )}
+            
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Time entry */}
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] font-bold text-neutral-400">機制時間 (秒)</label>
+                <input 
+                  type="number" 
+                  step="0.1"
+                  min="0"
+                  value={editEventTimeSec}
+                  onChange={(e) => setEditEventTimeSec(e.target.value)}
+                  placeholder="例如: 15.2"
+                  className="bg-neutral-950 border border-neutral-800 rounded-lg px-2.5 py-1.5 text-xs text-white font-mono outline-none focus:border-amber-500 transition-colors"
+                />
+              </div>
+              {/* Phase entry */}
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] font-bold text-neutral-400">階段標記 (選填)</label>
+                <input 
+                  type="text"
+                  value={editEventPhase}
+                  onChange={(e) => setEditEventPhase(e.target.value)}
+                  placeholder="例如: 準備 / 日出"
+                  className="bg-neutral-950 border border-neutral-800 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none focus:border-amber-500 transition-colors"
+                />
+              </div>
+              {/* Name entry */}
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] font-bold text-neutral-400">機制名稱 (語音播報)</label>
+                <input 
+                  type="text"
+                  value={editEventName}
+                  onChange={(e) => setEditEventName(e.target.value)}
+                  placeholder="例如: 金臂鈎"
+                  className="bg-neutral-950 border border-neutral-800 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none focus:border-amber-500 transition-colors"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-2 justify-end pt-1">
+              {!isAddingNewEvent && (
+                <button 
+                  onClick={() => {
+                    if (selectedEventForEdit) {
+                      showConfirm(
+                        "刪除機制確認",
+                        `確定要刪除機制「${selectedEventForEdit.name}」嗎？此操作將會將其自時間軸中移除。`,
+                        () => {
+                          const updated = timeline.filter(ev => ev.id !== selectedEventForEdit.id);
+                          handleSaveTimeline(updated);
+                          setSelectedEventForEdit(null);
+                          showToast(`已刪除機制「${selectedEventForEdit.name}」`);
+                        }
+                      );
+                    }
+                  }}
+                  className="mr-auto px-2.5 py-1.5 rounded-lg bg-red-950/45 hover:bg-red-900/60 text-red-400 text-xs font-bold transition-all border border-red-900/30 cursor-pointer select-none"
+                >
+                  🗑️ 刪除機制
+                </button>
+              )}
+              <button 
+                onClick={() => {
+                  setSelectedEventForEdit(null);
+                  setIsAddingNewEvent(false);
+                }}
+                className="px-3 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-bold cursor-pointer select-none"
+              >
+                取消
+              </button>
+              <button 
+                onClick={() => {
+                  const timeSecNum = parseFloat(editEventTimeSec);
+                  if (isNaN(timeSecNum) || timeSecNum < 0) {
+                    setEditorError("請輸入有效的秒數 (大於等於0)！");
+                    return;
+                  }
+                  if (!editEventName.trim()) {
+                    setEditorError("請輸入機制名稱！");
+                    return;
+                  }
+                  setEditorError(null);
+
+                  let updated: TimelineEvent[];
+                  if (isAddingNewEvent) {
+                    const newEv: TimelineEvent = {
+                      id: -1,
+                      timeSec: timeSecNum,
+                      timeStr: '',
+                      name: editEventName.trim(),
+                      phase: editEventPhase.trim()
+                    };
+                    updated = [...timeline, newEv];
+                  } else if (selectedEventForEdit) {
+                    updated = timeline.map(ev => {
+                      if (ev.id === selectedEventForEdit.id) {
+                        return {
+                          ...ev,
+                          timeSec: timeSecNum,
+                          name: editEventName.trim(),
+                          phase: editEventPhase.trim()
+                        };
+                      }
+                      return ev;
+                    });
+                  } else {
+                    return;
+                  }
+
+                  handleSaveTimeline(updated);
+                  setSelectedEventForEdit(null);
+                  setIsAddingNewEvent(false);
+                }}
+                className="px-4 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition-all shadow-md shadow-amber-950/20 cursor-pointer select-none"
+              >
+                💾 儲存機制
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Mode Tips and General Controls */}
+        {isEditingTimeline && (
+          <div className="flex items-center justify-between bg-neutral-950/60 border border-neutral-800 rounded-2xl px-4 py-2 text-xs text-amber-500 font-medium">
+            <span className="font-sans">💡 點擊下方清單列表即可進行編輯修改：</span>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => {
+                  setIsAddingNewEvent(true);
+                  setSelectedEventForEdit(null);
+                  setEditEventTimeSec(Math.max(0, elapsed).toFixed(1));
+                  setEditEventName('');
+                  setEditEventPhase('');
+                  setEditorError(null);
+                }}
+                className="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-black tracking-wider transition-colors cursor-pointer select-none"
+              >
+                ➕ 新增機制
+              </button>
+              <button 
+                onClick={() => {
+                  showConfirm(
+                    "還原預設確認",
+                    "確定要將時間軸還原為初始設定嗎？這將重設所有至今在瀏覽器內的自訂修改！",
+                    () => {
+                      handleResetDefaultTimeline();
+                      setSelectedEventForEdit(null);
+                      setIsAddingNewEvent(false);
+                      showToast("已還原至最初預設的時間軸設定！");
+                    }
+                  );
+                }}
+                className="px-2 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-450 hover:text-red-400 text-[10px] transition-colors cursor-pointer select-none border border-neutral-800"
+              >
+                🔄 還原預設
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Timeline List Scrollable Container */}
+        <div 
+          ref={containerRef}
+          className={`w-full overflow-y-auto custom-scrollbar relative scroll-smooth bg-neutral-900/40 border border-neutral-800 rounded-3xl p-2.5 shrink-0 transition-all ${
+            currentTab === 'UWU' && !isMobile ? 'h-[360px] lg:h-[calc(100vh-270px)]' : 'h-[185px]'
+          }`}
+        >
+          <div className="flex flex-col gap-1 pb-10">
+            {timeline.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-10 px-4 text-center bg-neutral-950/25 rounded-2xl border border-dashed border-neutral-800/60 m-1 animate-fadeIn font-sans">
+                <ClockIcon className="w-8 h-8 text-neutral-600 mb-2 stroke-[1.5]" />
+                <p className="text-neutral-450 font-bold text-xs">{selectedUwuPhase === 'GARUDA' ? '風神階段' : selectedUwuPhase === 'IFRIT' ? '火神階段' : selectedUwuPhase === 'TITAN' ? '土神階段' : selectedUwuPhase === 'ULTIMA1' ? '神兵1運+2運' : '神兵3運'} 尚無時間軸資料</p>
+                <p className="text-neutral-500 text-[10px] mt-1.5 max-w-[240px] leading-relaxed font-sans">
+                  此階段空頁面已先建立。您可以使用右上方的對話框或右上角的「匯入/匯出」客製化時間軸，或等待官方更新。
+                </p>
+              </div>
+            ) : timeline.map((ev) => {
+              const isBeingEdited = selectedEventForEdit?.id === ev.id;
+              const isActive = nextEvent?.id === ev.id;
+              return (
+                <div 
+                  key={ev.id}
+                  id={`event-${ev.id}`}
+                  onClick={() => {
+                    if (isEditingTimeline) {
+                      setSelectedEventForEdit(ev);
+                      setIsAddingNewEvent(false);
+                      setEditEventTimeSec(ev.timeSec.toString());
+                      setEditEventName(ev.name);
+                      setEditEventPhase(ev.phase || '');
+                    } else {
+                      handleJumpToTime(ev.timeSec, ev.name, ev.id);
+                    }
+                  }}
+                  className={`flex items-center gap-2 py-1.5 px-3 rounded-lg transition-all duration-300 font-sans cursor-pointer group hover:scale-[1.01] active:scale-[0.99] border relative ${
+                    isBeingEdited
+                      ? 'bg-amber-500/20 border-amber-500 shadow-md shadow-amber-950/25 ring-1 ring-amber-500/30'
+                      : isActive 
+                        ? 'bg-amber-500/10 border-amber-500/30 shadow-sm shadow-amber-900/10 backdrop-blur-sm' 
+                        : 'bg-transparent border-transparent hover:bg-neutral-800/60'
+                  } ${
+                    elapsed > ev.timeSec + 2 && !isEditingTimeline 
+                      ? 'opacity-35 mix-blend-luminosity grayscale hover:opacity-80' 
+                      : 'opacity-100'
+                  }`}
+                >
+                  {/* Time label */}
+                  <div className={`w-11 md:w-12 text-right tabular-nums font-mono font-medium text-xs flex items-center justify-end gap-1 ${
+                    isActive ? 'text-amber-400' : 'text-neutral-500 group-hover:text-neutral-400 transition-colors'
+                  }`}>
+                    {ev.timeStr}
+                  </div>
+                  
+                  {/* Bullet point indicator */}
+                  <div className="relative flex items-center justify-center shrink-0 w-2.5 h-2.5">
+                    <div className={`absolute w-1.5 h-1.5 rounded-full transition-all duration-500 outline outline-2 outline-neutral-900 ${
+                      isBeingEdited
+                        ? 'bg-amber-500 ring-2 ring-amber-500 ring-offset-2 ring-offset-neutral-900 scale-110'
+                        : elapsed > ev.timeSec + 2 && !isEditingTimeline 
+                          ? 'bg-neutral-600 outline-none' 
+                          : isActive 
+                            ? 'bg-amber-500 scale-125 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.6)]' 
+                            : 'bg-neutral-500'
+                    }`} />
+                  </div>
+
+                  {/* Name and stage mark */}
+                  <div className={`flex-1 font-bold text-xs md:text-xs.5 truncate transition-colors px-0.5 flex items-center gap-1.5 ${
+                    isActive 
+                      ? 'text-amber-500' 
+                      : elapsed > ev.timeSec + 2 && !isEditingTimeline 
+                        ? 'text-neutral-600 group-hover:text-neutral-300' 
+                        : 'text-neutral-300'
+                  }`}>
+                    {ev.phase && (
+                      <span className="px-1.5 py-0.2 rounded bg-neutral-800 text-neutral-400 text-[10px] scale-85 origin-left shrink-0 border border-neutral-800">{ev.phase}</span>
+                    )}
+                    <span className="truncate">{ev.name}</span>
+                  </div>
+
+                  {/* Edit flag helper label */}
+                  {isEditingTimeline && (
+                    <div className={`text-[9px] font-bold px-1.5 py-0.2 rounded border shadow-sm shrink-0 transition-opacity whitespace-nowrap opacity-65 group-hover:opacity-100 uppercase ${
+                      isBeingEdited 
+                        ? 'bg-amber-600 text-white border-amber-500' 
+                        : 'bg-neutral-800 text-neutral-400 border-neutral-700/60'
+                    }`}>
+                      {isBeingEdited ? '編輯中' : '✏️ 編輯'}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </>
+    );
+  };
 
   return (
     <div className="flex flex-col h-screen">
@@ -1444,7 +1834,7 @@ export default function App() {
               </div>
 
               {/* Live Tactical Map that auto-switches per phase */}
-              {currentTab !== 'AUTHOR' && (
+              {currentTab !== 'AUTHOR' && currentTab !== 'UWU' && (
                 <div className="bg-neutral-900/40 border border-neutral-800 rounded-3xl p-5 flex flex-col items-center transition-all duration-500 shadow-xl w-full">
                   <div className="flex items-center justify-between w-full mb-3 pb-2 border-b border-neutral-800">
                     <h3 className="text-neutral-300 font-bold text-xs uppercase tracking-widest flex items-center gap-1.5 self-start">
@@ -1663,6 +2053,9 @@ export default function App() {
                   </div>
                 );
               })()}
+
+              {/* Desktop layout for UWU: show the entire timeline on the left side */}
+              {currentTab === 'UWU' && !isMobile && renderTimelineSection()}
             </section>
 
             {/* Right Side: Next Mechanic, Controls, Timeline Selector */}
@@ -1904,24 +2297,22 @@ export default function App() {
                       {selectedUwuPhase === 'GARUDA' && 'GARUDA PHASE'}
                       {selectedUwuPhase === 'IFRIT' && 'IFRIT PHASE'}
                       {selectedUwuPhase === 'TITAN' && 'TITAN PHASE'}
-                      {selectedUwuPhase === 'ULTIMA1' && 'ULTIMA PHASE PART I'}
-                      {selectedUwuPhase === 'ULTIMA2' && 'ULTIMA PHASE PART II'}
-                      {selectedUwuPhase === 'ULTIMA3' && 'ULTIMA PHASE PART III'}
+                      {selectedUwuPhase === 'ULTIMA1' && 'ULTIMA PHASE 1 + 2'}
+                      {selectedUwuPhase === 'ULTIMA2' && 'ULTIMA PHASE 3'}
                     </span>
                   </div>
-                  <div className="grid grid-cols-3 xs:grid-cols-6 gap-2 w-full">
+                  <div className="grid grid-cols-3 xs:grid-cols-5 gap-2 w-full">
                     {[
                       { id: 'GARUDA', label: '風神' },
                       { id: 'IFRIT', label: '火神' },
                       { id: 'TITAN', label: '土神' },
-                      { id: 'ULTIMA1', label: '最終階段1' },
-                      { id: 'ULTIMA2', label: '最終階段2' },
-                      { id: 'ULTIMA3', label: '最終階段3' },
+                      { id: 'ULTIMA1', label: '神兵1運+2運' },
+                      { id: 'ULTIMA2', label: '神兵3運' },
                     ].map((phase) => (
                       <button
                         key={phase.id}
                         onClick={() => {
-                          const phaseId = phase.id as 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3';
+                          const phaseId = phase.id as 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2';
                           setSelectedUwuPhase(phaseId);
                           
                           const jumpTime = phaseId === 'GARUDA' ? -10 : 0;
@@ -1934,7 +2325,7 @@ export default function App() {
                           setIsPlaying(true);
                           startTimeRef.current = performance.now();
                         }}
-                        className={`py-3 px-1.5 rounded-xl text-xs md:text-sm font-bold transition-all border text-center cursor-pointer select-none ${
+                        className={`py-5 px-2 rounded-xl text-xs md:text-sm font-bold transition-all border text-center cursor-pointer select-none ${
                           selectedUwuPhase === phase.id
                             ? 'bg-amber-500/10 text-amber-500 border-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.15)] font-black scale-[1.02]'
                             : 'bg-neutral-950/45 border-neutral-800/80 text-neutral-400 hover:text-neutral-200 hover:border-neutral-700 hover:bg-neutral-800/20'
@@ -1955,317 +2346,7 @@ export default function App() {
                 </div>
               )}
 
-              {/* Timeline Header and Edit Mode Buttons */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mt-2 px-1">
-                <span className="text-xs font-bold text-neutral-400 tracking-wider uppercase flex items-center gap-1.5 font-mono">
-                  📁 時間軸清單 ({timeline.length} 個機制)
-                </span>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => {
-                      setImportError(null);
-                      setImportSuccess(false);
-                      setImportJsonStr(JSON.stringify(timeline, null, 2));
-                      setIsImportExportOpen(true);
-                    }}
-                    className="px-2.5 py-1 rounded bg-neutral-800 hover:bg-neutral-700 hover:text-amber-400 text-neutral-300 text-[11px] font-bold transition-all border border-neutral-700/50 flex items-center gap-1 active:scale-95 cursor-pointer select-none"
-                    title="匯入/匯出自訂時間軸"
-                  >
-                    📂 匯入/匯出 JSON
-                  </button>
-                  <button 
-                    onClick={() => {
-                      setIsEditingTimeline(!isEditingTimeline);
-                      setSelectedEventForEdit(null);
-                      setIsAddingNewEvent(false);
-                    }}
-                    className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all border flex items-center gap-1 active:scale-95 cursor-pointer select-none ${
-                      isEditingTimeline 
-                        ? 'bg-amber-600 border-amber-500 text-white shadow-md' 
-                        : 'bg-neutral-800 border-neutral-700/50 hover:bg-neutral-700 text-neutral-300 hover:text-amber-500'
-                    }`}
-                  >
-                    ⚙️ {isEditingTimeline ? '退出編輯' : '編輯時間軸'}
-                  </button>
-                </div>
-              </div>
-
-              {/* Event Editor Form (Adding or Updating) */}
-              {(selectedEventForEdit || isAddingNewEvent) && (
-                <div className="bg-neutral-900/95 border border-amber-500/50 rounded-2xl p-4 flex flex-col gap-3 shadow-2xl animate-fadeIn">
-                  <div className="flex items-center justify-between border-b border-neutral-800 pb-1.5">
-                    <span className="text-amber-400 font-extrabold text-xs tracking-wider flex items-center gap-1.5 font-sans">
-                      {isAddingNewEvent ? '➕ 新增副本機制' : '✏️ 調整機制秒數 & 名稱'}
-                    </span>
-                    <button 
-                      onClick={() => {
-                        setSelectedEventForEdit(null);
-                        setIsAddingNewEvent(false);
-                      }}
-                      className="text-neutral-500 hover:text-neutral-300 text-xs font-bold font-mono"
-                    >
-                      ✕ 關閉
-                    </button>
-                  </div>
-
-                  {editorError && (
-                    <div className="bg-red-950/40 border border-red-500/30 rounded-xl px-3 py-2 text-xs text-red-400 font-bold flex items-center gap-1.5 animate-fadeIn">
-                      <span>⚠️ {editorError}</span>
-                    </div>
-                  )}
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {/* Time entry */}
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[10px] font-bold text-neutral-400">機制時間 (秒)</label>
-                      <input 
-                        type="number" 
-                        step="0.1"
-                        min="0"
-                        value={editEventTimeSec}
-                        onChange={(e) => setEditEventTimeSec(e.target.value)}
-                        placeholder="例如: 15.2"
-                        className="bg-neutral-950 border border-neutral-800 rounded-lg px-2.5 py-1.5 text-xs text-white font-mono outline-none focus:border-amber-500 transition-colors"
-                      />
-                    </div>
-                    {/* Phase entry */}
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[10px] font-bold text-neutral-400">階段標記 (選填)</label>
-                      <input 
-                        type="text"
-                        value={editEventPhase}
-                        onChange={(e) => setEditEventPhase(e.target.value)}
-                        placeholder="例如: 準備 / 日出"
-                        className="bg-neutral-950 border border-neutral-800 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none focus:border-amber-500 transition-colors"
-                      />
-                    </div>
-                    {/* Name entry */}
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[10px] font-bold text-neutral-400">機制名稱 (語音播報)</label>
-                      <input 
-                        type="text"
-                        value={editEventName}
-                        onChange={(e) => setEditEventName(e.target.value)}
-                        placeholder="例如: 金臂鈎"
-                        className="bg-neutral-950 border border-neutral-800 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none focus:border-amber-500 transition-colors"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2 justify-end pt-1">
-                    {!isAddingNewEvent && (
-                      <button 
-                        onClick={() => {
-                          if (selectedEventForEdit) {
-                            showConfirm(
-                              "刪除機制確認",
-                              `確定要刪除機制「${selectedEventForEdit.name}」嗎？此操作將會將其自時間軸中移除。`,
-                              () => {
-                                const updated = timeline.filter(ev => ev.id !== selectedEventForEdit.id);
-                                handleSaveTimeline(updated);
-                                setSelectedEventForEdit(null);
-                                showToast(`已刪除機制「${selectedEventForEdit.name}」`);
-                              }
-                            );
-                          }
-                        }}
-                        className="mr-auto px-2.5 py-1.5 rounded-lg bg-red-950/45 hover:bg-red-900/60 text-red-400 text-xs font-bold transition-all border border-red-900/30 cursor-pointer select-none"
-                      >
-                        🗑️ 刪除機制
-                      </button>
-                    )}
-                    <button 
-                      onClick={() => {
-                        setSelectedEventForEdit(null);
-                        setIsAddingNewEvent(false);
-                      }}
-                      className="px-3 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-bold cursor-pointer select-none"
-                    >
-                      取消
-                    </button>
-                    <button 
-                      onClick={() => {
-                        const timeSecNum = parseFloat(editEventTimeSec);
-                        if (isNaN(timeSecNum) || timeSecNum < 0) {
-                          setEditorError("請輸入有效的秒數 (大於等於0)！");
-                          return;
-                        }
-                        if (!editEventName.trim()) {
-                          setEditorError("請輸入機制名稱！");
-                          return;
-                        }
-                        setEditorError(null);
-
-                        let updated: TimelineEvent[];
-                        if (isAddingNewEvent) {
-                          const newEv: TimelineEvent = {
-                            id: -1,
-                            timeSec: timeSecNum,
-                            timeStr: '',
-                            name: editEventName.trim(),
-                            phase: editEventPhase.trim()
-                          };
-                          updated = [...timeline, newEv];
-                        } else if (selectedEventForEdit) {
-                          updated = timeline.map(ev => {
-                            if (ev.id === selectedEventForEdit.id) {
-                              return {
-                                ...ev,
-                                timeSec: timeSecNum,
-                                name: editEventName.trim(),
-                                phase: editEventPhase.trim()
-                              };
-                            }
-                            return ev;
-                          });
-                        } else {
-                          return;
-                        }
-
-                        handleSaveTimeline(updated);
-                        setSelectedEventForEdit(null);
-                        setIsAddingNewEvent(false);
-                      }}
-                      className="px-4 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition-all shadow-md shadow-amber-950/20 cursor-pointer select-none"
-                    >
-                      💾 儲存機制
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Edit Mode Tips and General Controls */}
-              {isEditingTimeline && (
-                <div className="flex items-center justify-between bg-neutral-950/60 border border-neutral-800 rounded-2xl px-4 py-2 text-xs text-amber-500 font-medium">
-                  <span className="font-sans">💡 點擊下方清單列表即可進行編輯修改：</span>
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={() => {
-                        setIsAddingNewEvent(true);
-                        setSelectedEventForEdit(null);
-                        setEditEventTimeSec(Math.max(0, elapsed).toFixed(1));
-                        setEditEventName('');
-                        setEditEventPhase('');
-                        setEditorError(null);
-                      }}
-                      className="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-black tracking-wider transition-colors cursor-pointer select-none"
-                    >
-                      ➕ 新增機制
-                    </button>
-                    <button 
-                      onClick={() => {
-                        showConfirm(
-                          "還原預設確認",
-                          "確定要將時間軸還原為初始設定嗎？這將重設所有至今在瀏覽器內的自訂修改！",
-                          () => {
-                            handleResetDefaultTimeline();
-                            setSelectedEventForEdit(null);
-                            setIsAddingNewEvent(false);
-                            showToast("已還原至最初預設的時間軸設定！");
-                          }
-                        );
-                      }}
-                      className="px-2 py-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-450 hover:text-red-400 text-[10px] transition-colors cursor-pointer select-none border border-neutral-800"
-                    >
-                      🔄 還原預設
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Timeline List Scrollable Container */}
-              <div 
-                ref={containerRef}
-                className="w-full h-[185px] overflow-y-auto custom-scrollbar relative scroll-smooth bg-neutral-900/40 border border-neutral-800 rounded-3xl p-2.5 shrink-0"
-              >
-                <div className="flex flex-col gap-1 pb-10">
-                  {timeline.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-10 px-4 text-center bg-neutral-950/25 rounded-2xl border border-dashed border-neutral-800/60 m-1 animate-fadeIn">
-                      <ClockIcon className="w-8 h-8 text-neutral-600 mb-2 stroke-[1.5]" />
-                      <p className="text-neutral-450 font-bold text-xs">{selectedUwuPhase === 'GARUDA' ? '風神階段' : selectedUwuPhase === 'IFRIT' ? '火神階段' : selectedUwuPhase === 'TITAN' ? '土神階段' : selectedUwuPhase === 'ULTIMA1' ? '最終階段1' : selectedUwuPhase === 'ULTIMA2' ? '最終階段2' : '最終階段3'} 尚無時間軸資料</p>
-                      <p className="text-neutral-500 text-[10px] mt-1.5 max-w-[240px] leading-relaxed font-sans">
-                        此階段空頁面已先建立。您可以使用右上方的對話框或右上角的「匯入/匯出」客製化時間軸，或等待官方更新。
-                      </p>
-                    </div>
-                  ) : timeline.map((ev) => {
-                    const isBeingEdited = selectedEventForEdit?.id === ev.id;
-                    const isActive = nextEvent?.id === ev.id;
-                    return (
-                      <div 
-                        key={ev.id}
-                        id={`event-${ev.id}`}
-                        onClick={() => {
-                          if (isEditingTimeline) {
-                            setSelectedEventForEdit(ev);
-                            setIsAddingNewEvent(false);
-                            setEditEventTimeSec(ev.timeSec.toString());
-                            setEditEventName(ev.name);
-                            setEditEventPhase(ev.phase || '');
-                          } else {
-                            handleJumpToTime(ev.timeSec, ev.name, ev.id);
-                          }
-                        }}
-                        className={`flex items-center gap-2 py-1.5 px-3 rounded-lg transition-all duration-300 font-sans cursor-pointer group hover:scale-[1.01] active:scale-[0.99] border relative ${
-                          isBeingEdited
-                            ? 'bg-amber-500/20 border-amber-500 shadow-md shadow-amber-950/25 ring-1 ring-amber-500/30'
-                            : isActive 
-                              ? 'bg-amber-500/10 border-amber-500/30 shadow-sm shadow-amber-900/10 backdrop-blur-sm' 
-                              : 'bg-transparent border-transparent hover:bg-neutral-800/60'
-                        } ${
-                          elapsed > ev.timeSec + 2 && !isEditingTimeline 
-                            ? 'opacity-35 mix-blend-luminosity grayscale hover:opacity-80' 
-                            : 'opacity-100'
-                        }`}
-                      >
-                        {/* Time label */}
-                        <div className={`w-11 md:w-12 text-right tabular-nums font-mono font-medium text-xs flex items-center justify-end gap-1 ${
-                          isActive ? 'text-amber-400' : 'text-neutral-500 group-hover:text-neutral-400 transition-colors'
-                        }`}>
-                          {ev.timeStr}
-                        </div>
-                        
-                        {/* Bullet point indicator */}
-                        <div className="relative flex items-center justify-center shrink-0 w-2.5 h-2.5">
-                          <div className={`absolute w-1.5 h-1.5 rounded-full transition-all duration-500 outline outline-2 outline-neutral-900 ${
-                            isBeingEdited
-                              ? 'bg-amber-500 ring-2 ring-amber-500 ring-offset-2 ring-offset-neutral-900 scale-110'
-                              : elapsed > ev.timeSec + 2 && !isEditingTimeline 
-                                ? 'bg-neutral-600 outline-none' 
-                                : isActive 
-                                  ? 'bg-amber-500 scale-125 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.6)]' 
-                                  : 'bg-neutral-500'
-                          }`} />
-                        </div>
-
-                        {/* Name and stage mark */}
-                        <div className={`flex-1 font-bold text-xs md:text-xs.5 truncate transition-colors px-0.5 flex items-center gap-1.5 ${
-                          isActive 
-                            ? 'text-amber-500' 
-                            : elapsed > ev.timeSec + 2 && !isEditingTimeline 
-                              ? 'text-neutral-600 group-hover:text-neutral-300' 
-                              : 'text-neutral-300'
-                        }`}>
-                          {ev.phase && (
-                            <span className="px-1.5 py-0.2 rounded bg-neutral-800 text-neutral-400 text-[10px] scale-85 origin-left shrink-0 border border-neutral-800">{ev.phase}</span>
-                          )}
-                          <span className="truncate">{ev.name}</span>
-                        </div>
-
-                        {/* Edit flag helper label */}
-                        {isEditingTimeline && (
-                          <div className={`text-[9px] font-bold px-1.5 py-0.2 rounded border shadow-sm shrink-0 transition-opacity whitespace-nowrap opacity-65 group-hover:opacity-100 uppercase ${
-                            isBeingEdited 
-                              ? 'bg-amber-600 text-white border-amber-500' 
-                              : 'bg-neutral-800 text-neutral-400 border-neutral-700/60'
-                          }`}>
-                            {isBeingEdited ? '編輯中' : '✏️ 編輯'}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+              {renderTimelineSection()}
             </section>
           </div>
       </main>
@@ -2418,7 +2499,7 @@ function ArenaMapViewer({
   activeEventTimeSec?: number;
   missingProjectImages: Record<string, boolean>;
   onMarkProjectImageMissing: (filename: string) => void;
-  selectedUwuPhase?: 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2' | 'ULTIMA3';
+  selectedUwuPhase?: 'GARUDA' | 'IFRIT' | 'TITAN' | 'ULTIMA1' | 'ULTIMA2';
 }) {
   const useProjectMapImage = true;
   const [activeAltSelect, setActiveAltSelect] = useState<'primary' | 'secondary'>('primary');
@@ -2455,9 +2536,8 @@ function ArenaMapViewer({
             {selectedUwuPhase === 'GARUDA' && '風神階段 戰術提示'}
             {selectedUwuPhase === 'IFRIT' && '火神階段 戰術提示'}
             {selectedUwuPhase === 'TITAN' && '土神階段 戰術提示'}
-            {selectedUwuPhase === 'ULTIMA1' && '最終階段1 戰術提示'}
-            {selectedUwuPhase === 'ULTIMA2' && '最終階段2 戰術提示'}
-            {selectedUwuPhase === 'ULTIMA3' && '最終階段3 戰術提示'}
+            {selectedUwuPhase === 'ULTIMA1' && '神兵1運+2運 戰術提示'}
+            {selectedUwuPhase === 'ULTIMA2' && '神兵3運 戰術提示'}
           </h4>
           <p className="text-neutral-450 text-[11px] leading-relaxed max-w-[320px]">
             此副本階段頁面架構已完成，暫缺少專案圖檔 <code className="text-amber-500 bg-neutral-900 px-1 py-0.5 rounded text-[10px] font-mono">/{projectImageOnThisPhaseFilename}</code>。
